@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "AI Command Center",
+  "version": "1.0.0",
+  "description": "Transform your Chrome New Tab into a personalized AI Command Center, productivity launcher, and workflow orchestrator.",
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://generativelanguage.googleapis.com/*"
+  ],
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+  "action": {
+    "default_title": "AI Command Center",
+    "default_icon": {
+      "16": "assets/icons/icon16.png",
+      "48": "assets/icons/icon48.png",
+      "128": "assets/icons/icon128.png"
+    }
+  },
+  "commands": {
+    "open_chatgpt": {
+      "suggested_key": {
+        "default": "Alt+C"
+      },
+      "description": "Quick launch ChatGPT"
+    },
+    "open_gemini": {
+      "suggested_key": {
+        "default": "Alt+G"
+      },
+      "description": "Quick launch Google Gemini"
+    },
+    "open_perplexity": {
+      "suggested_key": {
+        "default": "Alt+P"
+      },
+      "description": "Quick launch Perplexity AI"
+    }
+  }
+}

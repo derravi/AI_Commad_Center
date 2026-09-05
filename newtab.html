@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Command Center — AI Tool Launcher & Productivity Workspace</title>
+  <link rel="icon" type="image/png" href="assets/icons/icon48.png">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/modal.css">
+</head>
+
+<body>
+
+  <!-- Ambient Glow & Cyber Grid Background -->
+  <div class="ambient-bg">
+    <div class="ambient-grid"></div>
+    <div class="ambient-blob ambient-blob-1"></div>
+    <div class="ambient-blob ambient-blob-2"></div>
+    <div class="ambient-blob ambient-blob-3"></div>
+  </div>
+
+  <div class="app-container">
+
+    <!-- ====================================================================
+         1. SIDEBAR NAVIGATION
+         ==================================================================== -->
+    <aside class="sidebar">
+      <div class="brand-wrapper">
+        <div class="brand-icon-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>AI COMMAND</h1>
+          <span>CENTER • V1.0</span>
+        </div>
+      </div>
+
+      <span class="nav-section-title">Navigation</span>
+      <ul class="nav-menu">
+        <li class="nav-item active">
+          <button data-view="dashboard">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            <span>Dashboard & Tools</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button data-view="stacks">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+              <polyline points="2 17 12 22 22 17"></polyline>
+              <polyline points="2 12 12 17 22 12"></polyline>
+            </svg>
+            <span>One-Click Stacks</span>
+            <span class="nav-badge">NEW</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button data-view="workspaces">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span>Workspaces</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button data-view="prompts">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            <span>Prompt Library</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button data-view="multiai">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            <span>Multi-AI Challenge</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button data-view="apihub">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            <span>Gemini AI Engine</span>
+            <span id="gemini-status-nav-badge" class="nav-badge">STATIC</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button data-view="settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+              </path>
+            </svg>
+            <span>Settings & Themes</span>
+          </button>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="system-status-pill">
+          <div>
+            <span class="status-indicator"></span>
+            <span>All AI Systems Online</span>
+          </div>
+          <span style="font-family: var(--font-mono); font-size: 10px;">MV3</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ====================================================================
+         2. MAIN CONTENT WRAPPER
+         ==================================================================== -->
+    <main class="main-wrapper">
+
+      <!-- Top Navigation & Universal Search -->
+      <header class="top-header">
+        <div class="header-clock-widget">
+          <span id="header-clock-time" class="clock-time">12:00:00 PM</span>
+          <span id="header-clock-date" class="clock-date">Saturday, Sep 5</span>
+        </div>
+
+        <!-- Universal Search Box -->
+        <div class="search-container">
+          <div class="search-box">
+            <div class="search-engine-wrapper" id="search-engine-wrapper">
+              <button id="search-engine-selector" class="search-engine-selector" title="Select Search Engine"
+                type="button" aria-haspopup="true" aria-expanded="false">
+                <span id="search-engine-label">🔍 Google</span>
+                <svg class="engine-dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+
+              <!-- Search Engine Dropdown Menu -->
+              <div id="search-engine-dropdown" class="search-engine-dropdown">
+                <div class="engine-dropdown-header">
+                  <span>Search Engines</span>
+                  <button id="btn-open-add-engine" class="engine-add-btn" type="button"
+                    data-open-modal="modal-add-engine" title="Add Custom Search Engine">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>Add New</span>
+                  </button>
+                </div>
+                <div id="search-engine-list" class="engine-list-container">
+                  <!-- Dynamically populated engine items -->
+                </div>
+              </div>
+            </div>
+
+            <input id="main-search-input" class="search-input" type="text"
+              placeholder="Search AI tools or query web... (Press / to focus)" autocomplete="off" />
+            <span class="search-shortcut-badge">/</span>
+            <button id="search-action-btn" class="search-action-btn" title="Search">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Header Actions -->
+        <div class="header-actions">
+          <button id="btn-toggle-assistant" class="icon-button" title="Open AI Assistant Drawer (Alt+A)">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </button>
+          <button class="btn-primary" data-open-modal="modal-add-tool">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Tool
+          </button>
+        </div>
+      </header>
+
+      <!-- ====================================================================
+           VIEW 1: MAIN DASHBOARD & TOOLS
+           ==================================================================== -->
+      <section id="view-dashboard" class="view-content active">
+
+        <!-- Smart AI Router Hero -->
+        <div class="router-hero">
+          <div class="router-hero-header">
+            <div class="router-title">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)"
+                stroke-width="2.2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+              </svg>
+              <h2>Smart AI Router & Intent Classifier</h2>
+            </div>
+            <span class="badge badge-accent">AI Powered</span>
+          </div>
+          <p style="font-size: 13.5px; color: var(--text-muted);">
+            Describe any goal or task and let the AI Command Center architect the optimal AI stack for you.
+          </p>
+          <div class="router-input-wrapper">
+            <input id="smart-router-input" class="router-input" type="text"
+              placeholder="e.g., 'I want to build a machine learning model' or 'Design a modern React landing page'..." />
+            <button id="smart-router-btn" class="btn-primary">
+              Recommend AI Tools
+            </button>
+          </div>
+          <div class="quick-prompts-bar">
+            <span style="font-size: 12px; color: var(--text-dim); font-weight: 600;">Quick Suggestions:</span>
+            <span class="quick-prompt-tag" data-query="Build a machine learning model">🧠 ML Engineering</span>
+            <span class="quick-prompt-tag" data-query="Design React UI website">⚡ React Web Dev</span>
+            <span class="quick-prompt-tag" data-query="Analyze CSV data">📊 Data Analysis</span>
+            <span class="quick-prompt-tag" data-query="Academic literature review">📚 Deep Research</span>
+            <span class="quick-prompt-tag" data-query="Generate photorealistic image">🎨 Midjourney Art</span>
+            <span class="quick-prompt-tag" data-query="Write marketing copywriting">✍️ SEO Copy</span>
+          </div>
+        </div>
+
+        <!-- Quick Access: Favorites & Recents -->
+        <div class="section-header">
+          <div class="section-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="2">
+              <polygon
+                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+              </polygon>
+            </svg>
+            <span>Favorites</span>
+          </div>
+        </div>
+        <div id="favorites-scroll-bar" class="quick-access-scroll"></div>
+
+        <div class="section-header" style="margin-top: 8px;">
+          <div class="section-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>Recently Used</span>
+          </div>
+        </div>
+        <div id="recents-scroll-bar" class="quick-access-scroll"></div>
+
+        <!-- Category Filter Pills -->
+        <div class="section-header" style="margin-top: 14px;">
+          <div class="section-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            <span>AI Tool Directory</span>
+            <span id="tools-count-badge" class="section-counter">Loading...</span>
+          </div>
+        </div>
+        <div id="category-filter-bar" class="category-filter-bar"></div>
+
+        <!-- Main Tools Grid -->
+        <div id="tools-grid" class="tools-grid"></div>
+
+      </section>
+
+      <!-- ====================================================================
+           VIEW 2: ONE-CLICK AI STACKS
+           ==================================================================== -->
+      <section id="view-stacks" class="view-content">
+        <div class="section-header">
+          <div>
+            <h2>One-Click AI Stacks</h2>
+            <p style="font-size: 13.5px; color: var(--text-muted); margin-top: 4px;">
+              Launch full bundles of purpose-built AI tools across multiple Chrome tabs in a single click.
+            </p>
+          </div>
+          <button class="btn-primary" data-open-modal="modal-add-stack">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Create Stack
+          </button>
+        </div>
+        <div id="stacks-grid-container" class="stacks-grid" style="margin-top: 24px;"></div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 3: PROJECT WORKSPACES
+           ==================================================================== -->
+      <section id="view-workspaces" class="view-content">
+        <div class="section-header">
+          <div>
+            <h2>Project Workspaces</h2>
+            <p style="font-size: 13.5px; color: var(--text-muted); margin-top: 4px;">
+              Group relevant AI tools, project notes, research targets, and prompts for distinct projects.
+            </p>
+          </div>
+          <button class="btn-primary" data-open-modal="modal-add-workspace">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Create Workspace
+          </button>
+        </div>
+        <div id="workspaces-grid-container" class="workspaces-grid" style="margin-top: 24px;"></div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 4: UNIVERSAL PROMPT LIBRARY
+           ==================================================================== -->
+      <section id="view-prompts" class="view-content">
+        <div class="section-header">
+          <div>
+            <h2>Universal Prompt Library</h2>
+            <p style="font-size: 13.5px; color: var(--text-muted); margin-top: 4px;">
+              Battle-tested prompt engineering templates with 1-click clipboard copy and direct dispatch to ChatGPT,
+              Claude, and Gemini.
+            </p>
+          </div>
+          <button class="btn-primary" data-open-modal="modal-add-prompt">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Prompt
+          </button>
+        </div>
+        <div id="prompts-grid-container" class="prompts-grid" style="margin-top: 24px;"></div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 5: MULTI-AI CHALLENGE & ANSWER JUDGE
+           ==================================================================== -->
+      <section id="view-multiai" class="view-content">
+        <div class="section-header">
+          <div>
+            <h2>Multi-AI Challenge & Answer Judge</h2>
+            <p style="font-size: 13.5px; color: var(--text-muted); margin-top: 4px;">
+              Broadcast a single prompt to multiple frontier AI models simultaneously and compare the depth, accuracy,
+              and reasoning.
+            </p>
+          </div>
+        </div>
+
+        <div class="multi-ai-panel" style="margin-top: 24px;">
+          <label class="form-label" style="font-size: 14px; margin-bottom: 8px;">Prompt to Broadcast:</label>
+          <textarea id="multi-ai-prompt-input" class="multi-ai-textarea"
+            placeholder="Type your question, code problem, or research topic to send to multiple AI models...">Explain the mathematical intuition behind Transformer Self-Attention mechanisms with a simple concrete example.</textarea>
+
+          <span class="form-label" style="font-size: 13px; display: block; margin-bottom: 8px;">Target Frontier AI
+            Models:</span>
+          <div class="target-ais-selector">
+            <label class="ai-checkbox-label selected">
+              <input type="checkbox" class="multi-ai-checkbox" value="chatgpt" checked>
+              <span>ChatGPT (OpenAI)</span>
+            </label>
+            <label class="ai-checkbox-label selected">
+              <input type="checkbox" class="multi-ai-checkbox" value="claude" checked>
+              <span>Claude (Anthropic)</span>
+            </label>
+            <label class="ai-checkbox-label selected">
+              <input type="checkbox" class="multi-ai-checkbox" value="gemini" checked>
+              <span>Google Gemini</span>
+            </label>
+            <label class="ai-checkbox-label">
+              <input type="checkbox" class="multi-ai-checkbox" value="perplexity">
+              <span>Perplexity AI</span>
+            </label>
+            <label class="ai-checkbox-label">
+              <input type="checkbox" class="multi-ai-checkbox" value="deepseek">
+              <span>DeepSeek Reasoner</span>
+            </label>
+          </div>
+
+          <div style="display: flex; gap: 12px;">
+            <button id="multi-ai-launch-btn" class="btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              Broadcast & Open All Tabs
+            </button>
+            <button id="multi-ai-copy-btn" class="btn-secondary">
+              Copy Prompt
+            </button>
+          </div>
+
+          <!-- Answer Judge Evaluation Matrix -->
+          <div class="judge-criteria-grid">
+            <div class="judge-criterion-card">
+              <h4>1. Accuracy & Factual Grounding</h4>
+              <p>Verify citations, mathematical soundness, and avoidance of hallucinations.</p>
+            </div>
+            <div class="judge-criterion-card">
+              <h4>2. Completeness & Depth</h4>
+              <p>Examine if all edge cases, nuances, and follow-ups were addressed.</p>
+            </div>
+            <div class="judge-criterion-card">
+              <h4>3. Clarity & Structure</h4>
+              <p>Assess formatting, concise summaries, and code readability.</p>
+            </div>
+            <div class="judge-criterion-card">
+              <h4>4. Step-by-Step Reasoning</h4>
+              <p>Evaluate logical flow, proof validity, and clear justification.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 6: SETTINGS & THEMES
+           ==================================================================== -->
+      <section id="view-settings" class="view-content">
+        <div class="section-header">
+          <div>
+            <h2>Settings & Preferences</h2>
+            <p style="font-size: 13.5px; color: var(--text-muted); margin-top: 4px;">
+              Customize themes, default search engines, accent colors, and manage backups.
+            </p>
+          </div>
+        </div>
+
+        <div style="max-width: 600px; display: flex; flex-direction: column; gap: 24px; margin-top: 24px;">
+          <div class="form-group">
+            <label class="form-label">Theme Appearance</label>
+            <select id="settings-theme-select" class="form-select">
+              <option value="dark">Cyber Onyx (Default Dark)</option>
+              <option value="oled">OLED Pitch Black</option>
+              <option value="cyberpunk">Cyberpunk Neon</option>
+              <option value="light">Clean Minimal Light</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Accent Color</label>
+            <div class="theme-palette-picker">
+              <div class="theme-swatch active" style="background: #6366f1;" data-color="#6366f1" title="Indigo Purple">
+              </div>
+              <div class="theme-swatch" style="background: #0284c7;" data-color="#0284c7" title="Electric Blue"></div>
+              <div class="theme-swatch" style="background: #10b981;" data-color="#10b981" title="Emerald Green"></div>
+              <div class="theme-swatch" style="background: #f43f5e;" data-color="#f43f5e" title="Rose Pink"></div>
+              <div class="theme-swatch" style="background: #f59e0b;" data-color="#f59e0b" title="Amber Orange"></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Keyboard Shortcuts Reference</label>
+            <div
+              style="background: rgba(0,0,0,0.2); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px; font-size: 13px; display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; justify-content: space-between;"><span>Quick launch ChatGPT:</span><kbd
+                  class="search-shortcut-badge">Alt + C</kbd></div>
+              <div style="display: flex; justify-content: space-between;"><span>Quick launch Google Gemini:</span><kbd
+                  class="search-shortcut-badge">Alt + G</kbd></div>
+              <div style="display: flex; justify-content: space-between;"><span>Quick launch Perplexity AI:</span><kbd
+                  class="search-shortcut-badge">Alt + P</kbd></div>
+              <div style="display: flex; justify-content: space-between;"><span>Toggle AI Assistant:</span><kbd
+                  class="search-shortcut-badge">Alt + A</kbd></div>
+              <div style="display: flex; justify-content: space-between;"><span>Jump to Universal Search:</span><kbd
+                  class="search-shortcut-badge">/</kbd></div>
+            </div>
+          </div>
+
+          <div class="form-group" style="padding-top: 14px; border-top: 1px solid var(--border-subtle);">
+            <label class="form-label">Backup & Restore Data</label>
+            <p class="form-hint" style="margin-bottom: 12px;">Export all your custom tools, workspaces, stacks, and
+              prompts as a JSON file or restore from a backup.</p>
+            <div style="display: flex; gap: 12px;">
+              <button id="btn-export-backup" class="btn-secondary">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Export JSON Backup
+              </button>
+              <label class="btn-secondary" style="cursor: pointer;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                Restore Backup
+                <input id="input-import-backup" type="file" accept=".json" style="display: none;">
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           VIEW 6: GOOGLE GEMINI AI ENGINE & API HUB
+           ==================================================================== -->
+      <section id="view-apihub" class="view-content">
+        <div class="apihub-container">
+          
+          <!-- View Header -->
+          <div class="view-header">
+            <div>
+              <h2>Google Gemini AI Engine & API Hub</h2>
+              <p style="font-size: 13.5px; color: var(--text-muted); margin-top: 4px;">
+                Connect your free Google Gemini API key to activate real AI across the entire Command Center — Live Chat Copilot, Dynamic Task Architect, and Master Prompt Optimizer.
+              </p>
+            </div>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="btn-primary" style="text-decoration: none;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+              Get Free Gemini API Key ↗
+            </a>
+          </div>
+
+          <!-- Live Core Status Banner -->
+          <div class="api-status-banner">
+            <div class="api-status-left">
+              <div class="api-core-orb">⚡</div>
+              <div class="api-status-meta">
+                <h3>Gemini Intelligence Core</h3>
+                <div class="api-status-pill-live">
+                  <span id="hub-connection-indicator" class="status-indicator" style="background: #94a3b8;"></span>
+                  <span id="hub-connection-status-text" style="color: var(--text-muted);">Checking Connection...</span>
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 13px; color: var(--text-muted);">Active Engine:</span>
+              <span id="hub-connected-model" class="badge badge-accent" style="font-size: 12px; padding: 4px 10px;">Gemini 2.0 Flash</span>
+            </div>
+          </div>
+
+          <!-- Configuration Grid -->
+          <div class="api-config-grid">
+            
+            <!-- Card 1: API Key & Model Settings -->
+            <div class="api-config-card">
+              <div class="api-card-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <h3>API Key & Model Configuration</h3>
+              </div>
+
+              <form id="form-gemini-config" style="display: flex; flex-direction: column; gap: 16px;">
+                <div class="form-group">
+                  <label class="form-label">Google Gemini API Key *</label>
+                  <div class="password-input-wrapper">
+                    <input 
+                      id="input-gemini-key" 
+                      class="form-input" 
+                      type="password" 
+                      placeholder="Paste AI Studio API Key (AIzaSy...)" 
+                      autocomplete="off"
+                    />
+                    <button id="btn-toggle-key-visibility" class="password-toggle-btn" type="button" title="Show/Hide Key">👁️</button>
+                  </div>
+                  <span style="font-size: 11.5px; color: var(--text-dim); margin-top: 4px;">
+                    Stored safely in your browser local storage. Free tier available via Google AI Studio.
+                  </span>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                      <label class="form-label" style="margin-bottom: 0;">Gemini Model</label>
+                      <button id="btn-fetch-models" type="button" title="Auto-detect models supported by your API key" style="font-size: 11px; padding: 2px 8px; border-radius: var(--radius-sm); background: rgba(99, 102, 241, 0.12); border: 1px solid rgba(99, 102, 241, 0.3); color: var(--accent-primary); cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all var(--transition-fast);">
+                        🔄 Auto-Detect
+                      </button>
+                    </div>
+                    <select id="select-gemini-model" class="form-select">
+                      <option value="gemini-2.0-flash" selected>Gemini 2.0 Flash (Recommended - Fast & Smart)</option>
+                      <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash Lite (Ultra Low Latency)</option>
+                      <option value="gemini-1.5-flash">Gemini 1.5 Flash (Lightweight & Efficient)</option>
+                      <option value="gemini-1.5-pro-latest">Gemini 1.5 Pro Latest (Deep Reasoning)</option>
+                    </select>
+                    <span style="font-size: 11px; color: var(--text-dim); margin-top: 4px; display: block;">
+                      ⚡ <code>gemini-2.0-flash</code> is recommended for best performance on free Google AI Studio keys.
+                    </span>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">System Persona</label>
+                    <select id="select-gemini-persona" class="form-select">
+                      <option value="expert_architect">Principal Software Architect</option>
+                      <option value="concise_copilot">Fast & Concise Copilot</option>
+                      <option value="creative_strategist">Creative AI Strategist</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="api-actions-row">
+                  <button id="btn-test-save-gemini" class="btn-primary" type="submit" style="flex: 2;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                    Test & Save Key
+                  </button>
+                  <button id="btn-clear-gemini" class="btn-secondary" type="button" style="flex: 1;">
+                    Disconnect
+                  </button>
+                </div>
+
+                <div id="hub-test-result-alert" style="display: none; padding: 10px 14px; border-radius: var(--radius-md); font-size: 12.5px;"></div>
+              </form>
+            </div>
+
+            <!-- Card 2: Real AI Feature Matrix -->
+            <div class="api-config-card">
+              <div class="api-card-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                <h3>Real AI Superpowers Matrix</h3>
+              </div>
+
+              <div class="api-features-grid">
+                <div class="api-feature-card">
+                  <span class="api-feature-icon">💬</span>
+                  <h4>Live AI Copilot Drawer</h4>
+                  <p>Real-time conversational assistant directly in the right sidebar drawer.</p>
+                </div>
+                <div class="api-feature-card">
+                  <span class="api-feature-icon">🎯</span>
+                  <h4>Dynamic Task Architect</h4>
+                  <p>Smart Router builds real custom 4-step AI pipelines for ANY goal.</p>
+                </div>
+                <div class="api-feature-card">
+                  <span class="api-feature-icon">✨</span>
+                  <h4>Master Prompt Enhancer</h4>
+                  <p>1-Click AI prompt refinement to upgrade simple text into master prompts.</p>
+                </div>
+                <div class="api-feature-card">
+                  <span class="api-feature-icon">⚖️</span>
+                  <h4>Multi-AI Judge</h4>
+                  <p>Critique and evaluate frontier models with automated reasoning scores.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Interactive Gemini Test Playground -->
+          <div class="api-playground-box">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+              <div>
+                <h3 style="font-size: 16px; font-weight: 700;">Interactive Gemini Playground</h3>
+                <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">
+                  Test your connected Gemini model with live queries right here.
+                </p>
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <button class="quick-prompt-tag" data-playground-prompt="Write a modern Python FastAPI boilerplate with async SQLite">FastAPI Boilerplate</button>
+                <button class="quick-prompt-tag" data-playground-prompt="Explain Transformers Attention mechanism in 3 sentences">Attention in 3 lines</button>
+                <button class="quick-prompt-tag" data-playground-prompt="Architect an AI YouTube shorts automation workflow">YouTube AI Stack</button>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+              <input id="input-playground-query" class="form-input" type="text" placeholder="Type a test prompt for Gemini..." style="flex: 1;" />
+              <button id="btn-run-playground" class="btn-primary" type="button" style="padding: 0 18px;">
+                Run with Gemini ⚡
+              </button>
+            </div>
+
+            <div id="playground-output-container" class="api-test-output"></div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ====================================================================
+         3. INTERACTIVE AI ASSISTANT SIDE DRAWER
+         ==================================================================== -->
+    <div id="assistant-drawer" class="assistant-drawer">
+      <div class="assistant-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="mini-tool-avatar" style="background: var(--accent-gradient); width: 32px; height: 32px;">⚡</div>
+          <strong>AI Assistant Copilot</strong>
+        </div>
+        <button id="btn-close-assistant" class="modal-close-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div id="assistant-messages-container" class="assistant-messages">
+        <div class="chat-bubble assistant">
+          👋 Hello! I am your AI Command Center Copilot. Ask me to recommend the best AI tools, architect a workflow
+          stack, or write optimal prompts!
+        </div>
+      </div>
+
+      <div class="assistant-input-box">
+        <input id="assistant-chat-input" class="form-input" type="text" placeholder="Ask assistant anything..."
+          style="flex: 1;">
+        <button id="assistant-chat-send" class="btn-primary" style="padding: 0 16px;">Send</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ====================================================================
+       4. MODALS
+       ==================================================================== -->
+
+  <!-- Modal: Add Custom Tool -->
+  <div id="modal-add-tool" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Add Custom AI Tool</h3>
+        <button class="modal-close-btn" data-close-modal>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <form id="form-add-tool">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tool Name *</label>
+              <input id="input-tool-name" class="form-input" type="text" placeholder="e.g., Perplexity AI" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select id="select-tool-category" class="form-select">
+                <option value="chat">AI Chat & LLMs</option>
+                <option value="coding">Coding & Dev</option>
+                <option value="research">Search & Research</option>
+                <option value="image">Image & Art</option>
+                <option value="video">Video & Animation</option>
+                <option value="audio">Voice & Audio</option>
+                <option value="writing">Writing & Copy</option>
+                <option value="data">Data & Analytics</option>
+                <option value="productivity">Productivity</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Website URL *</label>
+            <input id="input-tool-url" class="form-input" type="url" placeholder="https://..." required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea id="input-tool-description" class="form-textarea"
+              placeholder="What does this AI tool do?"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Icon Badge Text</label>
+              <input id="input-tool-icon-text" class="form-input" type="text" placeholder="2-3 letters (e.g. PP)"
+                maxlength="3">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Badge Color</label>
+              <input id="input-tool-icon-bg" class="form-input" type="color" value="#6366f1">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tags (comma separated)</label>
+            <input id="input-tool-tags" class="form-input" type="text" placeholder="search, citations, ai">
+          </div>
+
+          <label class="switch-label">
+            <span class="form-label">Add to Favorites</span>
+            <input id="checkbox-tool-favorite" type="checkbox">
+          </label>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn-primary">Save Tool</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Custom Search Engine -->
+  <div id="modal-add-engine" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Add Custom Search Engine</h3>
+        <button class="modal-close-btn" data-close-modal>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <form id="form-add-engine">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group" style="flex: 2;">
+              <label class="form-label">Engine Name *</label>
+              <input id="input-engine-name" class="form-input" type="text"
+                placeholder="e.g., Kagi, YouTube, GitHub, Phind" required>
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label">Icon / Emoji</label>
+              <input id="input-engine-icon" class="form-input" type="text" placeholder="e.g. ⚡" maxlength="4"
+                value="🔎">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Search URL Template *</label>
+            <input id="input-engine-url" class="form-input" type="text" placeholder="e.g. https://kagi.com/search?q=%s"
+              required>
+            <span style="font-size: 11.5px; color: var(--text-dim); margin-top: 4px;">
+              Query template: Use <code>%s</code> or trailing parameter (e.g.
+              <code>https://youtube.com/results?search_query=</code>)
+            </span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn-primary">Add Search Engine</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Stack -->
+  <div id="modal-add-stack" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Create One-Click AI Stack</h3>
+        <button class="modal-close-btn" data-close-modal>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <form id="form-add-stack">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Stack Name *</label>
+            <input id="input-stack-name" class="form-input" type="text"
+              placeholder="e.g., YouTube Video Production Stack" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <input id="input-stack-description" class="form-input" type="text" placeholder="Brief workflow summary">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Select Tools to Include in Stack:</label>
+            <div id="stack-tools-checkboxes"
+              style="display: flex; gap: 8px; flex-wrap: wrap; max-height: 180px; overflow-y: auto; padding: 6px;">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn-primary">Create Stack</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Workspace -->
+  <div id="modal-add-workspace" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Create Project Workspace</h3>
+        <button class="modal-close-btn" data-close-modal>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <form id="form-add-workspace">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Workspace Name *</label>
+            <input id="input-ws-name" class="form-input" type="text" placeholder="e.g., AI Research Thesis" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <input id="input-ws-description" class="form-input" type="text" placeholder="What is this workspace for?">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Project Notes / TODOs</label>
+            <textarea id="input-ws-notes" class="form-textarea"
+              placeholder="Important notes, links, or milestones for this project..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Select Linked Tools:</label>
+            <div id="ws-tools-checkboxes"
+              style="display: flex; gap: 8px; flex-wrap: wrap; max-height: 140px; overflow-y: auto; padding: 6px;">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn-primary">Create Workspace</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Prompt -->
+  <div id="modal-add-prompt" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Save Prompt Template</h3>
+        <button class="modal-close-btn" data-close-modal>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <form id="form-add-prompt">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Prompt Title *</label>
+              <input id="input-prompt-title" class="form-input" type="text" placeholder="e.g. Unit Test Generator"
+                required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select id="select-prompt-category" class="form-select">
+                <option value="coding">Coding & Dev</option>
+                <option value="research">Research</option>
+                <option value="data">Data Analysis</option>
+                <option value="writing">Writing & Copy</option>
+                <option value="image">Image Prompt</option>
+                <option value="general">General</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label class="form-label" style="margin: 0;">Prompt Content *</label>
+              <button id="btn-enhance-prompt-gemini" type="button" class="btn-secondary" style="font-size: 11px; padding: 3px 8px; color: var(--accent-primary); border-color: rgba(99, 102, 241, 0.3);">
+                ✨ Enhance with Gemini
+              </button>
+            </div>
+            <textarea id="input-prompt-content" class="form-textarea" style="min-height: 110px;"
+              placeholder="Enter reusable prompt text with [PLACEHOLDERS]..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tags (comma separated)</label>
+            <input id="input-prompt-tags" class="form-input" type="text" placeholder="testing, python, mock">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn-primary">Save Prompt</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Smart Router Recommendations -->
+  <div id="router-result-modal" class="modal-backdrop">
+    <div class="modal-dialog" style="max-width: 600px;">
+      <div class="modal-header">
+        <div>
+          <h3>AI Architecture Recommendation</h3>
+          <span id="router-result-domain" class="badge badge-accent" style="margin-top: 4px;">Domain</span>
+        </div>
+        <button class="modal-close-btn" data-close-modal>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+          Based on your task, here is the suggested multi-AI workflow:
+        </p>
+        <div id="router-recommendations-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" data-close-modal>Close</button>
+        <button id="router-launch-all-btn" class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          Open All in Tabs
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ====================================================================
+       5. JAVASCRIPT MODULE SCRIPTS
+       ==================================================================== -->
+  <script src="data/categories.js"></script>
+  <script src="data/default-tools.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/gemini.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/tools.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/workflows.js"></script>
+  <script src="js/prompts.js"></script>
+  <script src="js/workspaces.js"></script>
+  <script src="js/assistant.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
