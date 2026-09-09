@@ -12,8 +12,13 @@ const StorageManager = {
    */
   async get(keys) {
     if (this.isExtension) {
-      return new Promise((resolve) => {
-        chrome.storage.local.get(keys, (result) => resolve(result));
+      return new Promise((resolve, reject) => {
+        chrome.storage.local.get(keys, (result) => {
+          if (chrome.runtime.lastError) {
+            return reject(chrome.runtime.lastError);
+          }
+          resolve(result || {});
+        });
       });
     } else {
       const result = {};
@@ -39,8 +44,13 @@ const StorageManager = {
    */
   async set(items) {
     if (this.isExtension) {
-      return new Promise((resolve) => {
-        chrome.storage.local.set(items, () => resolve());
+      return new Promise((resolve, reject) => {
+        chrome.storage.local.set(items, () => {
+          if (chrome.runtime.lastError) {
+            return reject(chrome.runtime.lastError);
+          }
+          resolve();
+        });
       });
     } else {
       Object.keys(items).forEach((k) => {
@@ -56,8 +66,13 @@ const StorageManager = {
    */
   async remove(keys) {
     if (this.isExtension) {
-      return new Promise((resolve) => {
-        chrome.storage.local.remove(keys, () => resolve());
+      return new Promise((resolve, reject) => {
+        chrome.storage.local.remove(keys, () => {
+          if (chrome.runtime.lastError) {
+            return reject(chrome.runtime.lastError);
+          }
+          resolve();
+        });
       });
     } else {
       const keyList = Array.isArray(keys) ? keys : [keys];
@@ -69,7 +84,7 @@ const StorageManager = {
    * Initialize initial state if empty
    */
   async initDefaults() {
-    const data = await this.get(['tools', 'stacks', 'prompts', 'workspaces', 'settings', 'recentTools']);
+    const data = await this.get(['tools', 'stacks', 'prompts', 'workspaces', 'settings', 'recentTools', 'localhostTabs']);
     
     // Seed default tools if none exist
     if (!data.tools || !Array.isArray(data.tools) || data.tools.length === 0) {
@@ -158,7 +173,8 @@ const StorageManager = {
           description: 'Daily workspace for AI development, coding models, and reading papers.',
           toolIds: ['cursor', 'chatgpt', 'claude', 'perplexity', 'huggingface'],
           notes: '📌 Current focus: Fine-tuning local models & building AI Command Center features.',
-          promptIds: ['p1', 'p2']
+          promptIds: ['p1', 'p2'],
+          isDefault: true
         }
       ];
       await this.set({ workspaces: defaultWorkspaces });

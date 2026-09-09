@@ -53,7 +53,7 @@ const WorkspaceManager = {
               <h3 style="font-size: 18px; margin-bottom: 4px;">${safeWsName}</h3>
               <p style="font-size: 13px; color: var(--text-muted);">${safeWsDesc}</p>
             </div>
-            ${ws.id !== 'ws-main' ? `
+            ${!ws.isDefault && ws.id !== 'ws-main' ? `
               <button class="tool-action-btn" data-action="delete-workspace" data-id="${safeWsId}" title="Delete Workspace">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="3 6 5 6 21 6"></polyline>

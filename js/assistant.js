@@ -173,6 +173,9 @@ const AssistantManager = {
         // Add User message bubble
         this.appendMessage('user', this.escapeHtml(text));
         this.chatHistory.push({ role: 'user', content: text });
+        if (this.chatHistory.length > 50) {
+          this.chatHistory = this.chatHistory.slice(-50);
+        }
         input.value = '';
 
         // Generate response via Live Gemini or graceful fallback
@@ -232,6 +235,9 @@ const AssistantManager = {
       try {
         const aiResponse = await GeminiClient.generateChat(this.chatHistory);
         this.chatHistory.push({ role: 'model', content: aiResponse });
+        if (this.chatHistory.length > 50) {
+          this.chatHistory = this.chatHistory.slice(-50);
+        }
 
         // Format Markdown with code blocks and replace thinking indicator
         if (thinkingBubble) {
@@ -294,7 +300,7 @@ const AssistantManager = {
   },
 
   /**
-   * Initialize Multi-AI Challenge Panel
+   * Initialize Multi-AI Prompt Launcher Panel
    */
   initMultiAI() {
     const textarea = document.getElementById('multi-ai-prompt-input');
@@ -337,7 +343,7 @@ const AssistantManager = {
           ToolsManager.launchTool(toolId);
         });
 
-        if (typeof UI !== 'undefined') UI.showToast(`Prompt copied & launched ${this.selectedAIs.length} AI services in tabs!`, 'success');
+        if (typeof UI !== 'undefined') UI.showToast(`Prompt copied to clipboard & launched ${this.selectedAIs.length} AI services in tabs!`, 'success');
       });
     }
 

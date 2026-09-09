@@ -99,11 +99,24 @@ const WorkflowManager = {
     const stack = this.stacksList.find(s => s.id === stackId);
     if (!stack || !stack.toolIds) return;
 
+    let launchedCount = 0;
+    const missingTools = [];
+
     stack.toolIds.forEach(toolId => {
-      ToolsManager.launchTool(toolId);
+      const tool = ToolsManager.toolsList.find(t => t.id === toolId);
+      if (tool) {
+        ToolsManager.launchTool(toolId);
+        launchedCount++;
+      } else {
+        missingTools.push(toolId);
+      }
     });
 
-    UI.showToast(`Launched ${stack.name} (${stack.toolIds.length} tabs)!`, 'success');
+    if (missingTools.length > 0) {
+      UI.showToast(`Launched ${launchedCount} tools. (${missingTools.length} tool(s) in stack not found)`, 'warning');
+    } else if (launchedCount > 0) {
+      UI.showToast(`Launched ${stack.name} (${launchedCount} tabs)!`, 'success');
+    }
   },
 
   /**

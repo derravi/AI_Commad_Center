@@ -23,25 +23,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 5. Initialize Tools & Catalogs
     await ToolsManager.init();
 
-    // 4. Initialize Universal Search
-    SearchManager.init();
+    // 6. Initialize Universal Search
+    await SearchManager.init();
 
-    // 5. Initialize Smart AI Router
+    // 7. Initialize Smart AI Router
     SmartRouter.init();
 
-    // 6. Initialize Stacks & Workflows
+    // 8. Initialize Stacks & Workflows
     await WorkflowManager.init();
 
-    // 7. Initialize Prompt Library
+    // 9. Initialize Prompt Library
     await PromptLibrary.init();
 
-    // 8. Initialize Workspaces
+    // 10. Initialize Workspaces
     await WorkspaceManager.init();
 
-    // 9. Initialize Multi-AI & Assistant Drawer
+    // 11. Initialize Multi-AI & Assistant Drawer
     AssistantManager.init();
 
-    // 10. Bind Global Keyboard Shortcuts
+    // 12. Bind Global Keyboard Shortcuts
     initKeyboardShortcuts();
 
     console.log('🚀 AI Command Center successfully initialized.');
@@ -59,9 +59,10 @@ document.addEventListener('DOMContentLoaded', async () => {
  */
 function initKeyboardShortcuts() {
   window.addEventListener('keydown', (e) => {
-    // Check if user is typing in an input field
+    // Check if user is typing in an input field or editable element
+    const isContentEditable = Boolean(document.activeElement && (document.activeElement.isContentEditable || document.activeElement.getAttribute('contenteditable') === 'true'));
     const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
-    if (activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select') {
+    if (activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select' || isContentEditable) {
       return;
     }
 

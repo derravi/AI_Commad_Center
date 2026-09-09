@@ -92,17 +92,20 @@ const PromptLibrary = {
     }
 
     container.innerHTML = filtered.map(prompt => {
-      const tagsHtml = (prompt.tags || []).map(t => `<span class="tool-tag">${t.replace(/^#/, '')}</span>`).join('');
+      const safeTitle = this.escapeHtml(prompt.title);
+      const safeCategory = this.escapeHtml(prompt.category || 'general');
+      const safeId = this.escapeHtml(prompt.id);
+      const tagsHtml = (prompt.tags || []).map(t => `<span class="tool-tag">${this.escapeHtml(t.replace(/^#/, ''))}</span>`).join('');
       return `
-        <div class="prompt-card" data-id="${prompt.id}">
+        <div class="prompt-card" data-id="${safeId}">
           <div class="prompt-card-header">
-            <span class="prompt-title">${prompt.title}</span>
+            <span class="prompt-title">${safeTitle}</span>
             <div style="display: flex; gap: 6px; align-items: center;">
-              <span class="badge badge-accent">${prompt.category || 'general'}</span>
-              <button class="tool-action-btn" data-action="enhance-prompt" data-id="${prompt.id}" title="Enhance prompt with Gemini AI">
+              <span class="badge badge-accent">${safeCategory}</span>
+              <button class="tool-action-btn" data-action="enhance-prompt" data-id="${safeId}" title="Enhance prompt with Gemini AI">
                 ✨
               </button>
-              <button class="tool-action-btn" data-action="delete-prompt" data-id="${prompt.id}" title="Delete Prompt">
+              <button class="tool-action-btn" data-action="delete-prompt" data-id="${safeId}" title="Delete Prompt">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="3 6 5 6 21 6"></polyline>
                   <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -118,7 +121,7 @@ const PromptLibrary = {
           </div>
 
           <div class="prompt-actions-bar">
-            <button class="btn-primary" style="padding: 6px 14px; font-size: 12px;" data-action="copy-prompt" data-id="${prompt.id}">
+            <button class="btn-primary" style="padding: 6px 14px; font-size: 12px;" data-action="copy-prompt" data-id="${safeId}">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -127,9 +130,9 @@ const PromptLibrary = {
             </button>
             
             <div class="prompt-launch-dropdown">
-              <span class="prompt-ai-chip" data-action="launch-ai" data-id="${prompt.id}" data-ai="chatgpt" title="Open ChatGPT">GPT</span>
-              <span class="prompt-ai-chip" data-action="launch-ai" data-id="${prompt.id}" data-ai="claude" title="Open Claude">Claude</span>
-              <span class="prompt-ai-chip" data-action="launch-ai" data-id="${prompt.id}" data-ai="gemini" title="Open Gemini">Gemini</span>
+              <span class="prompt-ai-chip" data-action="launch-ai" data-id="${safeId}" data-ai="chatgpt" title="Open ChatGPT">GPT</span>
+              <span class="prompt-ai-chip" data-action="launch-ai" data-id="${safeId}" data-ai="claude" title="Open Claude">Claude</span>
+              <span class="prompt-ai-chip" data-action="launch-ai" data-id="${safeId}" data-ai="gemini" title="Open Gemini">Gemini</span>
             </div>
           </div>
         </div>
@@ -274,7 +277,8 @@ const PromptLibrary = {
   },
 
   escapeHtml(str) {
-    return str
+    if (!str) return '';
+    return String(str)
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')

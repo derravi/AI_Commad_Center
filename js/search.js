@@ -117,7 +117,8 @@ const SearchManager = {
 
     // Global keyboard shortcut '/' to jump to search bar
     window.addEventListener('keydown', (e) => {
-      if (e.key === '/' && document.activeElement !== searchInput && !document.activeElement.matches('input, textarea')) {
+      const isEditable = document.activeElement && (document.activeElement.matches('input, textarea, select') || document.activeElement.isContentEditable || document.activeElement.getAttribute('contenteditable') === 'true');
+      if (e.key === '/' && document.activeElement !== searchInput && !isEditable) {
         e.preventDefault();
         if (searchInput) {
           searchInput.focus();

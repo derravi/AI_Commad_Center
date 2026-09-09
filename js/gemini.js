@@ -356,6 +356,7 @@ const GeminiClient = {
       if (model !== 'gemini-2.0-flash' && (errMsg.includes('not found') || errMsg.includes('not supported') || response.status === 404)) {
         model = 'gemini-2.0-flash';
         this.model = 'gemini-2.0-flash';
+        await this.saveConfig({ apiKey: this.apiKey, model: this.model, persona: this.persona });
         response = await executeRequest(model);
       }
 
@@ -422,6 +423,7 @@ const GeminiClient = {
       if (model !== 'gemini-2.0-flash' && (errMsg.includes('not found') || errMsg.includes('not supported') || response.status === 404)) {
         model = 'gemini-2.0-flash';
         this.model = 'gemini-2.0-flash';
+        await this.saveConfig({ apiKey: this.apiKey, model: this.model, persona: this.persona });
         response = await executeRequest(model);
       }
 
