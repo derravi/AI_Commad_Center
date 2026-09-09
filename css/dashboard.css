@@ -669,9 +669,17 @@
   align-items: center;
   gap: 8px;
   overflow-x: auto;
-  padding: 4px 2px 16px;
+  overflow-y: hidden;
+  padding: 4px 2px 14px;
   margin-bottom: 20px;
-  scrollbar-width: thin;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.category-filter-bar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .category-pill {
@@ -711,13 +719,22 @@
   margin-bottom: 36px;
 }
 
-/* Horizontal Scrolling Bar for Favorites & Recents */
+/* Horizontal Scrolling Bar for Favorites */
 .quick-access-scroll {
   display: flex;
   gap: 14px;
   overflow-x: auto;
+  overflow-y: hidden;
   padding-bottom: 12px;
   margin-bottom: 28px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.quick-access-scroll::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 /* --------------------------------------------------------------------------

@@ -17,6 +17,7 @@ const ToolsManager = {
     this.renderCategoryPills();
     this.renderTools();
     this.renderQuickAccess();
+    this.setupHorizontalScroll();
   },
 
   /**
@@ -206,11 +207,10 @@ const ToolsManager = {
   },
 
   /**
-   * Render Quick Access Bar (Favorites + Recently Used)
+   * Render Quick Access Bar (Favorites)
    */
   renderQuickAccess() {
     const favoritesContainer = document.getElementById('favorites-scroll-bar');
-    const recentsContainer = document.getElementById('recents-scroll-bar');
     
     // Render Favorites
     if (favoritesContainer) {
@@ -228,26 +228,6 @@ const ToolsManager = {
         `).join('');
 
         favoritesContainer.querySelectorAll('.mini-tool-card').forEach(card => {
-          card.addEventListener('click', () => this.launchTool(card.getAttribute('data-id')));
-        });
-      }
-    }
-
-    // Render Recents
-    if (recentsContainer) {
-      if (this.recentTools.length === 0) {
-        recentsContainer.innerHTML = '<span style="font-size: 12px; color: var(--text-dim); padding: 6px 12px;">Recently opened AI tools will appear here</span>';
-      } else {
-        recentsContainer.innerHTML = this.recentTools.slice(0, 8).map(t => `
-          <div class="mini-tool-card" data-id="${t.id}">
-            <div class="mini-tool-avatar" style="background: ${t.iconBg || '#6366f1'};">
-              ${t.iconText || t.name.slice(0, 2).toUpperCase()}
-            </div>
-            <span class="mini-tool-name">${t.name}</span>
-          </div>
-        `).join('');
-
-        recentsContainer.querySelectorAll('.mini-tool-card').forEach(card => {
           card.addEventListener('click', () => this.launchTool(card.getAttribute('data-id')));
         });
       }
@@ -309,5 +289,32 @@ const ToolsManager = {
       this.renderQuickAccess();
       UI.showToast(`Deleted "${tool.name}"`, 'info');
     }
+  },
+
+  /**
+   * Enable horizontal scrolling via mouse wheel and touchpad
+   */
+  setupHorizontalScroll() {
+    const containerIds = ['favorites-scroll-bar', 'category-filter-bar'];
+
+    containerIds.forEach(id => {
+      const container = document.getElementById(id);
+      if (!container || container.dataset.hscrollAttached) return;
+      container.dataset.hscrollAttached = 'true';
+
+      container.addEventListener('wheel', (e) => {
+        if (e.deltaY !== 0 && container.scrollWidth > container.clientWidth) {
+          if (Math.abs(e.deltaY) >= Math.abs(e.deltaX)) {
+            const canScrollLeft = container.scrollLeft > 0 && e.deltaY < 0;
+            const canScrollRight = (container.scrollLeft + container.clientWidth < container.scrollWidth - 1) && e.deltaY > 0;
+            
+            if (canScrollLeft || canScrollRight) {
+              e.preventDefault();
+              container.scrollLeft += e.deltaY;
+            }
+          }
+        }
+      }, { passive: false });
+    });
   }
 };
