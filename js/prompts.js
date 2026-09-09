@@ -302,21 +302,6 @@ const PromptLibrary = {
     UI.showToast(`Updated prompt "${this.promptsList[index].title}"!`, 'success');
     return true;
   },
-        e.stopPropagation();
-        const id = btn.getAttribute('data-id');
-        if (id) this.copyPrompt(id);
-      });
-    });
-
-    container.querySelectorAll('[data-action="launch-ai"]').forEach(chip => {
-      chip.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const id = chip.getAttribute('data-id');
-        const ai = chip.getAttribute('data-ai');
-        if (id && ai) this.launchWithAI(id, ai);
-      });
-    });
-  },
 
   /**
    * Enhance an existing prompt card using Gemini
