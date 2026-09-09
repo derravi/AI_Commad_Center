@@ -166,6 +166,30 @@ const SmartRouter = {
   },
 
   /**
+   * Helper to safely get current tools list
+   */
+  getTools() {
+    if (typeof ToolsManager !== 'undefined' && Array.isArray(ToolsManager.toolsList)) {
+      return ToolsManager.toolsList;
+    }
+    if (typeof DEFAULT_TOOLS !== 'undefined' && Array.isArray(DEFAULT_TOOLS)) {
+      return DEFAULT_TOOLS;
+    }
+    return [];
+  },
+
+  /**
+   * Helper to safely launch a tool by ID
+   */
+  launchTool(toolId, fallbackUrl) {
+    if (typeof ToolsManager !== 'undefined' && typeof ToolsManager.launchTool === 'function') {
+      ToolsManager.launchTool(toolId);
+    } else if (fallbackUrl) {
+      window.open(fallbackUrl, '_blank', 'noopener,noreferrer');
+    }
+  },
+
+  /**
    * Render dynamic Gemini Architecture in modal
    * @param {string} userGoal
    * @param {object} arch
@@ -174,6 +198,7 @@ const SmartRouter = {
     const domainEl = document.getElementById('router-result-domain');
     const listEl = document.getElementById('router-recommendations-list');
     const launchAllBtn = document.getElementById('router-launch-all-btn');
+    const availableTools = this.getTools();
 
     if (domainEl) {
       domainEl.innerHTML = `✨ ${arch.domain || 'Dynamic AI Architecture'} <span style="font-size: 10px; opacity: 0.8;">(Gemini Real-Time)</span>`;
@@ -183,10 +208,10 @@ const SmartRouter = {
     if (listEl) {
       const steps = arch.steps || [];
       listEl.innerHTML = `
-        ${arch.summary ? `<div style="padding: 10px 14px; background: rgba(99, 102, 241, 0.1); border: 1px solid var(--border-glow); border-radius: var(--radius-md); font-size: 13px; color: var(--text-main); margin-bottom: 10px;">💡 <strong>Strategy:</strong> ${arch.summary}</div>` : ''}
+        ${arch.summary ? `<div style="padding: 10px 14px; background: var(--accent-glow, rgba(99, 102, 241, 0.1)); border: 1px solid var(--border-glow); border-radius: var(--radius-md); font-size: 13px; color: var(--text-main); margin-bottom: 10px;">💡 <strong>Strategy:</strong> ${arch.summary}</div>` : ''}
         ${steps.map((s, idx) => {
           // Attempt to match tool to known tool card
-          const matchedTool = ToolsManager.toolsList.find(t => 
+          const matchedTool = availableTools.find(t => 
             t.name.toLowerCase().includes((s.toolName || '').toLowerCase()) ||
             (s.toolName || '').toLowerCase().includes(t.name.toLowerCase())
           );
@@ -194,7 +219,7 @@ const SmartRouter = {
           const toolId = matchedTool ? matchedTool.id : 'perplexity';
           const toolName = s.toolName || (matchedTool ? matchedTool.name : 'AI Tool');
           const iconText = matchedTool ? (matchedTool.iconText || matchedTool.name.slice(0, 2).toUpperCase()) : `0${idx + 1}`;
-          const iconBg = matchedTool ? matchedTool.iconBg : '#6366f1';
+          const iconBg = matchedTool ? matchedTool.iconBg : 'var(--accent-primary, #6366f1)';
           const targetUrl = matchedTool ? matchedTool.url : (s.url || 'https://www.google.com/search?q=' + encodeURIComponent(toolName));
 
           return `
@@ -231,12 +256,12 @@ const SmartRouter = {
       launchAllBtn.style.display = 'inline-flex';
       launchAllBtn.onclick = () => {
         (arch.steps || []).forEach(s => {
-          const matchedTool = ToolsManager.toolsList.find(t => 
+          const matchedTool = availableTools.find(t => 
             t.name.toLowerCase().includes((s.toolName || '').toLowerCase()) ||
             (s.toolName || '').toLowerCase().includes(t.name.toLowerCase())
           );
           if (matchedTool) {
-            ToolsManager.launchTool(matchedTool.id);
+            this.launchTool(matchedTool.id);
           } else if (s.url) {
             window.open(s.url, '_blank', 'noopener,noreferrer');
           }
@@ -285,6 +310,7 @@ const SmartRouter = {
     const domainEl = document.getElementById('router-result-domain');
     const listEl = document.getElementById('router-recommendations-list');
     const launchAllBtn = document.getElementById('router-launch-all-btn');
+    const availableTools = this.getTools();
 
     if (domainEl) {
       domainEl.textContent = `${rule.domain} (Rule Mode)`;
@@ -293,10 +319,10 @@ const SmartRouter = {
 
     if (listEl) {
       listEl.innerHTML = rule.recommendations.map(rec => {
-        const tool = ToolsManager.toolsList.find(t => t.id === rec.toolId) || { name: rec.toolId, iconBg: '#6366f1', iconText: 'AI' };
+        const tool = availableTools.find(t => t.id === rec.toolId) || { name: rec.toolId, iconBg: 'var(--accent-primary, #6366f1)', iconText: 'AI', id: rec.toolId };
         return `
           <div style="display: flex; gap: 14px; padding: 14px; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); align-items: center;">
-            <div class="mini-tool-avatar" style="background: ${tool.iconBg || '#6366f1'}; width: 38px; height: 38px; font-size: 13px;">
+            <div class="mini-tool-avatar" style="background: ${tool.iconBg || 'var(--accent-primary, #6366f1)'}; width: 38px; height: 38px; font-size: 13px;">
               ${tool.iconText || tool.name.slice(0, 2).toUpperCase()}
             </div>
             <div style="flex: 1;">
@@ -317,7 +343,7 @@ const SmartRouter = {
         btn.addEventListener('click', () => {
           const toolId = btn.getAttribute('data-tool-id');
           if (toolId) {
-            ToolsManager.launchTool(toolId);
+            this.launchTool(toolId);
           }
         });
       });
@@ -326,7 +352,7 @@ const SmartRouter = {
     if (launchAllBtn) {
       launchAllBtn.style.display = 'inline-flex';
       launchAllBtn.onclick = () => {
-        rule.recommendations.forEach(r => ToolsManager.launchTool(r.toolId));
+        rule.recommendations.forEach(r => this.launchTool(r.toolId));
         UI.closeAllModals();
         UI.showToast(`Launched ${rule.recommendations.length} recommended AI tools!`, 'success');
       };

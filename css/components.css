@@ -42,6 +42,15 @@
   background: var(--accent-gradient);
 }
 
+.tool-card.drag-over-target,
+.stack-card.drag-over-target,
+.prompt-card.drag-over-target,
+.workspace-card.drag-over-target {
+  border-color: var(--accent-primary) !important;
+  box-shadow: 0 0 16px var(--accent-glow) !important;
+  transform: scale(1.02) !important;
+}
+
 .tool-card-header {
   display: flex;
   align-items: center;

@@ -47,15 +47,31 @@ const StorageManager = {
       return new Promise((resolve, reject) => {
         chrome.storage.local.set(items, () => {
           if (chrome.runtime.lastError) {
-            return reject(chrome.runtime.lastError);
+            const err = chrome.runtime.lastError;
+            const errMsg = err.message || '';
+            if (errMsg.includes('QUOTA') || errMsg.includes('quota')) {
+              console.error('Storage Quota Exceeded:', err);
+              if (typeof UI !== 'undefined' && UI.showToast) {
+                UI.showToast('⚠️ Storage quota exceeded! Please delete some items to free up space.', 'error');
+              }
+            }
+            return reject(err);
           }
           resolve();
         });
       });
     } else {
-      Object.keys(items).forEach((k) => {
-        localStorage.setItem(`aicc_${k}`, JSON.stringify(items[k]));
-      });
+      try {
+        Object.keys(items).forEach((k) => {
+          localStorage.setItem(`aicc_${k}`, JSON.stringify(items[k]));
+        });
+      } catch (e) {
+        console.error('LocalStorage error:', e);
+        if (typeof UI !== 'undefined' && UI.showToast) {
+          UI.showToast('⚠️ Storage error: ' + (e.message || 'Quota exceeded'), 'error');
+        }
+        throw e;
+      }
     }
   },
 
@@ -314,5 +330,13 @@ const StorageManager = {
       }
       return false;
     }
+  },
+
+  /**
+   * Reset all storage data and re-seed defaults
+   */
+  async resetToDefaults() {
+    await this.remove(['tools', 'stacks', 'prompts', 'workspaces', 'settings', 'recentTools', 'localhostTabs', 'customSearchEngines', 'geminiConfig']);
+    await this.initDefaults();
   }
 };

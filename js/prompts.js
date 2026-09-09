@@ -97,13 +97,19 @@ const PromptLibrary = {
       const safeId = this.escapeHtml(prompt.id);
       const tagsHtml = (prompt.tags || []).map(t => `<span class="tool-tag">${this.escapeHtml(t.replace(/^#/, ''))}</span>`).join('');
       return `
-        <div class="prompt-card" data-id="${safeId}">
+        <div class="prompt-card" draggable="true" data-id="${safeId}">
           <div class="prompt-card-header">
             <span class="prompt-title">${safeTitle}</span>
             <div style="display: flex; gap: 6px; align-items: center;">
               <span class="badge badge-accent">${safeCategory}</span>
               <button class="tool-action-btn" data-action="enhance-prompt" data-id="${safeId}" title="Enhance prompt with Gemini AI">
                 ✨
+              </button>
+              <button class="tool-action-btn" data-action="edit-prompt" data-id="${safeId}" title="Edit Prompt">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
               </button>
               <button class="tool-action-btn" data-action="delete-prompt" data-id="${safeId}" title="Delete Prompt">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -148,6 +154,14 @@ const PromptLibrary = {
       });
     });
 
+    container.querySelectorAll('[data-action="edit-prompt"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        if (id) this.openEditModal(id);
+      });
+    });
+
     container.querySelectorAll('[data-action="delete-prompt"]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -158,6 +172,136 @@ const PromptLibrary = {
 
     container.querySelectorAll('[data-action="copy-prompt"]').forEach(btn => {
       btn.addEventListener('click', (e) => {
+        const id = btn.getAttribute('data-id');
+        if (id) this.copyPrompt(id);
+      });
+    });
+
+    container.querySelectorAll('[data-action="launch-ai"]').forEach(chip => {
+      chip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = chip.getAttribute('data-id');
+        const ai = chip.getAttribute('data-ai');
+        if (id && ai) this.launchWithAI(id, ai);
+      });
+    });
+
+    // Drag-to-Reorder mechanics
+    this.initDragAndDrop(container);
+  },
+
+  /**
+   * HTML5 Drag-and-Drop Reordering for Prompts
+   */
+  initDragAndDrop(container) {
+    let draggedId = null;
+
+    container.querySelectorAll('.prompt-card').forEach(card => {
+      card.addEventListener('dragstart', (e) => {
+        draggedId = card.getAttribute('data-id');
+        card.style.opacity = '0.4';
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', draggedId);
+      });
+
+      card.addEventListener('dragend', () => {
+        card.style.opacity = '1';
+        container.querySelectorAll('.prompt-card').forEach(c => c.classList.remove('drag-over-target'));
+      });
+
+      card.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        card.classList.add('drag-over-target');
+      });
+
+      card.addEventListener('dragleave', () => {
+        card.classList.remove('drag-over-target');
+      });
+
+      card.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        card.classList.remove('drag-over-target');
+        const targetId = card.getAttribute('data-id');
+
+        if (!draggedId || draggedId === targetId) return;
+
+        const fromIdx = this.promptsList.findIndex(p => p.id === draggedId);
+        const toIdx = this.promptsList.findIndex(p => p.id === targetId);
+
+        if (fromIdx !== -1 && toIdx !== -1) {
+          const [movedPrompt] = this.promptsList.splice(fromIdx, 1);
+          this.promptsList.splice(toIdx, 0, movedPrompt);
+
+          await StorageManager.set({ prompts: this.promptsList });
+          this.renderPrompts();
+        }
+      });
+    });
+  },
+
+  /**
+   * Open Edit Modal for a Prompt
+   * @param {string} promptId
+   */
+  openEditModal(promptId) {
+    const prompt = this.promptsList.find(p => p.id === promptId);
+    if (!prompt) return;
+
+    const modal = document.getElementById('modal-add-prompt');
+    const form = document.getElementById('form-add-prompt');
+    if (!modal || !form) return;
+
+    const titleEl = modal.querySelector('.modal-header h3');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    if (titleEl) titleEl.textContent = 'Edit Prompt Template';
+    if (submitBtn) submitBtn.textContent = 'Update Prompt';
+
+    form.dataset.editId = prompt.id;
+    const titleInp = document.getElementById('input-prompt-title');
+    const catInp = document.getElementById('select-prompt-category');
+    const contentInp = document.getElementById('input-prompt-content');
+    const tagsInp = document.getElementById('input-prompt-tags');
+
+    if (titleInp) titleInp.value = prompt.title || '';
+    if (catInp) catInp.value = prompt.category || 'general';
+    if (contentInp) contentInp.value = prompt.content || '';
+    if (tagsInp) tagsInp.value = (prompt.tags || []).join(', ');
+
+    UI.openModal('modal-add-prompt');
+  },
+
+  /**
+   * Update existing prompt
+   * @param {string} promptId
+   * @param {object} promptData
+   */
+  async updatePrompt(promptId, promptData) {
+    const index = this.promptsList.findIndex(p => p.id === promptId);
+    if (index === -1) {
+      UI.showToast('Prompt not found', 'error');
+      return false;
+    }
+
+    if (!promptData.title || !promptData.content) {
+      UI.showToast('Please provide both Title and Prompt Content', 'error');
+      return false;
+    }
+
+    this.promptsList[index] = {
+      ...this.promptsList[index],
+      title: promptData.title.trim().slice(0, 100),
+      category: promptData.category || 'general',
+      content: promptData.content.trim().slice(0, 10000),
+      tags: promptData.tags ? promptData.tags.split(',').map(t => t.trim().replace(/^#/, '').toLowerCase().slice(0, 30)).filter(Boolean).slice(0, 10) : []
+    };
+
+    await StorageManager.set({ prompts: this.promptsList });
+    this.renderPrompts();
+    UI.showToast(`Updated prompt "${this.promptsList[index].title}"!`, 'success');
+    return true;
+  },
         e.stopPropagation();
         const id = btn.getAttribute('data-id');
         if (id) this.copyPrompt(id);
@@ -250,10 +394,10 @@ const PromptLibrary = {
 
     const newPrompt = {
       id: 'custom-p-' + Date.now(),
-      title: promptData.title.trim(),
+      title: promptData.title.trim().slice(0, 100),
       category: promptData.category || 'general',
-      content: promptData.content.trim(),
-      tags: promptData.tags ? promptData.tags.split(',').map(t => t.trim().replace(/^#/, '').toLowerCase()).filter(Boolean) : []
+      content: promptData.content.trim().slice(0, 10000),
+      tags: promptData.tags ? promptData.tags.split(',').map(t => t.trim().replace(/^#/, '').toLowerCase().slice(0, 30)).filter(Boolean).slice(0, 10) : []
     };
 
     this.promptsList.push(newPrompt);
@@ -268,7 +412,17 @@ const PromptLibrary = {
    * @param {string} promptId
    */
   async deletePrompt(promptId) {
-    if (confirm('Delete this prompt template?')) {
+    const prompt = this.promptsList.find(p => p.id === promptId);
+    const promptTitle = prompt ? prompt.title : 'this prompt template';
+
+    const ok = await UI.confirm({
+      title: 'Delete Prompt',
+      message: `Are you sure you want to delete "${promptTitle}"?`,
+      confirmText: 'Delete Prompt',
+      danger: true
+    });
+
+    if (ok) {
       this.promptsList = this.promptsList.filter(p => p.id !== promptId);
       await StorageManager.set({ prompts: this.promptsList });
       this.renderPrompts();

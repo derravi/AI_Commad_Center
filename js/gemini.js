@@ -6,6 +6,8 @@ const GeminiClient = {
   apiKey: '',
   model: 'gemini-2.0-flash',
   persona: 'expert_architect',
+  temperature: 0.7,
+  maxOutputTokens: 2048,
 
   // Available Gemini Models
   models: {
@@ -78,6 +80,8 @@ const GeminiClient = {
       this.apiKey = data.geminiConfig.apiKey || '';
       this.model = data.geminiConfig.model || 'gemini-2.0-flash';
       this.persona = data.geminiConfig.persona || 'expert_architect';
+      this.temperature = data.geminiConfig.temperature !== undefined ? parseFloat(data.geminiConfig.temperature) : 0.7;
+      this.maxOutputTokens = data.geminiConfig.maxOutputTokens ? parseInt(data.geminiConfig.maxOutputTokens, 10) : 2048;
     }
 
     this.updateUIStatus();
@@ -93,18 +97,22 @@ const GeminiClient = {
 
   /**
    * Save Gemini Configuration
-   * @param {object} config { apiKey, model, persona }
+   * @param {object} config { apiKey, model, persona, temperature, maxOutputTokens }
    */
-  async saveConfig({ apiKey, model, persona }) {
+  async saveConfig({ apiKey, model, persona, temperature, maxOutputTokens }) {
     this.apiKey = (apiKey || '').trim();
     this.model = model || 'gemini-2.0-flash';
     this.persona = persona || 'expert_architect';
+    if (temperature !== undefined) this.temperature = parseFloat(temperature);
+    if (maxOutputTokens !== undefined) this.maxOutputTokens = parseInt(maxOutputTokens, 10);
 
     await StorageManager.set({
       geminiConfig: {
         apiKey: this.apiKey,
         model: this.model,
-        persona: this.persona
+        persona: this.persona,
+        temperature: this.temperature,
+        maxOutputTokens: this.maxOutputTokens
       }
     });
 
@@ -120,7 +128,9 @@ const GeminiClient = {
       geminiConfig: {
         apiKey: '',
         model: this.model,
-        persona: this.persona
+        persona: this.persona,
+        temperature: this.temperature,
+        maxOutputTokens: this.maxOutputTokens
       }
     });
     this.updateUIStatus();
@@ -204,6 +214,20 @@ const GeminiClient = {
 
     if (personaSelect && this.persona) {
       personaSelect.value = this.persona;
+    }
+
+    const tempInput = document.getElementById('input-gemini-temperature');
+    const tempLabel = document.getElementById('label-gemini-temp-val');
+    const maxTokensSelect = document.getElementById('select-gemini-max-tokens');
+
+    if (tempInput && this.temperature !== undefined) {
+      tempInput.value = this.temperature;
+    }
+    if (tempLabel && this.temperature !== undefined) {
+      tempLabel.textContent = parseFloat(this.temperature).toFixed(2);
+    }
+    if (maxTokensSelect && this.maxOutputTokens) {
+      maxTokensSelect.value = String(this.maxOutputTokens);
     }
 
     // Update Assistant Side Drawer status
@@ -307,14 +331,17 @@ const GeminiClient = {
    * @returns {Promise<string>}
    */
   async generateText(prompt, options = {}) {
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      throw new Error('You appear to be offline. Please check your internet connection.');
+    }
+
     if (!this.isConnected()) {
       throw new Error('Gemini API is not connected. Please enter your API Key in the Gemini AI Engine tab.');
     }
-
     let model = options.model || this.model || 'gemini-2.0-flash';
     const systemPrompt = options.systemInstruction || this.personas[this.persona] || this.personas.expert_architect;
-    const temperature = options.temperature !== undefined ? options.temperature : 0.7;
-    const maxTokens = options.maxTokens || 2048;
+    const temperature = options.temperature !== undefined ? options.temperature : (this.temperature !== undefined ? this.temperature : 0.7);
+    const maxTokens = options.maxTokens || this.maxOutputTokens || 2048;
 
     const executeRequest = async (modelName) => {
       const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${this.apiKey}`;
@@ -337,13 +364,26 @@ const GeminiClient = {
         };
       }
 
-      return await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestBody)
-      });
+      // Retry up to 2 times for transient 5xx errors or connection blips
+      let res;
+      for (let attempt = 0; attempt <= 2; attempt++) {
+        try {
+          res = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+          });
+          if (res.ok || res.status < 500 || attempt === 2) {
+            return res;
+          }
+        } catch (fetchErr) {
+          if (attempt === 2) throw fetchErr;
+        }
+        await new Promise(resolve => setTimeout(resolve, 350 * (attempt + 1)));
+      }
+      return res;
     };
 
     let response = await executeRequest(model);
@@ -356,36 +396,39 @@ const GeminiClient = {
       if (model !== 'gemini-2.0-flash' && (errMsg.includes('not found') || errMsg.includes('not supported') || response.status === 404)) {
         model = 'gemini-2.0-flash';
         this.model = 'gemini-2.0-flash';
-        await this.saveConfig({ apiKey: this.apiKey, model: this.model, persona: this.persona });
+        await this.saveConfig({ apiKey: this.apiKey, model: 'gemini-2.0-flash', persona: this.persona, temperature: this.temperature, maxOutputTokens: this.maxOutputTokens });
         response = await executeRequest(model);
-      }
-
-      if (!response.ok) {
+        if (!response.ok) {
+          throw new Error(errMsg);
+        }
+      } else {
         throw new Error(errMsg);
       }
     }
 
     const data = await response.json();
-    const candidate = data?.candidates?.[0];
-
-    if (!candidate || !candidate.content || !candidate.content.parts || candidate.content.parts.length === 0) {
-      throw new Error('Gemini returned an empty response. Please try again.');
-    }
-
-    return candidate.content.parts[0].text;
+    return data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
   },
 
   /**
-   * Multi-turn chat generation for Assistant Side Drawer
+   * Generate conversational response with chat history
    * @param {Array<{role: string, content: string}>} history
+   * @param {object} options
    * @returns {Promise<string>}
    */
-  async generateChat(history) {
-    if (!this.isConnected()) {
-      throw new Error('API Key missing');
+  async generateChat(history = [], options = {}) {
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      throw new Error('You appear to be offline. Please check your internet connection.');
     }
 
-    let model = this.model || 'gemini-2.0-flash';
+    if (!this.isConnected()) {
+      throw new Error('Gemini API is not connected. Please enter your API Key in the Gemini AI Engine tab.');
+    }
+
+    let model = options.model || this.model || 'gemini-2.0-flash';
+    const temperature = options.temperature !== undefined ? options.temperature : (this.temperature !== undefined ? this.temperature : 0.7);
+    const maxTokens = options.maxTokens || this.maxOutputTokens || 2048;
+
     const contents = history.map(msg => ({
       role: msg.role === 'user' ? 'user' : 'model',
       parts: [{ text: msg.content }]
@@ -395,22 +438,37 @@ const GeminiClient = {
 
     const executeRequest = async (modelName) => {
       const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${this.apiKey}`;
-      return await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
+      const requestBody = {
+        contents,
+        systemInstruction: {
+          parts: [{ text: systemPrompt }]
         },
-        body: JSON.stringify({
-          contents,
-          systemInstruction: {
-            parts: [{ text: systemPrompt }]
-          },
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 2048
+        generationConfig: {
+          temperature,
+          maxOutputTokens: maxTokens
+        }
+      };
+
+      // Retry up to 2 times for transient 5xx errors or connection blips
+      let res;
+      for (let attempt = 0; attempt <= 2; attempt++) {
+        try {
+          res = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+          });
+          if (res.ok || res.status < 500 || attempt === 2) {
+            return res;
           }
-        })
-      });
+        } catch (fetchErr) {
+          if (attempt === 2) throw fetchErr;
+        }
+        await new Promise(resolve => setTimeout(resolve, 350 * (attempt + 1)));
+      }
+      return res;
     };
 
     let response = await executeRequest(model);

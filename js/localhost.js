@@ -52,12 +52,20 @@ const LocalhostManager = {
    * Normalize input into:
    * - displayUrl: "local:8000" (for UI display)
    * - backendUrl: "localhost:8000" (for storage and identification)
-   * - fullUrl: "http://localhost:8000" (for launching in browser)
+   * - fullUrl: "http://localhost:8000" or "https://..." (for launching in browser)
    */
-  parseInput(input) {
+  parseInput(input, protocolPreference = 'http://') {
     if (!input) return null;
     let raw = String(input).trim();
     if (!raw) return null;
+
+    // Determine protocol
+    let protocol = protocolPreference || 'http://';
+    if (/^https:\/\//i.test(raw)) {
+      protocol = 'https://';
+    } else if (/^http:\/\//i.test(raw)) {
+      protocol = 'http://';
+    }
 
     // Handle inputs like "local:8000" or "local:800"
     raw = raw.replace(/^local:/i, 'localhost:');
@@ -68,13 +76,14 @@ const LocalhostManager = {
       raw = hostPortMatch[1];
     }
 
-    // If only digits entered, e.g., '8000' -> display: 'local:8000', full: 'http://localhost:8000'
+    // If only digits entered, e.g., '8000' -> display: 'local:8000', full: 'http://localhost:8000' (or https://)
     if (/^\d{2,5}$/.test(raw)) {
       const port = raw;
       return {
-        displayUrl: `local:${port}`,
+        displayUrl: `${protocol === 'https://' ? '🔒 ' : ''}local:${port}`,
         backendUrl: `localhost:${port}`,
-        fullUrl: `http://localhost:${port}`,
+        fullUrl: `${protocol}localhost:${port}`,
+        protocol: protocol,
         port: port,
         host: 'localhost'
       };
@@ -82,7 +91,6 @@ const LocalhostManager = {
 
     // Strip leading protocols for clean processing
     let cleanUrl = raw.replace(/^https?:\/\//i, '');
-    let protocol = /^https:\/\//i.test(raw) ? 'https://' : 'http://';
 
     // Extract port if present
     const portMatch = cleanUrl.match(/:(\d+)/);
@@ -96,10 +104,15 @@ const LocalhostManager = {
       display = `local:${port}`;
     }
 
+    if (protocol === 'https://' && !display.startsWith('🔒 ')) {
+      display = `🔒 ${display}`;
+    }
+
     return {
       displayUrl: display,
       backendUrl: cleanUrl,
       fullUrl: `${protocol}${cleanUrl}`,
+      protocol: protocol,
       port: port,
       host: cleanUrl.split('/')[0].split(':')[0]
     };
@@ -122,12 +135,12 @@ const LocalhostManager = {
     }
 
     track.innerHTML = this.tabs.map((tab) => {
-      const parsed = this.parseInput(tab.url);
+      const parsed = this.parseInput(tab.url, tab.protocol);
       const display = parsed ? parsed.displayUrl : `local:${tab.port || '8000'}`;
-      const backend = parsed ? parsed.backendUrl : tab.url;
+      const fullUrl = parsed ? parsed.fullUrl : `http://${tab.url}`;
 
       return `
-        <div class="localhost-tab-pill" data-id="${tab.id}" title="Click to open http://${backend} in new tab">
+        <div class="localhost-tab-pill" data-id="${tab.id}" title="Click to open ${fullUrl} in new tab">
           <div class="lh-pill-left">
             <span class="lh-status-pulse"></span>
             <span class="lh-url-text">${this.escapeHtml(display)}</span>
@@ -167,7 +180,7 @@ const LocalhostManager = {
     const tab = this.tabs.find(t => t.id === id);
     if (!tab) return;
 
-    const parsed = this.parseInput(tab.url);
+    const parsed = this.parseInput(tab.url, tab.protocol);
     if (!parsed) return;
 
     // Visual ripple effect on the pill
@@ -191,17 +204,17 @@ const LocalhostManager = {
   /**
    * Add a new localhost tab entry with duplicate prevention
    */
-  async addLocalhost(rawInput) {
-    const parsed = this.parseInput(rawInput);
+  async addLocalhost(rawInput, protocolPref = 'http://') {
+    const parsed = this.parseInput(rawInput, protocolPref);
     if (!parsed) {
       if (typeof UI !== 'undefined') UI.showToast('Please enter a valid port or localhost URL', 'error');
       return false;
     }
 
-    // Check for duplicate backend URL or port
+    // Check for duplicate backend URL or port + protocol
     const existing = this.tabs.find(t => {
-      const p = this.parseInput(t.url);
-      return p && (p.backendUrl.toLowerCase() === parsed.backendUrl.toLowerCase() || p.port === parsed.port);
+      const p = this.parseInput(t.url, t.protocol);
+      return p && p.fullUrl.toLowerCase() === parsed.fullUrl.toLowerCase();
     });
 
     if (existing) {
@@ -215,6 +228,7 @@ const LocalhostManager = {
     const newTab = {
       id: `lh-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
       url: parsed.backendUrl,
+      protocol: parsed.protocol,
       port: parsed.port,
       created: Date.now()
     };
@@ -251,7 +265,7 @@ const LocalhostManager = {
     await StorageManager.set({ localhostTabs: this.tabs });
     this.render();
 
-    const parsed = this.parseInput(deletedItem.url);
+    const parsed = this.parseInput(deletedItem.url, deletedItem.protocol);
     if (typeof UI !== 'undefined') {
       UI.showToast(`Removed ${parsed ? parsed.displayUrl : deletedItem.url}`, 'info');
     }
@@ -326,9 +340,10 @@ const LocalhostManager = {
     if (form) {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const urlVal = document.getElementById('input-lh-url').value;
+        const urlVal = document.getElementById('input-lh-url')?.value || '';
+        const protocolVal = document.getElementById('select-lh-protocol')?.value || 'http://';
 
-        const success = await this.addLocalhost(urlVal);
+        const success = await this.addLocalhost(urlVal, protocolVal);
 
         if (success) {
           form.reset();

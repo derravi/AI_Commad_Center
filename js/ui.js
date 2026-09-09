@@ -182,6 +182,50 @@ const UI = {
     document.querySelectorAll('[data-open-modal]').forEach(btn => {
       btn.addEventListener('click', () => {
         const targetId = btn.getAttribute('data-open-modal');
+        const modal = document.getElementById(targetId);
+        const form = modal ? modal.querySelector('form') : null;
+        if (form) {
+          form.reset();
+          delete form.dataset.editId;
+
+          // Reset headers and submit buttons to default Add mode
+          const titleEl = modal.querySelector('.modal-header h3');
+          const submitBtn = form.querySelector('button[type="submit"]');
+
+          if (targetId === 'modal-add-tool') {
+            if (titleEl) titleEl.textContent = 'Add Custom AI Tool';
+            if (submitBtn) submitBtn.textContent = 'Save Tool';
+          } else if (targetId === 'modal-add-stack') {
+            if (titleEl) titleEl.textContent = 'Create One-Click AI Stack';
+            if (submitBtn) submitBtn.textContent = 'Create Stack';
+            // Re-render tool checkboxes
+            const cbContainer = document.getElementById('stack-tools-checkboxes');
+            if (cbContainer && typeof ToolsManager !== 'undefined') {
+              cbContainer.innerHTML = ToolsManager.toolsList.map(t => `
+                <label class="ai-checkbox-label" style="font-size: 12px; padding: 4px 8px;">
+                  <input type="checkbox" value="${t.id}">
+                  <span>${t.name}</span>
+                </label>
+              `).join('');
+            }
+          } else if (targetId === 'modal-add-workspace') {
+            if (titleEl) titleEl.textContent = 'Create Project Workspace';
+            if (submitBtn) submitBtn.textContent = 'Create Workspace';
+            // Re-render tool checkboxes
+            const cbContainer = document.getElementById('ws-tools-checkboxes');
+            if (cbContainer && typeof ToolsManager !== 'undefined') {
+              cbContainer.innerHTML = ToolsManager.toolsList.map(t => `
+                <label class="ai-checkbox-label" style="font-size: 12px; padding: 4px 8px;">
+                  <input type="checkbox" value="${t.id}">
+                  <span>${t.name}</span>
+                </label>
+              `).join('');
+            }
+          } else if (targetId === 'modal-add-prompt') {
+            if (titleEl) titleEl.textContent = 'Save Prompt Template';
+            if (submitBtn) submitBtn.textContent = 'Save Prompt';
+          }
+        }
         this.openModal(targetId);
       });
     });
@@ -218,12 +262,30 @@ const UI = {
    * Bind modal forms
    */
   initFormHandlers() {
-    // Add Tool Form
+    // Test URL button in Add/Edit Tool modal
+    const testToolUrlBtn = document.getElementById('btn-test-tool-url');
+    if (testToolUrlBtn) {
+      testToolUrlBtn.addEventListener('click', () => {
+        let url = (document.getElementById('input-tool-url')?.value || '').trim();
+        if (!url) {
+          this.showToast('Please enter a URL first to test', 'warning');
+          return;
+        }
+        if (!/^https?:\/\//i.test(url)) {
+          url = 'https://' + url;
+          const urlInput = document.getElementById('input-tool-url');
+          if (urlInput) urlInput.value = url;
+        }
+        window.open(url, '_blank', 'noopener,noreferrer');
+      });
+    }
+
+    // Add / Edit Tool Form
     const addToolForm = document.getElementById('form-add-tool');
     if (addToolForm) {
       addToolForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const success = await ToolsManager.addCustomTool({
+        const toolData = {
           name: document.getElementById('input-tool-name').value,
           url: document.getElementById('input-tool-url').value,
           category: document.getElementById('select-tool-category').value,
@@ -232,15 +294,22 @@ const UI = {
           iconBg: document.getElementById('input-tool-icon-bg').value,
           iconText: document.getElementById('input-tool-icon-text').value,
           favorite: document.getElementById('checkbox-tool-favorite').checked
-        });
+        };
+
+        const editId = addToolForm.dataset.editId;
+        const success = editId
+          ? await ToolsManager.updateCustomTool(editId, toolData)
+          : await ToolsManager.addCustomTool(toolData);
+
         if (success) {
           addToolForm.reset();
+          delete addToolForm.dataset.editId;
           this.closeAllModals();
         }
       });
     }
 
-    // Add Stack Form
+    // Add / Edit Stack Form
     const addStackForm = document.getElementById('form-add-stack');
     if (addStackForm) {
       addStackForm.addEventListener('submit', async (e) => {
@@ -248,38 +317,51 @@ const UI = {
         const selectedToolCheckboxes = document.querySelectorAll('#stack-tools-checkboxes input:checked');
         const toolIds = Array.from(selectedToolCheckboxes).map(cb => cb.value);
 
-        const success = await WorkflowManager.createStack({
+        const stackData = {
           name: document.getElementById('input-stack-name').value,
           description: document.getElementById('input-stack-description').value,
           toolIds: toolIds
-        });
+        };
+
+        const editId = addStackForm.dataset.editId;
+        const success = editId
+          ? await WorkflowManager.updateStack(editId, stackData)
+          : await WorkflowManager.createStack(stackData);
 
         if (success) {
           addStackForm.reset();
+          delete addStackForm.dataset.editId;
           this.closeAllModals();
         }
       });
     }
 
-    // Add Prompt Form
+    // Add / Edit Prompt Form
     const addPromptForm = document.getElementById('form-add-prompt');
     if (addPromptForm) {
       addPromptForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const success = await PromptLibrary.addPrompt({
+        const promptData = {
           title: document.getElementById('input-prompt-title').value,
           category: document.getElementById('select-prompt-category').value,
           content: document.getElementById('input-prompt-content').value,
           tags: document.getElementById('input-prompt-tags').value
-        });
+        };
+
+        const editId = addPromptForm.dataset.editId;
+        const success = editId
+          ? await PromptLibrary.updatePrompt(editId, promptData)
+          : await PromptLibrary.addPrompt(promptData);
+
         if (success) {
           addPromptForm.reset();
+          delete addPromptForm.dataset.editId;
           this.closeAllModals();
         }
       });
     }
 
-    // Add Workspace Form
+    // Add / Edit Workspace Form
     const addWorkspaceForm = document.getElementById('form-add-workspace');
     if (addWorkspaceForm) {
       addWorkspaceForm.addEventListener('submit', async (e) => {
@@ -287,15 +369,21 @@ const UI = {
         const selectedToolCheckboxes = document.querySelectorAll('#ws-tools-checkboxes input:checked');
         const toolIds = Array.from(selectedToolCheckboxes).map(cb => cb.value);
 
-        const success = await WorkspaceManager.createWorkspace({
+        const wsData = {
           name: document.getElementById('input-ws-name').value,
           description: document.getElementById('input-ws-description').value,
           notes: document.getElementById('input-ws-notes').value,
           toolIds: toolIds
-        });
+        };
+
+        const editId = addWorkspaceForm.dataset.editId;
+        const success = editId
+          ? await WorkspaceManager.updateWorkspace(editId, wsData)
+          : await WorkspaceManager.createWorkspace(wsData);
 
         if (success) {
           addWorkspaceForm.reset();
+          delete addWorkspaceForm.dataset.editId;
           this.closeAllModals();
         }
       });
@@ -499,6 +587,15 @@ const UI = {
       });
     }
 
+    // Temperature slider live text display
+    const tempInput = document.getElementById('input-gemini-temperature');
+    const tempLabel = document.getElementById('label-gemini-temp-val');
+    if (tempInput && tempLabel) {
+      tempInput.addEventListener('input', () => {
+        tempLabel.textContent = parseFloat(tempInput.value).toFixed(2);
+      });
+    }
+
     // Save & Test Gemini Configuration Form
     if (configForm) {
       configForm.addEventListener('submit', async (e) => {
@@ -506,6 +603,8 @@ const UI = {
         const apiKey = (keyInput ? keyInput.value : '').trim();
         const model = modelSelect ? modelSelect.value : 'gemini-2.0-flash';
         const persona = personaSelect ? personaSelect.value : 'expert_architect';
+        const temperature = parseFloat(document.getElementById('input-gemini-temperature')?.value || '0.7');
+        const maxOutputTokens = parseInt(document.getElementById('select-gemini-max-tokens')?.value || '2048', 10);
 
         if (!apiKey) {
           this.showToast('Please paste your Google Gemini API Key', 'warning');
@@ -535,7 +634,7 @@ const UI = {
             modelSelect.value = effectiveModel;
           }
 
-          await GeminiClient.saveConfig({ apiKey, model: effectiveModel, persona });
+          await GeminiClient.saveConfig({ apiKey, model: effectiveModel, persona, temperature, maxOutputTokens });
           if (testResultAlert) {
             testResultAlert.style.background = 'rgba(16, 185, 129, 0.15)';
             testResultAlert.style.border = '1px solid rgba(16, 185, 129, 0.35)';
@@ -658,5 +757,51 @@ const UI = {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
+  },
+
+  /**
+   * Glassmorphic Custom Confirmation Modal (Promise-based)
+   * Replaces native window.confirm() with non-blocking UI
+   * @param {object} options { title, message, confirmText, danger }
+   * @returns {Promise<boolean>}
+   */
+  confirm(options = {}) {
+    return new Promise((resolve) => {
+      const title = options.title || 'Confirm Action';
+      const message = options.message || 'Are you sure you want to proceed?';
+      const confirmText = options.confirmText || 'Confirm';
+      const isDanger = options.danger !== false;
+
+      const modalEl = document.createElement('div');
+      modalEl.className = 'modal-backdrop active';
+      modalEl.style.zIndex = '100000';
+      modalEl.innerHTML = `
+        <div class="modal-dialog" style="max-width: 420px; text-align: center; padding: 28px;">
+          <div style="width: 48px; height: 48px; border-radius: 50%; background: ${isDanger ? 'rgba(239, 68, 68, 0.15)' : 'rgba(99, 102, 241, 0.15)'}; border: 1px solid ${isDanger ? 'rgba(239, 68, 68, 0.3)' : 'rgba(99, 102, 241, 0.3)'}; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 22px;">
+            ${isDanger ? '🗑️' : '❓'}
+          </div>
+          <h3 style="font-size: 18px; margin-bottom: 8px; color: #ffffff;">${this.escapeHtml(title)}</h3>
+          <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5;">${this.escapeHtml(message)}</p>
+          <div style="display: flex; gap: 10px; justify-content: center;">
+            <button id="ui-confirm-cancel-btn" class="btn-secondary" style="flex: 1; justify-content: center;">Cancel</button>
+            <button id="ui-confirm-ok-btn" class="btn-primary" style="flex: 1; justify-content: center; ${isDanger ? 'background: #ef4444; border-color: transparent; color: #fff;' : ''}">${this.escapeHtml(confirmText)}</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modalEl);
+
+      const cleanup = (result) => {
+        modalEl.classList.remove('active');
+        setTimeout(() => modalEl.remove(), 150);
+        resolve(result);
+      };
+
+      modalEl.querySelector('#ui-confirm-cancel-btn')?.addEventListener('click', () => cleanup(false));
+      modalEl.querySelector('#ui-confirm-ok-btn')?.addEventListener('click', () => cleanup(true));
+      modalEl.addEventListener('click', (e) => {
+        if (e.target === modalEl) cleanup(false);
+      });
+    });
   }
 };

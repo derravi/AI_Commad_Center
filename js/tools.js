@@ -17,6 +17,7 @@ const ToolsManager = {
     this.renderCategoryPills();
     this.renderTools();
     this.renderQuickAccess();
+    this.renderRecentTools();
     this.setupHorizontalScroll();
   },
 
@@ -46,6 +47,7 @@ const ToolsManager = {
 
     await StorageManager.set({ recentTools: this.recentTools });
     this.renderQuickAccess();
+    this.renderRecentTools();
 
     // Open URL in new tab
     if (typeof chrome !== 'undefined' && chrome.tabs && chrome.tabs.create) {
@@ -53,6 +55,62 @@ const ToolsManager = {
     } else {
       window.open(tool.url, '_blank', 'noopener,noreferrer');
     }
+  },
+
+  /**
+   * Format relative timestamp for recently used tools
+   */
+  formatRelativeTime(timestamp) {
+    if (!timestamp) return '';
+    const diffMs = Date.now() - timestamp;
+    const diffSec = Math.floor(diffMs / 1000);
+    const diffMin = Math.floor(diffSec / 60);
+    const diffHour = Math.floor(diffMin / 60);
+    const diffDay = Math.floor(diffHour / 24);
+
+    if (diffSec < 60) return 'Just now';
+    if (diffMin < 60) return `${diffMin}m ago`;
+    if (diffHour < 24) return `${diffHour}h ago`;
+    if (diffDay === 1) return 'Yesterday';
+    if (diffDay < 7) return `${diffDay}d ago`;
+    return new Date(timestamp).toLocaleDateString();
+  },
+
+  /**
+   * Render Recent Tools Bar with timestamps
+   */
+  renderRecentTools() {
+    const recentsContainer = document.getElementById('recent-tools-scroll-bar');
+    const recentsSection = document.getElementById('recent-tools-section');
+    if (!recentsContainer) return;
+
+    if (!this.recentTools || this.recentTools.length === 0) {
+      if (recentsSection) recentsSection.style.display = 'none';
+      recentsContainer.style.display = 'none';
+      return;
+    }
+
+    if (recentsSection) recentsSection.style.display = 'flex';
+    recentsContainer.style.display = 'flex';
+
+    recentsContainer.innerHTML = this.recentTools.map(t => {
+      const timeStr = this.formatRelativeTime(t.timestamp);
+      return `
+        <div class="mini-tool-card" data-id="${this.escapeHtml(t.id)}" title="Last used ${timeStr}">
+          <div class="mini-tool-avatar" style="background: ${t.iconBg || 'var(--accent-primary, #6366f1)'};">
+            ${this.escapeHtml(t.iconText || t.name.slice(0, 2).toUpperCase())}
+          </div>
+          <div style="display: flex; flex-direction: column; min-width: 0; text-align: left;">
+            <span class="mini-tool-name">${this.escapeHtml(t.name)}</span>
+            <span style="font-size: 10px; color: var(--text-dim); line-height: 1.1;">${timeStr}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    recentsContainer.querySelectorAll('.mini-tool-card').forEach(card => {
+      card.addEventListener('click', () => this.launchTool(card.getAttribute('data-id')));
+    });
   },
 
   /**
@@ -74,17 +132,20 @@ const ToolsManager = {
   },
 
   /**
-   * Render category filter pills
+   * Render category filter pills with accurate dynamic counts
+   * @param {Array} [activeFilteredList]
    */
-  renderCategoryPills() {
+  renderCategoryPills(activeFilteredList = null) {
     const container = document.getElementById('category-filter-bar');
     if (!container) return;
+
+    const sourceList = Array.isArray(activeFilteredList) ? activeFilteredList : this.toolsList;
 
     container.innerHTML = DEFAULT_CATEGORIES.map(cat => {
       const isActive = this.currentCategory === cat.id;
       const count = cat.id === 'all' 
-        ? this.toolsList.length 
-        : this.toolsList.filter(t => t.category === cat.id).length;
+        ? sourceList.length 
+        : sourceList.filter(t => t.category === cat.id).length;
 
       return `
         <button class="category-pill ${isActive ? 'active' : ''}" data-category="${cat.id}">
@@ -98,7 +159,7 @@ const ToolsManager = {
     container.querySelectorAll('.category-pill').forEach(btn => {
       btn.addEventListener('click', () => {
         this.currentCategory = btn.getAttribute('data-category');
-        this.renderCategoryPills();
+        this.renderCategoryPills(activeFilteredList);
         this.renderTools();
       });
     });
@@ -136,7 +197,7 @@ const ToolsManager = {
     }
 
     container.innerHTML = displayTools.map(tool => {
-      const categoryObj = DEFAULT_CATEGORIES.find(c => c.id === tool.category) || { name: 'General', color: '#6366f1' };
+      const categoryObj = DEFAULT_CATEGORIES.find(c => c.id === tool.category) || { name: 'General', color: 'var(--accent-primary, #6366f1)' };
       const safeName = this.escapeHtml(tool.name);
       const safeDesc = this.escapeHtml(tool.description || ('Quickly launch ' + tool.name + ' in a new tab.'));
       const safeIconText = this.escapeHtml(tool.iconText || tool.name.slice(0, 2).toUpperCase());
@@ -144,9 +205,9 @@ const ToolsManager = {
       const starFilled = tool.favorite ? 'currentColor' : 'none';
 
       return `
-        <div class="tool-card" data-id="${this.escapeHtml(tool.id)}">
+        <div class="tool-card" draggable="true" data-id="${this.escapeHtml(tool.id)}">
           <div class="tool-card-header">
-            <div class="tool-icon-avatar" style="background: ${tool.iconBg || '#6366f1'};">
+            <div class="tool-icon-avatar" style="background: ${tool.iconBg || 'var(--accent-primary, #6366f1)'};">
               ${safeIconText}
             </div>
             <div class="tool-meta">
@@ -163,8 +224,14 @@ const ToolsManager = {
                 </svg>
               </button>
               ${!tool.isDefault ? `
+                <button class="tool-action-btn" title="Edit Tool" data-action="edit" data-id="${this.escapeHtml(tool.id)}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                </button>
                 <button class="tool-action-btn" title="Delete Tool" data-action="delete" data-id="${this.escapeHtml(tool.id)}">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="3 6 5 6 21 6"></polyline>
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                   </svg>
@@ -195,7 +262,6 @@ const ToolsManager = {
     container.querySelectorAll('.tool-card').forEach(card => {
       const toolId = card.getAttribute('data-id');
       card.addEventListener('click', (e) => {
-        // Prevent action button clicks from triggering launch
         if (e.target.closest('[data-action]')) return;
         this.launchTool(toolId);
       });
@@ -207,12 +273,158 @@ const ToolsManager = {
       });
     });
 
+    container.querySelectorAll('[data-action="edit"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.openEditModal(btn.getAttribute('data-id'));
+      });
+    });
+
     container.querySelectorAll('[data-action="delete"]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         this.deleteCustomTool(btn.getAttribute('data-id'));
       });
     });
+
+    // Drag-to-Reorder mechanics
+    this.initDragAndDrop(container);
+  },
+
+  /**
+   * HTML5 Drag-and-Drop Reordering for Tools
+   */
+  initDragAndDrop(container) {
+    let draggedId = null;
+
+    container.querySelectorAll('.tool-card').forEach(card => {
+      card.addEventListener('dragstart', (e) => {
+        draggedId = card.getAttribute('data-id');
+        card.style.opacity = '0.4';
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', draggedId);
+      });
+
+      card.addEventListener('dragend', () => {
+        card.style.opacity = '1';
+        container.querySelectorAll('.tool-card').forEach(c => c.classList.remove('drag-over-target'));
+      });
+
+      card.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        card.classList.add('drag-over-target');
+      });
+
+      card.addEventListener('dragleave', () => {
+        card.classList.remove('drag-over-target');
+      });
+
+      card.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        card.classList.remove('drag-over-target');
+        const targetId = card.getAttribute('data-id');
+
+        if (!draggedId || draggedId === targetId) return;
+
+        const fromIdx = this.toolsList.findIndex(t => t.id === draggedId);
+        const toIdx = this.toolsList.findIndex(t => t.id === targetId);
+
+        if (fromIdx !== -1 && toIdx !== -1) {
+          const [movedTool] = this.toolsList.splice(fromIdx, 1);
+          this.toolsList.splice(toIdx, 0, movedTool);
+
+          await StorageManager.set({ tools: this.toolsList });
+          this.renderTools();
+          this.renderCategoryPills();
+        }
+      });
+    });
+  },
+
+  /**
+   * Open Edit Modal for a Tool
+   */
+  openEditModal(toolId) {
+    const tool = this.toolsList.find(t => t.id === toolId);
+    if (!tool) return;
+
+    const modal = document.getElementById('modal-add-tool');
+    const form = document.getElementById('form-add-tool');
+    if (!modal || !form) return;
+
+    const headerTitle = modal.querySelector('.modal-header h3');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    if (headerTitle) headerTitle.textContent = 'Edit Custom AI Tool';
+    if (submitBtn) submitBtn.textContent = 'Update Tool';
+
+    form.dataset.editId = tool.id;
+    const nameInp = document.getElementById('input-tool-name');
+    const urlInp = document.getElementById('input-tool-url');
+    const catInp = document.getElementById('select-tool-category');
+    const descInp = document.getElementById('input-tool-description');
+    const tagsInp = document.getElementById('input-tool-tags');
+    const iconTextInp = document.getElementById('input-tool-icon-text');
+    const iconBgInp = document.getElementById('input-tool-icon-bg');
+    const favInp = document.getElementById('checkbox-tool-favorite');
+
+    if (nameInp) nameInp.value = tool.name || '';
+    if (urlInp) urlInp.value = tool.url || '';
+    if (catInp) catInp.value = tool.category || 'chat';
+    if (descInp) descInp.value = tool.description || '';
+    if (tagsInp) tagsInp.value = (tool.tags || []).join(', ');
+    if (iconTextInp) iconTextInp.value = tool.iconText || '';
+    if (iconBgInp) iconBgInp.value = tool.iconBg || '#6366f1';
+    if (favInp) favInp.checked = Boolean(tool.favorite);
+
+    UI.openModal('modal-add-tool');
+  },
+
+  /**
+   * Update existing custom AI Tool
+   */
+  async updateCustomTool(toolId, toolData) {
+    const index = this.toolsList.findIndex(t => t.id === toolId);
+    if (index === -1) {
+      UI.showToast('Tool not found', 'error');
+      return false;
+    }
+
+    if (!toolData.name || !toolData.url) {
+      UI.showToast('Please provide both Tool Name and valid URL', 'error');
+      return false;
+    }
+
+    let url = toolData.url.trim();
+    if (!/^https?:\/\//i.test(url)) {
+      url = 'https://' + url;
+    }
+
+    if (!this.isValidUrl(url)) {
+      UI.showToast('Invalid URL format. Only http:// and https:// URLs are allowed.', 'error');
+      return false;
+    }
+
+    this.toolsList[index] = {
+      ...this.toolsList[index],
+      name: toolData.name.trim().slice(0, 80),
+      url: url.slice(0, 500),
+      category: toolData.category || 'productivity',
+      description: toolData.description ? toolData.description.trim().slice(0, 500) : 'Custom AI tool',
+      tags: toolData.tags ? toolData.tags.split(',').map(t => t.trim().replace(/^#/, '').toLowerCase().slice(0, 30)).filter(Boolean).slice(0, 10) : ['custom'],
+      iconBg: toolData.iconBg || 'var(--accent-primary, #8b5cf6)',
+      iconText: toolData.iconText ? toolData.iconText.trim().slice(0, 3).toUpperCase() : toolData.name.trim().slice(0, 2).toUpperCase(),
+      favorite: Boolean(toolData.favorite)
+    };
+
+    await StorageManager.set({ tools: this.toolsList });
+    this.renderCategoryPills();
+    this.renderTools();
+    this.renderQuickAccess();
+    this.renderRecentTools();
+    UI.showToast(`Updated "${this.toolsList[index].name}" successfully!`, 'success');
+    return true;
   },
 
   /**
@@ -229,7 +441,7 @@ const ToolsManager = {
       } else {
         favoritesContainer.innerHTML = favoriteTools.map(t => `
           <div class="mini-tool-card" data-id="${this.escapeHtml(t.id)}">
-            <div class="mini-tool-avatar" style="background: ${t.iconBg || '#6366f1'};">
+            <div class="mini-tool-avatar" style="background: ${t.iconBg || 'var(--accent-primary, #6366f1)'};">
               ${this.escapeHtml(t.iconText || t.name.slice(0, 2).toUpperCase())}
             </div>
             <span class="mini-tool-name">${this.escapeHtml(t.name)}</span>
@@ -265,12 +477,12 @@ const ToolsManager = {
 
     const newTool = {
       id: 'custom-' + Date.now(),
-      name: toolData.name.trim(),
-      url: url,
+      name: toolData.name.trim().slice(0, 80),
+      url: url.slice(0, 500),
       category: toolData.category || 'productivity',
-      description: toolData.description ? toolData.description.trim() : 'Custom AI tool',
-      tags: toolData.tags ? toolData.tags.split(',').map(t => t.trim().replace(/^#/, '').toLowerCase()).filter(Boolean) : ['custom'],
-      iconBg: toolData.iconBg || '#8b5cf6',
+      description: toolData.description ? toolData.description.trim().slice(0, 500) : 'Custom AI tool',
+      tags: toolData.tags ? toolData.tags.split(',').map(t => t.trim().replace(/^#/, '').toLowerCase().slice(0, 30)).filter(Boolean).slice(0, 10) : ['custom'],
+      iconBg: toolData.iconBg || 'var(--accent-primary, #8b5cf6)',
       iconText: toolData.iconText ? toolData.iconText.trim().slice(0, 3).toUpperCase() : toolData.name.trim().slice(0, 2).toUpperCase(),
       favorite: Boolean(toolData.favorite),
       isDefault: false,
@@ -282,6 +494,7 @@ const ToolsManager = {
     this.renderCategoryPills();
     this.renderTools();
     this.renderQuickAccess();
+    this.renderRecentTools();
     UI.showToast(`"${newTool.name}" added to AI Command Center!`, 'success');
     return true;
   },
@@ -294,13 +507,21 @@ const ToolsManager = {
     const tool = this.toolsList.find(t => t.id === toolId);
     if (!tool) return;
 
-    if (confirm(`Are you sure you want to delete "${tool.name}"?`)) {
+    const ok = await UI.confirm({
+      title: 'Delete Tool',
+      message: `Are you sure you want to delete "${tool.name}" from your AI tools?`,
+      confirmText: 'Delete Tool',
+      danger: true
+    });
+
+    if (ok) {
       this.toolsList = this.toolsList.filter(t => t.id !== toolId);
       this.recentTools = this.recentTools.filter(t => t.id !== toolId);
       await StorageManager.set({ tools: this.toolsList, recentTools: this.recentTools });
       this.renderCategoryPills();
       this.renderTools();
       this.renderQuickAccess();
+      this.renderRecentTools();
       UI.showToast(`Deleted "${tool.name}"`, 'info');
     }
   },
@@ -309,7 +530,7 @@ const ToolsManager = {
    * Enable horizontal scrolling via mouse wheel and touchpad
    */
   setupHorizontalScroll() {
-    const containerIds = ['favorites-scroll-bar', 'category-filter-bar'];
+    const containerIds = ['favorites-scroll-bar', 'recent-tools-scroll-bar', 'category-filter-bar'];
 
     containerIds.forEach(id => {
       const container = document.getElementById(id);

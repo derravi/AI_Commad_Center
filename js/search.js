@@ -89,9 +89,14 @@ const SearchManager = {
     });
 
     if (searchInput) {
-      // Live instant filtering of AI tool cards
+      let filterDebounceTimer = null;
+      // Live instant filtering of AI tool cards with 150ms debounce
       searchInput.addEventListener('input', (e) => {
-        this.handleLiveFilter(e.target.value);
+        const val = e.target.value;
+        clearTimeout(filterDebounceTimer);
+        filterDebounceTimer = setTimeout(() => {
+          this.handleLiveFilter(val);
+        }, 150);
       });
 
       // Keyboard navigation inside search input
@@ -356,7 +361,10 @@ const SearchManager = {
     }
 
     if (!q) {
-      if (typeof ToolsManager !== 'undefined') ToolsManager.renderTools();
+      if (typeof ToolsManager !== 'undefined') {
+        ToolsManager.renderCategoryPills();
+        ToolsManager.renderTools();
+      }
       return;
     }
 
@@ -369,6 +377,7 @@ const SearchManager = {
         return matchName || matchDesc || matchCat || matchTags;
       });
 
+      ToolsManager.renderCategoryPills(filtered);
       ToolsManager.renderTools(filtered);
     }
   },
