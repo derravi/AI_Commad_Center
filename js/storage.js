@@ -209,16 +209,93 @@ const StorageManager = {
   },
 
   /**
-   * Import data from JSON string
+   * Import data from JSON string with schema validation
    * @param {string} jsonString
+   * @returns {Promise<boolean>}
    */
   async importBackup(jsonString) {
     try {
+      if (!jsonString || typeof jsonString !== 'string') {
+        throw new Error('Backup data must be a non-empty string');
+      }
+
       const parsed = JSON.parse(jsonString);
-      await this.set(parsed);
+      if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+        throw new Error('Backup root must be an object');
+      }
+
+      const allowedArrayKeys = ['tools', 'stacks', 'prompts', 'workspaces', 'recentTools', 'customSearchEngines', 'localhostTabs'];
+      const allowedObjectKeys = ['settings', 'geminiConfig'];
+      const allowedPrimitiveKeys = ['activeSearchEngine'];
+      const allowedKeys = [...allowedArrayKeys, ...allowedObjectKeys, ...allowedPrimitiveKeys];
+
+      const validatedData = {};
+      let validKeyCount = 0;
+
+      for (const [key, value] of Object.entries(parsed)) {
+        if (!allowedKeys.includes(key)) {
+          // Skip unrecognized keys to prevent storage pollution
+          continue;
+        }
+
+        if (allowedArrayKeys.includes(key)) {
+          if (!Array.isArray(value)) {
+            throw new Error(`Field "${key}" must be an array`);
+          }
+          // Validate array items structure
+          if (key === 'tools') {
+            for (const item of value) {
+              if (!item || typeof item !== 'object' || !item.id || !item.name || !item.url) {
+                throw new Error('Tools array contains invalid items (missing id, name, or url)');
+              }
+            }
+          } else if (key === 'stacks') {
+            for (const item of value) {
+              if (!item || typeof item !== 'object' || !item.id || !item.name || !Array.isArray(item.toolIds)) {
+                throw new Error('Stacks array contains invalid items (missing id, name, or toolIds)');
+              }
+            }
+          } else if (key === 'prompts') {
+            for (const item of value) {
+              if (!item || typeof item !== 'object' || !item.id || !item.title) {
+                throw new Error('Prompts array contains invalid items (missing id or title)');
+              }
+            }
+          } else if (key === 'workspaces') {
+            for (const item of value) {
+              if (!item || typeof item !== 'object' || !item.id || !item.name) {
+                throw new Error('Workspaces array contains invalid items (missing id or name)');
+              }
+            }
+          }
+          validatedData[key] = value;
+          validKeyCount++;
+        } else if (allowedObjectKeys.includes(key)) {
+          if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+            throw new Error(`Field "${key}" must be a valid object`);
+          }
+          validatedData[key] = value;
+          validKeyCount++;
+        } else if (allowedPrimitiveKeys.includes(key)) {
+          if (typeof value !== 'string') {
+            throw new Error(`Field "${key}" must be a string`);
+          }
+          validatedData[key] = value;
+          validKeyCount++;
+        }
+      }
+
+      if (validKeyCount === 0) {
+        throw new Error('No valid AI Command Center data found in backup file');
+      }
+
+      await this.set(validatedData);
       return true;
     } catch (e) {
       console.error('Failed to import backup:', e);
+      if (typeof UI !== 'undefined' && UI.showToast) {
+        UI.showToast(`Import failed: ${e.message}`, 'error');
+      }
       return false;
     }
   }

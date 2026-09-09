@@ -31,24 +31,30 @@ const WorkspaceManager = {
     }
 
     container.innerHTML = this.workspacesList.map(ws => {
+      const safeWsName = this.escapeHtml(ws.name);
+      const safeWsDesc = this.escapeHtml(ws.description || 'Active project workspace');
+      const safeWsId = this.escapeHtml(ws.id);
+
       const toolIconsHtml = (ws.toolIds || []).map(tId => {
         const tool = ToolsManager.toolsList.find(t => t.id === tId) || { name: tId, iconBg: '#6366f1', iconText: 'AI' };
+        const safeToolName = this.escapeHtml(tool.name);
+        const safeToolIcon = this.escapeHtml(tool.iconText || tool.name.slice(0, 2).toUpperCase());
         return `
-          <div class="mini-tool-avatar" style="background: ${tool.iconBg || '#6366f1'}; width: 28px; height: 28px; font-size: 11px;" title="${tool.name}">
-            ${tool.iconText || tool.name.slice(0, 2).toUpperCase()}
+          <div class="mini-tool-avatar" style="background: ${tool.iconBg || '#6366f1'}; width: 28px; height: 28px; font-size: 11px;" title="${safeToolName}">
+            ${safeToolIcon}
           </div>
         `;
       }).join('');
 
       return `
-        <div class="workspace-card" data-id="${ws.id}">
+        <div class="workspace-card" data-id="${safeWsId}">
           <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px;">
             <div>
-              <h3 style="font-size: 18px; margin-bottom: 4px;">${ws.name}</h3>
-              <p style="font-size: 13px; color: var(--text-muted);">${ws.description || 'Active project workspace'}</p>
+              <h3 style="font-size: 18px; margin-bottom: 4px;">${safeWsName}</h3>
+              <p style="font-size: 13px; color: var(--text-muted);">${safeWsDesc}</p>
             </div>
             ${ws.id !== 'ws-main' ? `
-              <button class="tool-action-btn" data-action="delete-workspace" data-id="${ws.id}" title="Delete Workspace">
+              <button class="tool-action-btn" data-action="delete-workspace" data-id="${safeWsId}" title="Delete Workspace">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="3 6 5 6 21 6"></polyline>
                   <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -59,7 +65,7 @@ const WorkspaceManager = {
 
           <div class="workspace-notes-box">
             <strong style="color: var(--text-highlight); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 4px;">Project Notes & Goals:</strong>
-            ${ws.notes || 'No notes added yet.'}
+            ${ws.notes ? this.escapeHtml(ws.notes) : 'No notes added yet.'}
           </div>
 
           <div style="margin-bottom: 18px;">
@@ -70,7 +76,7 @@ const WorkspaceManager = {
           </div>
 
           <div style="display: flex; gap: 10px; margin-top: auto;">
-            <button class="btn-primary" style="flex: 1; justify-content: center;" data-action="launch-workspace" data-id="${ws.id}">
+            <button class="btn-primary" style="flex: 1; justify-content: center;" data-action="launch-workspace" data-id="${safeWsId}">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polygon points="5 3 19 12 5 21 5 3"></polygon>
               </svg>
@@ -150,5 +156,20 @@ const WorkspaceManager = {
       this.renderWorkspaces();
       UI.showToast('Workspace removed', 'info');
     }
+  },
+
+  /**
+   * Escape HTML special characters to prevent XSS injection
+   * @param {string} str
+   * @returns {string}
+   */
+  escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   }
 };

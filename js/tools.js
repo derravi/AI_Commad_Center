@@ -28,6 +28,12 @@ const ToolsManager = {
     const tool = this.toolsList.find(t => t.id === toolId);
     if (!tool) return;
 
+    // Validate URL protocol before launching to block javascript: or unsafe URLs
+    if (!this.isValidUrl(tool.url)) {
+      UI.showToast(`Cannot launch "${tool.name}": Unsafe or invalid URL protocol.`, 'error');
+      return;
+    }
+
     // Track recently used
     const now = Date.now();
     this.recentTools = this.recentTools.filter(item => item.id !== toolId);
@@ -131,30 +137,33 @@ const ToolsManager = {
 
     container.innerHTML = displayTools.map(tool => {
       const categoryObj = DEFAULT_CATEGORIES.find(c => c.id === tool.category) || { name: 'General', color: '#6366f1' };
-      const tagsHtml = (tool.tags || []).slice(0, 3).map(tag => `<span class="tool-tag">${tag.replace(/^#/, '')}</span>`).join('');
+      const safeName = this.escapeHtml(tool.name);
+      const safeDesc = this.escapeHtml(tool.description || ('Quickly launch ' + tool.name + ' in a new tab.'));
+      const safeIconText = this.escapeHtml(tool.iconText || tool.name.slice(0, 2).toUpperCase());
+      const tagsHtml = (tool.tags || []).slice(0, 3).map(tag => `<span class="tool-tag">${this.escapeHtml(tag.replace(/^#/, ''))}</span>`).join('');
       const starFilled = tool.favorite ? 'currentColor' : 'none';
 
       return `
-        <div class="tool-card" data-id="${tool.id}">
+        <div class="tool-card" data-id="${this.escapeHtml(tool.id)}">
           <div class="tool-card-header">
             <div class="tool-icon-avatar" style="background: ${tool.iconBg || '#6366f1'};">
-              ${tool.iconText || tool.name.slice(0, 2).toUpperCase()}
+              ${safeIconText}
             </div>
             <div class="tool-meta">
               <div class="tool-name-row">
-                <span class="tool-name">${tool.name}</span>
+                <span class="tool-name">${safeName}</span>
                 ${tool.isDefault ? '' : '<span class="badge badge-accent" style="font-size: 9px;">CUSTOM</span>'}
               </div>
-              <span class="tool-category-badge" style="color: ${categoryObj.color};">${categoryObj.name}</span>
+              <span class="tool-category-badge" style="color: ${categoryObj.color};">${this.escapeHtml(categoryObj.name)}</span>
             </div>
             <div class="tool-card-actions">
-              <button class="tool-action-btn ${tool.favorite ? 'is-favorite' : ''}" title="Toggle Favorite" data-action="favorite" data-id="${tool.id}">
+              <button class="tool-action-btn ${tool.favorite ? 'is-favorite' : ''}" title="Toggle Favorite" data-action="favorite" data-id="${this.escapeHtml(tool.id)}">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="${starFilled}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                 </svg>
               </button>
               ${!tool.isDefault ? `
-                <button class="tool-action-btn" title="Delete Tool" data-action="delete" data-id="${tool.id}">
+                <button class="tool-action-btn" title="Delete Tool" data-action="delete" data-id="${this.escapeHtml(tool.id)}">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="3 6 5 6 21 6"></polyline>
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -164,7 +173,7 @@ const ToolsManager = {
             </div>
           </div>
           
-          <p class="tool-description">${tool.description || 'Quickly launch ' + tool.name + ' in a new tab.'}</p>
+          <p class="tool-description">${safeDesc}</p>
           
           <div class="tool-card-footer">
             <div class="tool-tags-row">
@@ -219,11 +228,11 @@ const ToolsManager = {
         favoritesContainer.innerHTML = '<span style="font-size: 12px; color: var(--text-dim); padding: 6px 12px;">Click the star icon on any tool card to add to Favorites</span>';
       } else {
         favoritesContainer.innerHTML = favoriteTools.map(t => `
-          <div class="mini-tool-card" data-id="${t.id}">
+          <div class="mini-tool-card" data-id="${this.escapeHtml(t.id)}">
             <div class="mini-tool-avatar" style="background: ${t.iconBg || '#6366f1'};">
-              ${t.iconText || t.name.slice(0, 2).toUpperCase()}
+              ${this.escapeHtml(t.iconText || t.name.slice(0, 2).toUpperCase())}
             </div>
-            <span class="mini-tool-name">${t.name}</span>
+            <span class="mini-tool-name">${this.escapeHtml(t.name)}</span>
           </div>
         `).join('');
 
@@ -247,6 +256,11 @@ const ToolsManager = {
     let url = toolData.url.trim();
     if (!/^https?:\/\//i.test(url)) {
       url = 'https://' + url;
+    }
+
+    if (!this.isValidUrl(url)) {
+      UI.showToast('Invalid URL format. Only http:// and https:// URLs are allowed.', 'error');
+      return false;
     }
 
     const newTool = {
@@ -316,5 +330,35 @@ const ToolsManager = {
         }
       }, { passive: false });
     });
+  },
+
+  /**
+   * Escape HTML special characters to prevent XSS injection
+   * @param {string} str
+   * @returns {string}
+   */
+  escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  },
+
+  /**
+   * Validate that URL strictly uses http: or https: protocols
+   * @param {string} url
+   * @returns {boolean}
+   */
+  isValidUrl(url) {
+    if (!url || typeof url !== 'string') return false;
+    try {
+      const parsed = new URL(url.trim());
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:';
+    } catch {
+      return false;
+    }
   }
 };
