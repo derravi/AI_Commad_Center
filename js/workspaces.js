@@ -48,7 +48,7 @@ const WorkspaceManager = {
               <p style="font-size: 13px; color: var(--text-muted);">${ws.description || 'Active project workspace'}</p>
             </div>
             ${ws.id !== 'ws-main' ? `
-              <button class="tool-action-btn" onclick="WorkspaceManager.deleteWorkspace('${ws.id}')" title="Delete Workspace">
+              <button class="tool-action-btn" data-action="delete-workspace" data-id="${ws.id}" title="Delete Workspace">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="3 6 5 6 21 6"></polyline>
                   <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -70,7 +70,7 @@ const WorkspaceManager = {
           </div>
 
           <div style="display: flex; gap: 10px; margin-top: auto;">
-            <button class="btn-primary" style="flex: 1; justify-content: center;" onclick="WorkspaceManager.launchWorkspaceTools('${ws.id}')">
+            <button class="btn-primary" style="flex: 1; justify-content: center;" data-action="launch-workspace" data-id="${ws.id}">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polygon points="5 3 19 12 5 21 5 3"></polygon>
               </svg>
@@ -80,6 +80,23 @@ const WorkspaceManager = {
         </div>
       `;
     }).join('');
+
+    // Attach event listeners to prevent CSP inline event handler violations
+    container.querySelectorAll('[data-action="delete-workspace"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        if (id) this.deleteWorkspace(id);
+      });
+    });
+
+    container.querySelectorAll('[data-action="launch-workspace"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        if (id) this.launchWorkspaceTools(id);
+      });
+    });
   },
 
   /**

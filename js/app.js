@@ -15,7 +15,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 3. Initialize UI & Core Components
     await UI.init();
 
-    // 3. Initialize Tools & Catalogs
+    // 4. Initialize Localhost Quick Access Bar
+    if (typeof LocalhostManager !== 'undefined') {
+      await LocalhostManager.init();
+    }
+
+    // 5. Initialize Tools & Catalogs
     await ToolsManager.init();
 
     // 4. Initialize Universal Search

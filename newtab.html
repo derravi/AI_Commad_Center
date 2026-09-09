@@ -209,6 +209,26 @@
       </header>
 
       <!-- ====================================================================
+           LOCALHOST QUICK ACCESS BAR
+           ==================================================================== -->
+      <div class="localhost-bar" id="localhost-bar">
+        <div class="localhost-tabs-container" id="localhost-tabs-container">
+          <div class="localhost-tabs-track" id="localhost-tabs-track">
+            <!-- Dynamically populated localhost pill tabs -->
+          </div>
+        </div>
+        <div class="localhost-bar-actions">
+          <button id="btn-add-localhost" class="btn-add-localhost" type="button" title="Add Localhost Port or Server">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Add Local</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ====================================================================
            VIEW 1: MAIN DASHBOARD & TOOLS
            ==================================================================== -->
       <section id="view-dashboard" class="view-content active">
@@ -704,28 +724,70 @@
     <div id="assistant-drawer" class="assistant-drawer">
       <div class="assistant-header">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <div class="mini-tool-avatar" style="background: var(--accent-gradient); width: 32px; height: 32px;">⚡</div>
-          <strong>AI Assistant Copilot</strong>
+          <div class="mini-tool-avatar" style="background: var(--accent-gradient); width: 32px; height: 32px; box-shadow: var(--accent-glow);">✨</div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <strong>Gemini AI Copilot</strong>
+              <span id="drawer-gemini-status" class="drawer-status-badge offline">Offline</span>
+            </div>
+            <span id="drawer-gemini-model-label" style="font-size: 11px; color: var(--text-dim);">Gemini 2.0 Flash</span>
+          </div>
         </div>
-        <button id="btn-close-assistant" class="modal-close-btn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <button id="btn-drawer-clear-chat" class="icon-button" style="width: 32px; height: 32px;" title="Clear Chat History">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+          <button id="btn-close-assistant" class="modal-close-btn" title="Close Drawer (Esc)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Connect Card (Shown if Gemini is not connected yet) -->
+      <div id="drawer-connect-banner" class="drawer-connect-card">
+        <div class="drawer-connect-header">
+          <span style="font-size: 16px;">⚡</span>
+          <strong>Connect Gemini for Direct Live Chat</strong>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted); margin: 6px 0 10px; line-height: 1.4;">
+          Paste your free Gemini API key to start real-time, live AI conversations directly inside this copilot drawer.
+        </p>
+        <div style="display: flex; gap: 8px;">
+          <input id="input-drawer-gemini-key" class="form-input" type="password" placeholder="Paste API Key (AIzaSy...)" style="font-size: 12px; flex: 1;" />
+          <button id="btn-drawer-connect-gemini" class="btn-primary" type="button" style="padding: 0 14px; font-size: 12px; white-space: nowrap;">Connect ⚡</button>
+        </div>
+        <a href="https://aistudio.google.com/app/apikey" target="_blank" style="display: inline-block; margin-top: 8px; font-size: 11px; color: var(--accent-primary); text-decoration: underline;">
+          Get free key from Google AI Studio &rarr;
+        </a>
       </div>
 
       <div id="assistant-messages-container" class="assistant-messages">
-        <div class="chat-bubble assistant">
-          👋 Hello! I am your AI Command Center Copilot. Ask me to recommend the best AI tools, architect a workflow
-          stack, or write optimal prompts!
-        </div>
+        <!-- Messages loaded dynamically -->
+      </div>
+
+      <!-- Quick Suggested Prompts Chips -->
+      <div id="drawer-quick-prompts" class="drawer-quick-prompts">
+        <button type="button" class="drawer-prompt-chip" data-prompt="Explain the difference between FastAPI and Django">FastAPI vs Django</button>
+        <button type="button" class="drawer-prompt-chip" data-prompt="Write a modern React custom hook for localStorage">React Storage Hook</button>
+        <button type="button" class="drawer-prompt-chip" data-prompt="Architect an optimal AI tool stack for building a SaaS">AI SaaS Stack</button>
+        <button type="button" class="drawer-prompt-chip" data-prompt="Give me 3 best tips for prompt engineering">Prompt Tips</button>
       </div>
 
       <div class="assistant-input-box">
-        <input id="assistant-chat-input" class="form-input" type="text" placeholder="Ask assistant anything..."
-          style="flex: 1;">
-        <button id="assistant-chat-send" class="btn-primary" style="padding: 0 16px;">Send</button>
+        <input id="assistant-chat-input" class="form-input" type="text" placeholder="Message Gemini Copilot... (Press Enter)"
+          style="flex: 1;" autocomplete="off">
+        <button id="assistant-chat-send" class="btn-primary" style="padding: 0 16px;" title="Send Message">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
       </div>
     </div>
 
@@ -1023,6 +1085,59 @@
     </div>
   </div>
 
+  <!-- Modal: Add / Edit Localhost -->
+  <div id="modal-add-localhost" class="modal-backdrop">
+    <div class="modal-dialog" style="max-width: 480px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(99, 102, 241, 0.15); border: 1px solid var(--border-glow); display: flex; align-items: center; justify-content: center; color: var(--accent-primary);">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+              <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+              <line x1="6" y1="6" x2="6.01" y2="6"></line>
+              <line x1="6" y1="18" x2="6.01" y2="18"></line>
+            </svg>
+          </div>
+          <h3 id="modal-localhost-title">Add Localhost Server</h3>
+        </div>
+        <button class="modal-close-btn" data-close-modal type="button" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <form id="form-add-localhost">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="input-lh-url">Port or Localhost URL *</label>
+            <input id="input-lh-url" class="form-input" type="text" placeholder="e.g. 8000, localhost:3000, 127.0.0.1:8000" required autocomplete="off" />
+            <span style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">
+              Tip: Enter a port (e.g. <code>8000</code>) or full URL (e.g. <code>localhost:5000</code>).
+            </span>
+          </div>
+
+          <!-- Quick Presets -->
+          <div class="form-group">
+            <label class="form-label" style="font-size: 11px; color: var(--text-muted);">Quick Presets:</label>
+            <div class="lh-preset-chips-wrapper">
+              <button type="button" class="lh-preset-chip" data-port="8000">8000</button>
+              <button type="button" class="lh-preset-chip" data-port="5000">5000</button>
+              <button type="button" class="lh-preset-chip" data-port="3000">3000</button>
+              <button type="button" class="lh-preset-chip" data-port="8080">8080</button>
+              <button type="button" class="lh-preset-chip" data-port="5173">5173</button>
+              <button type="button" class="lh-preset-chip" data-port="4200">4200</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" id="btn-submit-localhost" class="btn-primary">Add to Quick Access</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toast-container" class="toast-container"></div>
 
@@ -1034,6 +1149,7 @@
   <script src="js/storage.js"></script>
   <script src="js/gemini.js"></script>
   <script src="js/ui.js"></script>
+  <script src="js/localhost.js"></script>
   <script src="js/tools.js"></script>
   <script src="js/search.js"></script>
   <script src="js/router.js"></script>

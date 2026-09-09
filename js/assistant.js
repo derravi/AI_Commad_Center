@@ -1,76 +1,159 @@
 /**
  * AI Command Center - Assistant & Multi-AI Challenge Controller
- * Integrates Google Gemini API for real-time conversational assistance with graceful local fallback.
+ * Integrates Google Gemini API for real-time live conversational AI copilot directly in the chat drawer.
  */
 const AssistantManager = {
   selectedAIs: ['chatgpt', 'claude', 'gemini'],
   chatHistory: [],
 
   /**
-   * Initialize Assistant & Multi-AI Challenge
+   * Initialize Assistant, Drawer Chat & Multi-AI Challenge
    */
   init() {
     this.initMultiAI();
     this.initDrawerChat();
+    this.initDrawerConnect();
+    this.initQuickPrompts();
+    this.updateDrawerStatus();
+    this.initInitialGreeting();
   },
 
   /**
-   * Initialize Multi-AI Challenge Panel
+   * Update Drawer Gemini Connection Badge and Connect Banner
    */
-  initMultiAI() {
-    const textarea = document.getElementById('multi-ai-prompt-input');
-    const launchBtn = document.getElementById('multi-ai-launch-btn');
-    const copyBtn = document.getElementById('multi-ai-copy-btn');
-    const checkboxes = document.querySelectorAll('.multi-ai-checkbox');
+  updateDrawerStatus() {
+    const isConn = typeof GeminiClient !== 'undefined' && GeminiClient.isConnected();
+    const statusBadge = document.getElementById('drawer-gemini-status');
+    const modelLabel = document.getElementById('drawer-gemini-model-label');
+    const connectBanner = document.getElementById('drawer-connect-banner');
 
-    checkboxes.forEach(cb => {
-      cb.addEventListener('change', () => {
-        const val = cb.value;
-        if (cb.checked) {
-          if (!this.selectedAIs.includes(val)) this.selectedAIs.push(val);
-        } else {
-          this.selectedAIs = this.selectedAIs.filter(x => x !== val);
+    if (statusBadge) {
+      if (isConn) {
+        statusBadge.textContent = 'ONLINE ⚡';
+        statusBadge.className = 'drawer-status-badge online';
+      } else {
+        statusBadge.textContent = 'OFFLINE';
+        statusBadge.className = 'drawer-status-badge offline';
+      }
+    }
+
+    if (modelLabel) {
+      if (isConn && typeof GeminiClient !== 'undefined') {
+        const modelName = GeminiClient.models[GeminiClient.model]?.name || GeminiClient.model || 'Gemini 2.0 Flash';
+        modelLabel.textContent = modelName.replace(' (Recommended)', '');
+      } else {
+        modelLabel.textContent = 'Connect Gemini API Key';
+      }
+    }
+
+    if (connectBanner) {
+      connectBanner.style.display = isConn ? 'none' : 'block';
+    }
+  },
+
+  /**
+   * Initialize Initial Assistant Greeting
+   */
+  initInitialGreeting() {
+    const container = document.getElementById('assistant-messages-container');
+    if (!container || container.children.length > 0) return;
+
+    const isConn = typeof GeminiClient !== 'undefined' && GeminiClient.isConnected();
+    let greetingText = '';
+
+    if (isConn) {
+      greetingText = `👋 <strong>Hello! I am your Gemini AI Copilot.</strong><br>I am connected live and ready to help you code, architect workflows, write prompts, analyze algorithms, or answer any technical questions. What are we building today?`;
+    } else {
+      greetingText = `👋 <strong>Hello! I am your AI Copilot.</strong><br>Connect your free Gemini API key below to start direct, live real-time conversations! You can also ask for AI tool recommendations and workflow blueprints.`;
+    }
+
+    this.appendMessage('assistant', greetingText);
+  },
+
+  /**
+   * Inline Gemini API Key Connection in Chat Drawer
+   */
+  initDrawerConnect() {
+    const keyInput = document.getElementById('input-drawer-gemini-key');
+    const connectBtn = document.getElementById('btn-drawer-connect-gemini');
+
+    if (connectBtn && keyInput) {
+      const handleConnect = async () => {
+        const key = keyInput.value.trim();
+        if (!key) {
+          if (typeof UI !== 'undefined') UI.showToast('Please paste your Gemini API Key', 'error');
+          return;
         }
-        
-        // Update parent label styling
-        const parentLabel = cb.closest('.ai-checkbox-label');
-        if (parentLabel) {
-          parentLabel.classList.toggle('selected', cb.checked);
+
+        connectBtn.disabled = true;
+        connectBtn.textContent = 'Verifying...';
+
+        try {
+          const testResult = await GeminiClient.testConnection(key, 'gemini-2.0-flash');
+          if (testResult.success) {
+            await GeminiClient.saveConfig({
+              apiKey: key,
+              model: testResult.model || 'gemini-2.0-flash',
+              persona: 'expert_architect'
+            });
+
+            this.updateDrawerStatus();
+            keyInput.value = '';
+            if (typeof UI !== 'undefined') {
+              UI.showToast('✨ Gemini Connected Live! Ready to chat.', 'success');
+            }
+
+            this.appendMessage('assistant', `⚡ <strong>Google Gemini successfully connected!</strong> Live communication is active. Ask me anything.`);
+          } else {
+            if (typeof UI !== 'undefined') {
+              UI.showToast(`Connection failed: ${testResult.error || 'Invalid API Key'}`, 'error');
+            }
+          }
+        } catch (err) {
+          if (typeof UI !== 'undefined') {
+            UI.showToast(`Error connecting Gemini: ${err.message}`, 'error');
+          }
+        } finally {
+          connectBtn.disabled = false;
+          connectBtn.textContent = 'Connect ⚡';
+        }
+      };
+
+      connectBtn.addEventListener('click', handleConnect);
+      keyInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleConnect();
+        }
+      });
+    }
+  },
+
+  /**
+   * Suggested Quick Prompts Chips inside Drawer
+   */
+  initQuickPrompts() {
+    document.querySelectorAll('.drawer-prompt-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const prompt = chip.getAttribute('data-prompt');
+        const input = document.getElementById('assistant-chat-input');
+        if (input && prompt) {
+          input.value = prompt;
+          input.focus();
         }
       });
     });
 
-    if (launchBtn && textarea) {
-      launchBtn.addEventListener('click', () => {
-        const prompt = textarea.value.trim();
-        if (!prompt) {
-          UI.showToast('Please type a prompt to broadcast across AI models', 'warning');
-          return;
+    const clearBtn = document.getElementById('btn-drawer-clear-chat');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        this.chatHistory = [];
+        const container = document.getElementById('assistant-messages-container');
+        if (container) {
+          container.innerHTML = '';
+          this.initInitialGreeting();
         }
-
-        if (this.selectedAIs.length === 0) {
-          UI.showToast('Select at least one AI service', 'warning');
-          return;
-        }
-
-        // Copy to clipboard for easy pasting into opened tabs
-        navigator.clipboard.writeText(prompt);
-
-        // Open selected AIs
-        this.selectedAIs.forEach(toolId => {
-          ToolsManager.launchTool(toolId);
-        });
-
-        UI.showToast(`Prompt copied & launched ${this.selectedAIs.length} AI services in tabs!`, 'success');
-      });
-    }
-
-    if (copyBtn && textarea) {
-      copyBtn.addEventListener('click', () => {
-        const prompt = textarea.value.trim();
-        if (!prompt) return;
-        navigator.clipboard.writeText(prompt);
-        UI.showToast('Prompt copied to clipboard!', 'success');
+        if (typeof UI !== 'undefined') UI.showToast('Chat history cleared', 'info');
       });
     }
   },
@@ -86,19 +169,19 @@ const AssistantManager = {
       const handleSend = async () => {
         const text = input.value.trim();
         if (!text) return;
-        
-        // Add User message
-        this.appendMessage('user', text);
+
+        // Add User message bubble
+        this.appendMessage('user', this.escapeHtml(text));
         this.chatHistory.push({ role: 'user', content: text });
         input.value = '';
 
-        // Generate response (Real Gemini if connected, else rule-based fallback)
+        // Generate response via Live Gemini or graceful fallback
         await this.handleAssistantResponse(text);
       };
 
       sendBtn.addEventListener('click', handleSend);
       input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && !e.shiftKey) {
           e.preventDefault();
           handleSend();
         }
@@ -120,12 +203,15 @@ const AssistantManager = {
     bubble.className = `chat-bubble ${sender}`;
     bubble.innerHTML = htmlContent;
     container.appendChild(bubble);
-    container.scrollTop = container.scrollHeight;
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: 'smooth'
+    });
     return bubble;
   },
 
   /**
-   * Handle assistant response generation (Gemini or Fallback)
+   * Handle assistant response generation (Direct Live Gemini or Fallback)
    * @param {string} userText
    */
   async handleAssistantResponse(userText) {
@@ -147,26 +233,26 @@ const AssistantManager = {
         const aiResponse = await GeminiClient.generateChat(this.chatHistory);
         this.chatHistory.push({ role: 'model', content: aiResponse });
 
-        // Replace thinking indicator with formatted Markdown HTML
+        // Format Markdown with code blocks and replace thinking indicator
         if (thinkingBubble) {
           thinkingBubble.innerHTML = GeminiClient.formatMarkdown(aiResponse);
         }
       } catch (err) {
         console.error('Gemini Assistant Error:', err);
         if (thinkingBubble) {
-          thinkingBubble.innerHTML = `⚠️ <strong>Gemini Error:</strong> ${err.message}<br><br><small>Falling back to offline mode. Please check your API key in the Gemini AI Engine tab.</small>`;
+          thinkingBubble.innerHTML = `⚠️ <strong>Gemini Error:</strong> ${err.message}<br><br><small>Please check your Gemini API key in the connection banner above.</small>`;
         }
       }
     } else {
       // Offline Rule-based fallback
       setTimeout(() => {
         this.generateOfflineReply(userText);
-      }, 400);
+      }, 350);
     }
   },
 
   /**
-   * Intelligent client-side assistant logic (Fallback when offline)
+   * Intelligent client-side assistant logic (Fallback when Gemini is not connected)
    * @param {string} userQuery
    */
   generateOfflineReply(userQuery) {
@@ -194,16 +280,84 @@ const AssistantManager = {
       Give your model a strict persona, clear objective, format constraint, and step-by-step reasoning cue.<br>
       <em>Check out the Universal Prompt Library in the sidebar for master templates!</em>`;
     } else {
-      reply = `I can help you architect workflows, find optimal AI tools, or craft prompts. Try asking:
+      reply = `I can help you architect workflows, find optimal AI tools, or craft prompts.
       <br>• <em>"Best tools to build an AI SaaS"</em>
       <br>• <em>"How to analyze a large CSV dataset"</em>
       <br>• <em>"Generate photorealistic prompt"</em>`;
     }
 
-    reply += `<br><br><div style="font-size: 11px; padding: 6px 10px; background: rgba(99, 102, 241, 0.1); border-radius: 6px; border: 1px dashed rgba(99, 102, 241, 0.3);">
-      ⚡ <em>Tip: Connect your free Gemini API Key in the <strong>Gemini AI Engine</strong> tab for real, conversational AI chat!</em>
+    reply += `<br><br><div style="font-size: 11px; padding: 8px 12px; background: rgba(99, 102, 241, 0.12); border-radius: 8px; border: 1px dashed rgba(99, 102, 241, 0.35);">
+      ⚡ <em>Paste your free Gemini API key in the top banner to enable direct, live conversational AI chat!</em>
     </div>`;
 
     this.appendMessage('assistant', reply);
+  },
+
+  /**
+   * Initialize Multi-AI Challenge Panel
+   */
+  initMultiAI() {
+    const textarea = document.getElementById('multi-ai-prompt-input');
+    const launchBtn = document.getElementById('multi-ai-launch-btn');
+    const copyBtn = document.getElementById('multi-ai-copy-btn');
+    const checkboxes = document.querySelectorAll('.multi-ai-checkbox');
+
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', () => {
+        const val = cb.value;
+        if (cb.checked) {
+          if (!this.selectedAIs.includes(val)) this.selectedAIs.push(val);
+        } else {
+          this.selectedAIs = this.selectedAIs.filter(x => x !== val);
+        }
+        
+        const parentLabel = cb.closest('.ai-checkbox-label');
+        if (parentLabel) {
+          parentLabel.classList.toggle('selected', cb.checked);
+        }
+      });
+    });
+
+    if (launchBtn && textarea) {
+      launchBtn.addEventListener('click', () => {
+        const prompt = textarea.value.trim();
+        if (!prompt) {
+          if (typeof UI !== 'undefined') UI.showToast('Please type a prompt to broadcast across AI models', 'warning');
+          return;
+        }
+
+        if (this.selectedAIs.length === 0) {
+          if (typeof UI !== 'undefined') UI.showToast('Select at least one AI service', 'warning');
+          return;
+        }
+
+        navigator.clipboard.writeText(prompt);
+
+        this.selectedAIs.forEach(toolId => {
+          ToolsManager.launchTool(toolId);
+        });
+
+        if (typeof UI !== 'undefined') UI.showToast(`Prompt copied & launched ${this.selectedAIs.length} AI services in tabs!`, 'success');
+      });
+    }
+
+    if (copyBtn && textarea) {
+      copyBtn.addEventListener('click', () => {
+        const prompt = textarea.value.trim();
+        if (!prompt) return;
+        navigator.clipboard.writeText(prompt);
+        if (typeof UI !== 'undefined') UI.showToast('Prompt copied to clipboard!', 'success');
+      });
+    }
+  },
+
+  /**
+   * Escape HTML utility
+   */
+  escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
   }
 };

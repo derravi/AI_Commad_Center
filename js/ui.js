@@ -15,6 +15,24 @@ const UI = {
     this.initModals();
     this.initAssistantDrawer();
     this.initApiHub();
+    this.initGlobalDelegation();
+  },
+
+  /**
+   * Initialize Global Event Delegation (e.g. Markdown copy buttons)
+   */
+  initGlobalDelegation() {
+    document.addEventListener('click', (e) => {
+      const copyBtn = e.target.closest('.chat-copy-code-btn, [data-action="copy-code"]');
+      if (copyBtn) {
+        const codeBlock = copyBtn.closest('.chat-code-block');
+        const codeEl = codeBlock ? codeBlock.querySelector('code') : null;
+        if (codeEl) {
+          navigator.clipboard.writeText(codeEl.textContent);
+          this.showToast('Code copied to clipboard!', 'success');
+        }
+      }
+    });
   },
 
   /**

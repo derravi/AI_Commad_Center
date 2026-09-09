@@ -209,13 +209,22 @@ const SmartRouter = {
                 </div>
                 <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 3px; line-height: 1.4;">${s.reason || s.role || ''}</p>
               </div>
-              <button class="btn-secondary" style="padding: 6px 12px; font-size: 12px; flex-shrink: 0;" onclick="window.open('${targetUrl}', '_blank', 'noopener,noreferrer')">
+              <button class="btn-secondary" style="padding: 6px 12px; font-size: 12px; flex-shrink: 0;" data-action="open-url" data-url="${targetUrl}">
                 Open
               </button>
             </div>
           `;
         }).join('')}
       `;
+
+      listEl.querySelectorAll('[data-action="open-url"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const url = btn.getAttribute('data-url');
+          if (url) {
+            window.open(url, '_blank', 'noopener,noreferrer');
+          }
+        });
+      });
     }
 
     if (launchAllBtn) {
@@ -297,12 +306,21 @@ const SmartRouter = {
               </div>
               <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 3px;">${rec.reason}</p>
             </div>
-            <button class="btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="ToolsManager.launchTool('${tool.id}')">
+            <button class="btn-secondary" style="padding: 6px 12px; font-size: 12px;" data-action="launch-tool" data-tool-id="${tool.id}">
               Open
             </button>
           </div>
         `;
       }).join('');
+
+      listEl.querySelectorAll('[data-action="launch-tool"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const toolId = btn.getAttribute('data-tool-id');
+          if (toolId) {
+            ToolsManager.launchTool(toolId);
+          }
+        });
+      });
     }
 
     if (launchAllBtn) {

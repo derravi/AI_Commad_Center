@@ -51,7 +51,7 @@ const WorkflowManager = {
               <span class="badge badge-muted">${(stack.toolIds || []).length} Tools</span>
             </div>
             ${stack.id.startsWith('custom-') ? `
-              <button class="tool-action-btn" onclick="WorkflowManager.deleteStack('${stack.id}')" title="Delete Stack">
+              <button class="tool-action-btn" data-action="delete-stack" data-id="${stack.id}" title="Delete Stack">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="3 6 5 6 21 6"></polyline>
                   <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -63,7 +63,7 @@ const WorkflowManager = {
           <div class="stack-tools-list">
             ${toolItemsHtml}
           </div>
-          <button class="stack-launch-all-btn" onclick="WorkflowManager.launchStack('${stack.id}')">
+          <button class="stack-launch-all-btn" data-action="launch-stack" data-id="${stack.id}">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <polygon points="5 3 19 12 5 21 5 3"></polygon>
             </svg>
@@ -72,6 +72,23 @@ const WorkflowManager = {
         </div>
       `;
     }).join('');
+
+    // Attach event listeners to prevent CSP inline event handler violations
+    container.querySelectorAll('[data-action="delete-stack"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        if (id) this.deleteStack(id);
+      });
+    });
+
+    container.querySelectorAll('[data-action="launch-stack"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        if (id) this.launchStack(id);
+      });
+    });
   },
 
   /**

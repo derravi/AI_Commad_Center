@@ -181,13 +181,24 @@ const StorageManager = {
     if (!data.recentTools) {
       await this.set({ recentTools: [] });
     }
+
+    // Seed default localhost quick access tabs if none exist
+    if (!data.localhostTabs || !Array.isArray(data.localhostTabs) || data.localhostTabs.length === 0) {
+      const defaultLocalhosts = [
+        { id: 'lh-8000', url: 'localhost:8000', port: '8000', created: 1 },
+        { id: 'lh-5000', url: 'localhost:5000', port: '5000', created: 2 },
+        { id: 'lh-3000', url: 'localhost:3000', port: '3000', created: 3 },
+        { id: 'lh-8080', url: 'localhost:8080', port: '8080', created: 4 }
+      ];
+      await this.set({ localhostTabs: defaultLocalhosts });
+    }
   },
 
   /**
    * Export all data to JSON file
    */
   async exportBackup() {
-    const allData = await this.get(['tools', 'stacks', 'prompts', 'workspaces', 'settings', 'recentTools', 'customSearchEngines']);
+    const allData = await this.get(['tools', 'stacks', 'prompts', 'workspaces', 'settings', 'recentTools', 'customSearchEngines', 'localhostTabs']);
     const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

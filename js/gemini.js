@@ -205,6 +205,11 @@ const GeminiClient = {
     if (personaSelect && this.persona) {
       personaSelect.value = this.persona;
     }
+
+    // Update Assistant Side Drawer status
+    if (typeof AssistantManager !== 'undefined' && AssistantManager.updateDrawerStatus) {
+      AssistantManager.updateDrawerStatus();
+    }
   },
 
   /**
@@ -536,7 +541,7 @@ Return ONLY the enhanced prompt content ready to copy-paste.`;
       return `<div class="chat-code-block">
         <div class="chat-code-header">
           <span>${language}</span>
-          <button class="chat-copy-code-btn" onclick="navigator.clipboard.writeText(this.closest('.chat-code-block').querySelector('code').textContent); UI.showToast('Code copied!', 'success');">Copy</button>
+          <button class="chat-copy-code-btn" data-action="copy-code">Copy</button>
         </div>
         <pre><code class="language-${language}">${code.trim()}</code></pre>
       </div>`;

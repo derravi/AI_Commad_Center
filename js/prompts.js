@@ -99,10 +99,10 @@ const PromptLibrary = {
             <span class="prompt-title">${prompt.title}</span>
             <div style="display: flex; gap: 6px; align-items: center;">
               <span class="badge badge-accent">${prompt.category || 'general'}</span>
-              <button class="tool-action-btn" onclick="PromptLibrary.enhancePromptWithAI('${prompt.id}')" title="Enhance prompt with Gemini AI">
+              <button class="tool-action-btn" data-action="enhance-prompt" data-id="${prompt.id}" title="Enhance prompt with Gemini AI">
                 ✨
               </button>
-              <button class="tool-action-btn" onclick="PromptLibrary.deletePrompt('${prompt.id}')" title="Delete Prompt">
+              <button class="tool-action-btn" data-action="delete-prompt" data-id="${prompt.id}" title="Delete Prompt">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="3 6 5 6 21 6"></polyline>
                   <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -118,7 +118,7 @@ const PromptLibrary = {
           </div>
 
           <div class="prompt-actions-bar">
-            <button class="btn-primary" style="padding: 6px 14px; font-size: 12px;" onclick="PromptLibrary.copyPrompt('${prompt.id}')">
+            <button class="btn-primary" style="padding: 6px 14px; font-size: 12px;" data-action="copy-prompt" data-id="${prompt.id}">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -127,14 +127,48 @@ const PromptLibrary = {
             </button>
             
             <div class="prompt-launch-dropdown">
-              <span class="prompt-ai-chip" onclick="PromptLibrary.launchWithAI('${prompt.id}', 'chatgpt')" title="Open ChatGPT">GPT</span>
-              <span class="prompt-ai-chip" onclick="PromptLibrary.launchWithAI('${prompt.id}', 'claude')" title="Open Claude">Claude</span>
-              <span class="prompt-ai-chip" onclick="PromptLibrary.launchWithAI('${prompt.id}', 'gemini')" title="Open Gemini">Gemini</span>
+              <span class="prompt-ai-chip" data-action="launch-ai" data-id="${prompt.id}" data-ai="chatgpt" title="Open ChatGPT">GPT</span>
+              <span class="prompt-ai-chip" data-action="launch-ai" data-id="${prompt.id}" data-ai="claude" title="Open Claude">Claude</span>
+              <span class="prompt-ai-chip" data-action="launch-ai" data-id="${prompt.id}" data-ai="gemini" title="Open Gemini">Gemini</span>
             </div>
           </div>
         </div>
       `;
     }).join('');
+
+    // Attach event listeners to prevent CSP inline event handler violations
+    container.querySelectorAll('[data-action="enhance-prompt"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        if (id) this.enhancePromptWithAI(id);
+      });
+    });
+
+    container.querySelectorAll('[data-action="delete-prompt"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        if (id) this.deletePrompt(id);
+      });
+    });
+
+    container.querySelectorAll('[data-action="copy-prompt"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        if (id) this.copyPrompt(id);
+      });
+    });
+
+    container.querySelectorAll('[data-action="launch-ai"]').forEach(chip => {
+      chip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = chip.getAttribute('data-id');
+        const ai = chip.getAttribute('data-ai');
+        if (id && ai) this.launchWithAI(id, ai);
+      });
+    });
   },
 
   /**
