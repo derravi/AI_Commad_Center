@@ -102,6 +102,10 @@ const UI = {
     if (viewName === 'workspaces') WorkspaceManager.renderWorkspaces();
     if (viewName === 'prompts') PromptLibrary.renderPrompts();
     if (viewName === 'apihub' && typeof GeminiClient !== 'undefined') GeminiClient.updateUIStatus();
+    if (viewName === 'settings' && typeof CacheManager !== 'undefined') {
+      CacheManager.updateStorageStats();
+      CacheManager.updateLastClearedUI();
+    }
   },
 
   /**

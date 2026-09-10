@@ -8,7 +8,8 @@
   },
   "permissions": [
     "storage",
-    "tabs"
+    "tabs",
+    "browsingData"
   ],
   "host_permissions": [
     "https://generativelanguage.googleapis.com/*"

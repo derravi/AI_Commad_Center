@@ -41,10 +41,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 11. Initialize Multi-AI & Assistant Drawer
     AssistantManager.init();
 
-    // 12. Bind Global Keyboard Shortcuts
+    // 12. Initialize Chrome Cache & Storage Manager
+    if (typeof CacheManager !== 'undefined') {
+      await CacheManager.init();
+    }
+
+    // 13. Bind Global Keyboard Shortcuts
     initKeyboardShortcuts();
 
-    // 13. First-Time Onboarding Check
+    // 14. First-Time Onboarding Check
     await checkFirstRunOnboarding();
 
     console.log('🚀 AI Command Center successfully initialized.');

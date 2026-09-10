@@ -216,3 +216,54 @@
 .toast-icon.info { color: var(--status-info); }
 .toast-icon.warning { color: var(--status-warning); }
 .toast-icon.error { color: var(--status-danger); }
+
+/* --------------------------------------------------------------------------
+   Light Theme Modals & Dialogs Polish
+   -------------------------------------------------------------------------- */
+[data-theme="light"] .modal-backdrop {
+  background: rgba(15, 23, 42, 0.45);
+}
+
+[data-theme="light"] .modal-dialog {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.1);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.14), 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+[data-theme="light"] .modal-footer {
+  background: var(--bg-surface-elevated);
+  border-top-color: var(--border-subtle);
+}
+
+[data-theme="light"] .modal-close-btn:hover {
+  background: rgba(15, 23, 42, 0.06);
+  color: var(--text-main);
+}
+
+[data-theme="light"] .form-input,
+[data-theme="light"] .form-select,
+[data-theme="light"] .form-textarea {
+  background: var(--bg-surface-elevated);
+  border-color: var(--border-subtle);
+  color: var(--text-main);
+}
+
+[data-theme="light"] .form-input:focus,
+[data-theme="light"] .form-select:focus,
+[data-theme="light"] .form-textarea:focus {
+  background: #ffffff;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+[data-theme="light"] .theme-swatch.active {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px #ffffff, 0 4px 10px rgba(15, 23, 42, 0.2);
+}
+
+[data-theme="light"] .toast {
+  background: #ffffff;
+  border-color: var(--border-subtle);
+  color: var(--text-main);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.05);
+}
