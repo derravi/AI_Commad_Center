@@ -907,7 +907,102 @@
 .localhost-bar-actions {
   display: flex;
   align-items: center;
+  gap: 8px;
   flex-shrink: 0;
+}
+
+/* Localhost Open-in-New-Tab Toggle Pill with Tick Mark */
+.localhost-toggle-newtab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px 3px 7px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-glass-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.localhost-toggle-newtab:hover {
+  background: var(--bg-glass-card-hover);
+  border-color: var(--border-glow);
+  color: var(--text-main);
+  transform: translateY(-1px);
+}
+
+.localhost-toggle-newtab:active {
+  transform: scale(0.97);
+}
+
+.localhost-toggle-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  margin: 0;
+}
+
+.localhost-toggle-box {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 1.5px solid var(--text-dim);
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.localhost-check-icon {
+  color: #ffffff;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all var(--transition-fast);
+}
+
+.localhost-toggle-text {
+  font-size: 11.5px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  transition: color var(--transition-fast);
+}
+
+/* Checked state */
+.localhost-toggle-newtab.is-checked,
+.localhost-toggle-newtab:has(.localhost-toggle-checkbox:checked) {
+  background: rgba(99, 102, 241, 0.12);
+  border-color: rgba(99, 102, 241, 0.35);
+  color: var(--text-main);
+}
+
+.localhost-toggle-newtab.is-checked .localhost-toggle-box,
+.localhost-toggle-newtab:has(.localhost-toggle-checkbox:checked) .localhost-toggle-box {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.45);
+}
+
+.localhost-toggle-newtab.is-checked .localhost-check-icon,
+.localhost-toggle-newtab:has(.localhost-toggle-checkbox:checked) .localhost-check-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.localhost-toggle-newtab.is-checked .localhost-toggle-text,
+.localhost-toggle-newtab:has(.localhost-toggle-checkbox:checked) .localhost-toggle-text {
+  color: #ffffff;
+  font-weight: 600;
 }
 
 .btn-add-localhost {
@@ -1082,6 +1177,41 @@
   background: var(--bg-surface-elevated);
   border-color: var(--border-subtle);
   color: var(--text-muted);
+}
+
+[data-theme="light"] .localhost-toggle-newtab {
+  background: #ffffff;
+  border-color: var(--border-subtle);
+  color: var(--text-dim);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+[data-theme="light"] .localhost-toggle-newtab:hover {
+  background: #f8fafc;
+  color: var(--text-main);
+  border-color: var(--border-glow);
+}
+
+[data-theme="light"] .localhost-toggle-newtab .localhost-toggle-box {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: #cbd5e1;
+}
+
+[data-theme="light"] .localhost-toggle-newtab.is-checked,
+[data-theme="light"] .localhost-toggle-newtab:has(.localhost-toggle-checkbox:checked) {
+  background: rgba(99, 102, 241, 0.09);
+  border-color: rgba(99, 102, 241, 0.35);
+}
+
+[data-theme="light"] .localhost-toggle-newtab.is-checked .localhost-toggle-box,
+[data-theme="light"] .localhost-toggle-newtab:has(.localhost-toggle-checkbox:checked) .localhost-toggle-box {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+[data-theme="light"] .localhost-toggle-newtab.is-checked .localhost-toggle-text,
+[data-theme="light"] .localhost-toggle-newtab:has(.localhost-toggle-checkbox:checked) .localhost-toggle-text {
+  color: var(--accent-primary);
 }
 
 [data-theme="light"] .router-hero {

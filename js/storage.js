@@ -230,7 +230,7 @@ const StorageManager = {
    * Export all data to JSON file
    */
   async exportBackup() {
-    const allData = await this.get(['tools', 'stacks', 'prompts', 'workspaces', 'settings', 'recentTools', 'customSearchEngines', 'localhostTabs']);
+    const allData = await this.get(['tools', 'stacks', 'prompts', 'workspaces', 'settings', 'recentTools', 'customSearchEngines', 'localhostTabs', 'localhostOpenInNewTab']);
     const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -258,7 +258,7 @@ const StorageManager = {
 
       const allowedArrayKeys = ['tools', 'stacks', 'prompts', 'workspaces', 'recentTools', 'customSearchEngines', 'localhostTabs'];
       const allowedObjectKeys = ['settings', 'geminiConfig'];
-      const allowedPrimitiveKeys = ['activeSearchEngine'];
+      const allowedPrimitiveKeys = ['activeSearchEngine', 'localhostOpenInNewTab'];
       const allowedKeys = [...allowedArrayKeys, ...allowedObjectKeys, ...allowedPrimitiveKeys];
 
       const validatedData = {};
@@ -336,7 +336,7 @@ const StorageManager = {
    * Reset all storage data and re-seed defaults
    */
   async resetToDefaults() {
-    await this.remove(['tools', 'stacks', 'prompts', 'workspaces', 'settings', 'recentTools', 'localhostTabs', 'customSearchEngines', 'geminiConfig']);
+    await this.remove(['tools', 'stacks', 'prompts', 'workspaces', 'settings', 'recentTools', 'localhostTabs', 'localhostOpenInNewTab', 'customSearchEngines', 'geminiConfig']);
     await this.initDefaults();
   }
 };

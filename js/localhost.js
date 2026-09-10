@@ -4,6 +4,7 @@
  */
 const LocalhostManager = {
   tabs: [],
+  openInNewTab: true,
   isDragging: false,
   hasMoved: false,
   startX: 0,
@@ -25,7 +26,14 @@ const LocalhostManager = {
    * Initialize Localhost Manager
    */
   async init() {
-    const data = await StorageManager.get('localhostTabs');
+    const data = await StorageManager.get(['localhostTabs', 'localhostOpenInNewTab']);
+    if (typeof data.localhostOpenInNewTab === 'boolean') {
+      this.openInNewTab = data.localhostOpenInNewTab;
+    } else {
+      this.openInNewTab = true;
+      await StorageManager.set({ localhostOpenInNewTab: true });
+    }
+
     if (data.localhostTabs && Array.isArray(data.localhostTabs) && data.localhostTabs.length > 0) {
       // Sanitize stored entries to ensure clean backend localhost:PORT
       this.tabs = data.localhostTabs.map((tab, idx) => {
@@ -44,6 +52,7 @@ const LocalhostManager = {
     }
 
     this.render();
+    this.initToggleControl();
     this.initScrollControls();
     this.initModalHandlers();
   },
@@ -119,6 +128,54 @@ const LocalhostManager = {
   },
 
   /**
+   * Initialize the New Tab tick-mark toggle control
+   */
+  initToggleControl() {
+    const toggleCheckbox = document.getElementById('toggle-localhost-newtab');
+    if (!toggleCheckbox) return;
+
+    // Set initial checkbox state and visual classes
+    this.updateToggleUI(this.openInNewTab);
+
+    // Event listener on checkbox change
+    toggleCheckbox.addEventListener('change', async (e) => {
+      this.openInNewTab = e.target.checked;
+      await StorageManager.set({ localhostOpenInNewTab: this.openInNewTab });
+      this.updateToggleUI(this.openInNewTab);
+      this.render(); // Re-render tooltips on tab pills
+
+      if (typeof UI !== 'undefined' && UI.showToast) {
+        UI.showToast(
+          this.openInNewTab
+            ? 'Localhost: Will open in New Tab'
+            : 'Localhost: Will open in Current Tab',
+          'info'
+        );
+      }
+    });
+  },
+
+  /**
+   * Update the New Tab tick-mark toggle visual state
+   */
+  updateToggleUI(isChecked) {
+    const toggleLabel = document.getElementById('localhost-toggle-newtab-label');
+    const toggleCheckbox = document.getElementById('toggle-localhost-newtab');
+    if (toggleCheckbox && toggleCheckbox.checked !== isChecked) {
+      toggleCheckbox.checked = isChecked;
+    }
+    if (toggleLabel) {
+      if (isChecked) {
+        toggleLabel.classList.add('is-checked');
+        toggleLabel.title = 'New Tab: Enabled (Checked: Opens in new tab, Unchecked: Opens in current tab)';
+      } else {
+        toggleLabel.classList.remove('is-checked');
+        toggleLabel.title = 'New Tab: Disabled (Checked: Opens in new tab, Unchecked: Opens in current tab)';
+      }
+    }
+  },
+
+  /**
    * Render all localhost tabs in the horizontal track with 'local:PORT' labels
    */
   render() {
@@ -134,13 +191,15 @@ const LocalhostManager = {
       return;
     }
 
+    const openTargetText = this.openInNewTab ? 'new tab' : 'current tab';
+
     track.innerHTML = this.tabs.map((tab) => {
       const parsed = this.parseInput(tab.url, tab.protocol);
       const display = parsed ? parsed.displayUrl : `local:${tab.port || '8000'}`;
       const fullUrl = parsed ? parsed.fullUrl : `http://${tab.url}`;
 
       return `
-        <div class="localhost-tab-pill" data-id="${tab.id}" title="Click to open ${fullUrl} in new tab">
+        <div class="localhost-tab-pill" data-id="${tab.id}" title="Click to open ${fullUrl} in ${openTargetText}">
           <div class="lh-pill-left">
             <span class="lh-status-pulse"></span>
             <span class="lh-url-text">${this.escapeHtml(display)}</span>
@@ -161,7 +220,7 @@ const LocalhostManager = {
     track.querySelectorAll('.localhost-tab-pill').forEach(pill => {
       const id = pill.getAttribute('data-id');
 
-      // Click to open URL in new tab (only if user didn't drag/pan)
+      // Click to open URL (only if user didn't drag/pan)
       pill.addEventListener('click', (e) => {
         if (this.hasMoved) return; // Prevent launch on drag
         if (e.target.closest('[data-action="delete"]')) {
@@ -174,7 +233,7 @@ const LocalhostManager = {
   },
 
   /**
-   * Launch the full localhost URL in a new tab without altering the current Command Center tab
+   * Launch the full localhost URL in a new tab or current tab depending on user preference
    */
   launch(id) {
     const tab = this.tabs.find(t => t.id === id);
@@ -190,10 +249,18 @@ const LocalhostManager = {
       setTimeout(() => pill.classList.remove('lh-pill-active-launch'), 400);
     }
 
-    if (typeof chrome !== 'undefined' && chrome.tabs && chrome.tabs.create) {
-      chrome.tabs.create({ url: parsed.fullUrl });
+    if (this.openInNewTab) {
+      if (typeof chrome !== 'undefined' && chrome.tabs && chrome.tabs.create) {
+        chrome.tabs.create({ url: parsed.fullUrl });
+      } else {
+        window.open(parsed.fullUrl, '_blank', 'noopener,noreferrer');
+      }
     } else {
-      window.open(parsed.fullUrl, '_blank', 'noopener,noreferrer');
+      if (typeof chrome !== 'undefined' && chrome.tabs && chrome.tabs.update) {
+        chrome.tabs.update({ url: parsed.fullUrl });
+      } else {
+        window.location.href = parsed.fullUrl;
+      }
     }
 
     if (typeof UI !== 'undefined' && UI.showToast) {
