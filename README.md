@@ -2,6 +2,8 @@
 
 > **Transform your Chrome New Tab into an ultra-fast AI command center, smart workflow orchestrator, and multi-model productivity launcher.**
 
+-> New Version 0.2
+
 ---
 
 ## 📑 Table of Contents
