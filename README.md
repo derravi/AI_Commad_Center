@@ -277,15 +277,7 @@ Feel free to fork this project and customize it for your personal workflow:
 
 ## 📄 License
 
-This project is open source and available under the [MIT License](LICENSE).
-
-*Add Project Structure
-
-
-# File Tree: AI Command Center
-
-**Generated:** 9/12/2026, 10:26:23 PM
-**Root Path:** `d:\E drive\Github Projects\AI Command Center\AI Command Center`
+This is the New project architecture.
 
 ```
 ├── 📁 assets
