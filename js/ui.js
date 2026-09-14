@@ -19,7 +19,7 @@ const UI = {
   },
 
   /**
-   * Initialize Global Event Delegation (e.g. Markdown copy buttons)
+   * Initialize Global Event Delegation (e.g. Markdown copy buttons and tactile feedback)
    */
   initGlobalDelegation() {
     document.addEventListener('click', (e) => {
@@ -72,11 +72,18 @@ const UI = {
   },
 
   /**
-   * Switch active content view
+   * Switch active content view with smooth animation
    * @param {string} viewName
    */
   switchView(viewName) {
+    if (this.currentView === viewName) return;
     this.currentView = viewName;
+
+    // Smoothly scroll main wrapper to top on view switch
+    const mainWrapper = document.querySelector('.main-wrapper');
+    if (mainWrapper) {
+      mainWrapper.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
     // Update nav active states
     document.querySelectorAll('.nav-item').forEach(item => {
@@ -88,9 +95,12 @@ const UI = {
       }
     });
 
-    // Update view containers
+    // Update view containers with smooth entrance animation re-trigger
     document.querySelectorAll('.view-content').forEach(view => {
       if (view.id === `view-${viewName}`) {
+        view.classList.remove('active');
+        // Trigger DOM reflow to restart css animation cleanly
+        void view.offsetWidth;
         view.classList.add('active');
       } else {
         view.classList.remove('active');
@@ -98,9 +108,9 @@ const UI = {
     });
 
     // Trigger sub-module updates if needed
-    if (viewName === 'stacks') WorkflowManager.renderStacks();
-    if (viewName === 'workspaces') WorkspaceManager.renderWorkspaces();
-    if (viewName === 'prompts') PromptLibrary.renderPrompts();
+    if (viewName === 'stacks' && typeof WorkflowManager !== 'undefined') WorkflowManager.renderStacks();
+    if (viewName === 'workspaces' && typeof WorkspaceManager !== 'undefined') WorkspaceManager.renderWorkspaces();
+    if (viewName === 'prompts' && typeof PromptLibrary !== 'undefined') PromptLibrary.renderPrompts();
     if (viewName === 'apihub' && typeof GeminiClient !== 'undefined') GeminiClient.updateUIStatus();
     if (viewName === 'settings' && typeof CacheManager !== 'undefined') {
       CacheManager.updateStorageStats();
