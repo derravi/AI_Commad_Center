@@ -1,420 +1,376 @@
 /**
- * AI Command Center - Universal Prompt Library
- * Manage reusable prompt engineering templates with 1-click copy, direct dispatch to LLMs,
- * and real-time Gemini Master Prompt Enhancement.
+ * AI Command Center - AI Prompt Engineering Studio
+ * Manages multi-lingual prompt transformation, real-time Gemini optimization,
+ * prompt modes (Master Prompt, Polish, Translate, Shorten, Deep Reasoning, Image, Code),
+ * live test run execution, and 1-click model launching.
  */
 const PromptLibrary = {
-  promptsList: [],
-  selectedCategory: 'all',
+  activeMode: 'enhance',
+  activeStudioOutput: '',
+  isTransforming: false,
+  isTesting: false,
+
+  // Human-readable titles & badges for transformation modes
+  modeLabels: {
+    enhance: { title: 'Master Template', badge: '🚀 Master Prompt' },
+    polish: { title: 'Polished Prompt', badge: '✨ Polished' },
+    translate: { title: 'Translated AI Prompt', badge: '🌐 Translated' },
+    concise: { title: 'Concise Prompt', badge: '🎯 Ultra Concise' },
+    cot: { title: 'Deep Reasoning (CoT)', badge: '🧠 Chain-of-Thought' },
+    image: { title: 'Art & Image Prompt', badge: '🎨 Midjourney/DALL-E' },
+    code: { title: 'Code Architecture Spec', badge: '💻 Architecture Spec' }
+  },
 
   /**
-   * Initialize Prompt Library
+   * Initialize Prompt Studio
    */
   async init() {
-    const data = await StorageManager.get('prompts');
-    this.promptsList = data.prompts || [];
-    this.renderPrompts();
-    this.initCategoryFilters();
-    this.initEnhanceModalButton();
+    // Ensure prompt storage is clean
+    try {
+      const data = await StorageManager.get('prompts');
+      if (data.prompts && data.prompts.length > 0) {
+        await StorageManager.set({ prompts: [] });
+      }
+    } catch (e) {
+      console.warn('Storage cleanup notice:', e);
+    }
+
+    this.initStudio();
+    this.updateStudioEngineStatus();
   },
 
   /**
-   * Initialize Category Filter Tabs
+   * Update the Studio's Live Engine Status Indicator
    */
-  initCategoryFilters() {
-    const filterBtns = document.querySelectorAll('#prompts-category-filters button');
-    filterBtns.forEach(btn => {
+  updateStudioEngineStatus() {
+    const statusPill = document.getElementById('prompt-studio-engine-pill');
+    const statusDot = document.getElementById('prompt-studio-status-dot');
+    const statusText = document.getElementById('prompt-studio-status-text');
+
+    if (!statusPill || !statusDot || !statusText) return;
+
+    const isConn = typeof GeminiClient !== 'undefined' && GeminiClient.isConnected();
+    if (isConn) {
+      statusDot.style.background = 'var(--status-success)';
+      statusDot.style.boxShadow = '0 0 8px var(--status-success)';
+      const modelName = GeminiClient.models[GeminiClient.model]?.name || 'Gemini 2.0 Flash';
+      statusText.textContent = `${modelName} Ready ⚡`;
+      statusPill.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+      statusPill.style.background = 'rgba(16, 185, 129, 0.12)';
+    } else {
+      statusDot.style.background = 'var(--text-dim)';
+      statusDot.style.boxShadow = 'none';
+      statusText.textContent = 'Offline (Connect API Key)';
+      statusPill.style.borderColor = 'var(--border-subtle)';
+      statusPill.style.background = 'rgba(148, 163, 184, 0.1)';
+    }
+  },
+
+  /**
+   * Initialize the AI Prompt Engineering Studio Playground
+   */
+  initStudio() {
+    const inputArea = document.getElementById('prompt-studio-input');
+    const charCounter = document.getElementById('prompt-studio-char-count');
+    const clearBtn = document.getElementById('btn-prompt-studio-clear');
+    const transformBtn = document.getElementById('btn-run-prompt-transform');
+    const modeBtns = document.querySelectorAll('.prompt-mode-pill, .prompt-mode-btn');
+
+    // Input character & word counter
+    if (inputArea && charCounter) {
+      const updateCounts = () => {
+        const text = inputArea.value;
+        const charCount = text.length;
+        const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
+        charCounter.textContent = `${charCount} chars • ${wordCount} words`;
+      };
+
+      inputArea.addEventListener('input', updateCounts);
+      updateCounts();
+
+      // Ctrl + Enter shortcut to trigger transformation
+      inputArea.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault();
+          this.executeTransformation();
+        }
+      });
+    }
+
+    // Clear button
+    if (clearBtn && inputArea) {
+      clearBtn.addEventListener('click', () => {
+        inputArea.value = '';
+        inputArea.dispatchEvent(new Event('input'));
+        inputArea.focus();
+        this.hideStudioOutput();
+      });
+    }
+
+    // Mode Selector Pills (7 Modes)
+    modeBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
+        modeBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        this.selectedCategory = btn.getAttribute('data-cat') || 'all';
-        this.renderPrompts();
+        const mode = btn.getAttribute('data-mode') || 'enhance';
+        this.activeMode = mode;
+
+        const transformBtnText = document.getElementById('btn-transform-text');
+        if (transformBtnText) {
+          const info = this.modeLabels[mode] || this.modeLabels.enhance;
+          transformBtnText.textContent = `⚡ Enhance: ${info.title}`;
+        }
+      });
+    });
+
+    // Run Transformation Button
+    if (transformBtn) {
+      transformBtn.addEventListener('click', () => {
+        this.executeTransformation();
+      });
+    }
+
+    // Studio Output Actions
+    this.initStudioOutputActions();
+  },
+
+  /**
+   * Bind events for Studio Output actions (Copy, Test Run, Launch)
+   */
+  initStudioOutputActions() {
+    const copyBtn = document.getElementById('btn-studio-copy');
+    const testBtn = document.getElementById('btn-studio-test-run');
+    const closeTestBtn = document.getElementById('btn-close-test-output');
+    const launchChips = document.querySelectorAll('[data-studio-ai]');
+
+    // Copy prompt
+    if (copyBtn) {
+      copyBtn.addEventListener('click', async () => {
+        if (!this.activeStudioOutput) return;
+        await this.copyTextToClipboard(this.activeStudioOutput, 'Studio prompt');
+        const orig = copyBtn.innerHTML;
+        copyBtn.innerHTML = '✅ Copied!';
+        setTimeout(() => { copyBtn.innerHTML = orig; }, 1800);
+      });
+    }
+
+    // Test Run with Gemini in real time
+    if (testBtn) {
+      testBtn.addEventListener('click', () => {
+        this.executeStudioTestRun();
+      });
+    }
+
+    // Close test preview
+    if (closeTestBtn) {
+      closeTestBtn.addEventListener('click', () => {
+        const testContainer = document.getElementById('prompt-studio-test-container');
+        if (testContainer) testContainer.style.display = 'none';
+      });
+    }
+
+    // 1-Click Launch Chips
+    launchChips.forEach(chip => {
+      chip.addEventListener('click', async () => {
+        if (!this.activeStudioOutput) {
+          UI.showToast('Generate a prompt in the studio first!', 'warning');
+          return;
+        }
+        const targetAi = chip.getAttribute('data-studio-ai');
+        await this.copyTextToClipboard(this.activeStudioOutput, 'Studio prompt');
+        if (typeof ToolsManager !== 'undefined' && typeof ToolsManager.launchTool === 'function') {
+          ToolsManager.launchTool(targetAi);
+        }
+        UI.showToast(`Copied & opened ${targetAi.toUpperCase()}! Paste with Ctrl+V`, 'info');
       });
     });
   },
 
   /**
-   * Initialize Enhance with Gemini Button inside Add Prompt modal
+   * Execute Prompt Transformation using Gemini API
    */
-  initEnhanceModalButton() {
-    const enhanceBtn = document.getElementById('btn-enhance-prompt-gemini');
-    const contentTextarea = document.getElementById('input-prompt-content');
+  async executeTransformation() {
+    const inputArea = document.getElementById('prompt-studio-input');
+    const rawText = (inputArea?.value || '').trim();
 
-    if (enhanceBtn && contentTextarea) {
-      enhanceBtn.addEventListener('click', async () => {
-        const raw = contentTextarea.value.trim();
-        if (!raw) {
-          UI.showToast('Please type a rough prompt first to enhance it', 'warning');
-          return;
-        }
-
-        if (typeof GeminiClient === 'undefined' || !GeminiClient.isConnected()) {
-          UI.showToast('Connect your Gemini API Key in the Gemini AI Engine tab to use this feature!', 'warning');
-          return;
-        }
-
-        const prevText = enhanceBtn.innerHTML;
-        enhanceBtn.innerHTML = '✨ Enhancing...';
-        enhanceBtn.disabled = true;
-
-        try {
-          const enhanced = await GeminiClient.enhancePrompt(raw);
-          contentTextarea.value = enhanced;
-          UI.showToast('Prompt upgraded to Master Template with Gemini!', 'success');
-        } catch (err) {
-          UI.showToast(`Enhancement failed: ${err.message}`, 'error');
-        } finally {
-          enhanceBtn.innerHTML = prevText;
-          enhanceBtn.disabled = false;
-        }
-      });
-    }
-  },
-
-  /**
-   * Render Prompt Cards
-   */
-  renderPrompts() {
-    const container = document.getElementById('prompts-grid-container');
-    if (!container) return;
-
-    const filtered = this.selectedCategory === 'all'
-      ? this.promptsList
-      : this.promptsList.filter(p => p.category === this.selectedCategory);
-
-    if (filtered.length === 0) {
-      container.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 48px; color: var(--text-dim);">
-          <p>No prompts found. Click "Add Prompt" to save your favorite AI prompt template.</p>
-        </div>
-      `;
+    if (!rawText) {
+      UI.showToast('Please type your prompt or task idea first!', 'warning');
+      inputArea?.focus();
       return;
     }
-
-    container.innerHTML = filtered.map(prompt => {
-      const safeTitle = this.escapeHtml(prompt.title);
-      const safeCategory = this.escapeHtml(prompt.category || 'general');
-      const safeId = this.escapeHtml(prompt.id);
-      const tagsHtml = (prompt.tags || []).map(t => `<span class="tool-tag">${this.escapeHtml(t.replace(/^#/, ''))}</span>`).join('');
-      return `
-        <div class="prompt-card" draggable="true" data-id="${safeId}">
-          <div class="prompt-card-header">
-            <span class="prompt-title">${safeTitle}</span>
-            <div style="display: flex; gap: 6px; align-items: center;">
-              <span class="badge badge-accent">${safeCategory}</span>
-              <button class="tool-action-btn" data-action="enhance-prompt" data-id="${safeId}" title="Enhance prompt with Gemini AI">
-                ✨
-              </button>
-              <button class="tool-action-btn" data-action="edit-prompt" data-id="${safeId}" title="Edit Prompt">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                </svg>
-              </button>
-              <button class="tool-action-btn" data-action="delete-prompt" data-id="${safeId}" title="Delete Prompt">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="3 6 5 6 21 6"></polyline>
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                </svg>
-              </button>
-            </div>
-          </div>
-          
-          <div class="prompt-text-box">${this.escapeHtml(prompt.content)}</div>
-          
-          <div style="display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;">
-            ${tagsHtml}
-          </div>
-
-          <div class="prompt-actions-bar">
-            <button class="btn-primary" style="padding: 6px 14px; font-size: 12px;" data-action="copy-prompt" data-id="${safeId}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-              </svg>
-              Copy Prompt
-            </button>
-            
-            <div class="prompt-launch-dropdown">
-              <span class="prompt-ai-chip" data-action="launch-ai" data-id="${safeId}" data-ai="chatgpt" title="Open ChatGPT">GPT</span>
-              <span class="prompt-ai-chip" data-action="launch-ai" data-id="${safeId}" data-ai="claude" title="Open Claude">Claude</span>
-              <span class="prompt-ai-chip" data-action="launch-ai" data-id="${safeId}" data-ai="gemini" title="Open Gemini">Gemini</span>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    // Attach event listeners to prevent CSP inline event handler violations
-    container.querySelectorAll('[data-action="enhance-prompt"]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const id = btn.getAttribute('data-id');
-        if (id) this.enhancePromptWithAI(id);
-      });
-    });
-
-    container.querySelectorAll('[data-action="edit-prompt"]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const id = btn.getAttribute('data-id');
-        if (id) this.openEditModal(id);
-      });
-    });
-
-    container.querySelectorAll('[data-action="delete-prompt"]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const id = btn.getAttribute('data-id');
-        if (id) this.deletePrompt(id);
-      });
-    });
-
-    container.querySelectorAll('[data-action="copy-prompt"]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = btn.getAttribute('data-id');
-        if (id) this.copyPrompt(id);
-      });
-    });
-
-    container.querySelectorAll('[data-action="launch-ai"]').forEach(chip => {
-      chip.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const id = chip.getAttribute('data-id');
-        const ai = chip.getAttribute('data-ai');
-        if (id && ai) this.launchWithAI(id, ai);
-      });
-    });
-
-    // Drag-to-Reorder mechanics
-    this.initDragAndDrop(container);
-  },
-
-  /**
-   * HTML5 Drag-and-Drop Reordering for Prompts
-   */
-  initDragAndDrop(container) {
-    let draggedId = null;
-
-    container.querySelectorAll('.prompt-card').forEach(card => {
-      card.addEventListener('dragstart', (e) => {
-        draggedId = card.getAttribute('data-id');
-        card.style.opacity = '0.4';
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', draggedId);
-      });
-
-      card.addEventListener('dragend', () => {
-        card.style.opacity = '1';
-        container.querySelectorAll('.prompt-card').forEach(c => c.classList.remove('drag-over-target'));
-      });
-
-      card.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-        card.classList.add('drag-over-target');
-      });
-
-      card.addEventListener('dragleave', () => {
-        card.classList.remove('drag-over-target');
-      });
-
-      card.addEventListener('drop', async (e) => {
-        e.preventDefault();
-        card.classList.remove('drag-over-target');
-        const targetId = card.getAttribute('data-id');
-
-        if (!draggedId || draggedId === targetId) return;
-
-        const fromIdx = this.promptsList.findIndex(p => p.id === draggedId);
-        const toIdx = this.promptsList.findIndex(p => p.id === targetId);
-
-        if (fromIdx !== -1 && toIdx !== -1) {
-          const [movedPrompt] = this.promptsList.splice(fromIdx, 1);
-          this.promptsList.splice(toIdx, 0, movedPrompt);
-
-          await StorageManager.set({ prompts: this.promptsList });
-          this.renderPrompts();
-        }
-      });
-    });
-  },
-
-  /**
-   * Open Edit Modal for a Prompt
-   * @param {string} promptId
-   */
-  openEditModal(promptId) {
-    const prompt = this.promptsList.find(p => p.id === promptId);
-    if (!prompt) return;
-
-    const modal = document.getElementById('modal-add-prompt');
-    const form = document.getElementById('form-add-prompt');
-    if (!modal || !form) return;
-
-    const titleEl = modal.querySelector('.modal-header h3');
-    const submitBtn = form.querySelector('button[type="submit"]');
-
-    if (titleEl) titleEl.textContent = 'Edit Prompt Template';
-    if (submitBtn) submitBtn.textContent = 'Update Prompt';
-
-    form.dataset.editId = prompt.id;
-    const titleInp = document.getElementById('input-prompt-title');
-    const catInp = document.getElementById('select-prompt-category');
-    const contentInp = document.getElementById('input-prompt-content');
-    const tagsInp = document.getElementById('input-prompt-tags');
-
-    if (titleInp) titleInp.value = prompt.title || '';
-    if (catInp) catInp.value = prompt.category || 'general';
-    if (contentInp) contentInp.value = prompt.content || '';
-    if (tagsInp) tagsInp.value = (prompt.tags || []).join(', ');
-
-    UI.openModal('modal-add-prompt');
-  },
-
-  /**
-   * Update existing prompt
-   * @param {string} promptId
-   * @param {object} promptData
-   */
-  async updatePrompt(promptId, promptData) {
-    const index = this.promptsList.findIndex(p => p.id === promptId);
-    if (index === -1) {
-      UI.showToast('Prompt not found', 'error');
-      return false;
-    }
-
-    if (!promptData.title || !promptData.content) {
-      UI.showToast('Please provide both Title and Prompt Content', 'error');
-      return false;
-    }
-
-    this.promptsList[index] = {
-      ...this.promptsList[index],
-      title: promptData.title.trim().slice(0, 100),
-      category: promptData.category || 'general',
-      content: promptData.content.trim().slice(0, 10000),
-      tags: promptData.tags ? promptData.tags.split(',').map(t => t.trim().replace(/^#/, '').toLowerCase().slice(0, 30)).filter(Boolean).slice(0, 10) : []
-    };
-
-    await StorageManager.set({ prompts: this.promptsList });
-    this.renderPrompts();
-    UI.showToast(`Updated prompt "${this.promptsList[index].title}"!`, 'success');
-    return true;
-  },
-
-  /**
-   * Enhance an existing prompt card using Gemini
-   * @param {string} promptId
-   */
-  async enhancePromptWithAI(promptId) {
-    const prompt = this.promptsList.find(p => p.id === promptId);
-    if (!prompt) return;
 
     if (typeof GeminiClient === 'undefined' || !GeminiClient.isConnected()) {
-      UI.showToast('Connect your Gemini API Key in the Gemini AI Engine tab to enhance prompts!', 'warning');
+      UI.showToast('Please connect your Google Gemini API key in the Gemini AI Engine tab to use AI Studio!', 'warning');
+      UI.switchView('apihub');
       return;
     }
 
-    UI.showToast(`Enhancing "${prompt.title}" with Gemini...`, 'info');
+    if (this.isTransforming) return;
+    this.isTransforming = true;
+
+    const transformBtn = document.getElementById('btn-run-prompt-transform');
+    const spinner = document.getElementById('btn-transform-spinner');
+    const btnText = document.getElementById('btn-transform-text');
+    const toneSelect = document.getElementById('prompt-studio-tone');
+    const tone = toneSelect ? toneSelect.value : 'professional';
+    const language = 'english';
+
+    if (transformBtn) transformBtn.disabled = true;
+    if (spinner) spinner.style.display = 'inline-block';
+    if (btnText) btnText.textContent = 'Synthesizing with Gemini ⚡...';
+
+    UI.showToast(`Generating ${this.modeLabels[this.activeMode]?.title || 'Prompt'} with Gemini...`, 'info');
 
     try {
-      const enhanced = await GeminiClient.enhancePrompt(prompt.content);
-      prompt.content = enhanced;
-      await StorageManager.set({ prompts: this.promptsList });
-      this.renderPrompts();
-      await navigator.clipboard.writeText(enhanced);
-      UI.showToast(`Prompt enhanced & copied to clipboard!`, 'success');
+      const transformed = await GeminiClient.transformPrompt(rawText, this.activeMode, { tone, language });
+      this.activeStudioOutput = transformed.trim();
+      this.renderStudioOutput(this.activeStudioOutput, this.activeMode);
+      UI.showToast('Prompt optimized successfully!', 'success');
     } catch (err) {
-      UI.showToast(`Enhancement failed: ${err.message}`, 'error');
+      console.error('Transformation error:', err);
+      UI.showToast(`Generation failed: ${err.message}`, 'error');
+    } finally {
+      this.isTransforming = false;
+      if (transformBtn) transformBtn.disabled = false;
+      if (spinner) spinner.style.display = 'none';
+      if (btnText) {
+        const info = this.modeLabels[this.activeMode] || this.modeLabels.enhance;
+        btnText.textContent = `✨ Generate ${info.title}`;
+      }
     }
   },
 
   /**
-   * Copy prompt content to clipboard
-   * @param {string} promptId
+   * Render the Transformed Prompt in the Studio Output Box
    */
-  async copyPrompt(promptId) {
-    const prompt = this.promptsList.find(p => p.id === promptId);
-    if (!prompt) return;
+  renderStudioOutput(outputText, mode) {
+    const outputContainer = document.getElementById('prompt-studio-output-container');
+    const outputTextarea = document.getElementById('prompt-studio-output-text');
+    const outputBadge = document.getElementById('prompt-output-badge');
+
+    if (!outputContainer || !outputTextarea) return;
+
+    const modeInfo = this.modeLabels[mode] || this.modeLabels.enhance;
+    if (outputBadge) {
+      outputBadge.textContent = modeInfo.badge;
+    }
+
+    outputTextarea.value = outputText;
+    outputContainer.style.display = 'block';
+
+    // Auto resize textarea height to content
+    outputTextarea.style.height = 'auto';
+    outputTextarea.style.height = Math.min(Math.max(outputTextarea.scrollHeight + 10, 140), 380) + 'px';
+
+    // Smooth scroll to output
+    outputContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  },
+
+  /**
+   * Hide studio output panel
+   */
+  hideStudioOutput() {
+    const outputContainer = document.getElementById('prompt-studio-output-container');
+    const testContainer = document.getElementById('prompt-studio-test-container');
+    if (outputContainer) outputContainer.style.display = 'none';
+    if (testContainer) testContainer.style.display = 'none';
+    this.activeStudioOutput = '';
+  },
+
+  /**
+   * Run the transformed prompt directly against Gemini to test its output
+   */
+  async executeStudioTestRun() {
+    if (!this.activeStudioOutput) return;
+
+    if (typeof GeminiClient === 'undefined' || !GeminiClient.isConnected()) {
+      UI.showToast('Connect your Gemini API Key in the Gemini AI Engine tab!', 'warning');
+      return;
+    }
+
+    if (this.isTesting) return;
+    this.isTesting = true;
+
+    const testBtn = document.getElementById('btn-studio-test-run');
+    const testContainer = document.getElementById('prompt-studio-test-container');
+    const testContent = document.getElementById('prompt-studio-test-content');
+
+    if (testBtn) {
+      testBtn.disabled = true;
+      testBtn.textContent = '⚡ Running Execution...';
+    }
+
+    if (testContainer && testContent) {
+      testContainer.style.display = 'block';
+      testContent.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px; color: var(--text-muted); padding: 16px;">
+          <span class="spinner" style="font-size: 16px;">⚡</span>
+          <span>Gemini is executing your generated prompt in real time...</span>
+        </div>
+      `;
+    }
 
     try {
-      await navigator.clipboard.writeText(prompt.content);
-      UI.showToast(`Prompt "${prompt.title}" copied to clipboard!`, 'success');
+      const response = await GeminiClient.testPromptExecution(this.activeStudioOutput);
+      if (testContent) {
+        const formattedHtml = typeof GeminiClient.formatMarkdown === 'function'
+          ? GeminiClient.formatMarkdown(response)
+          : this.escapeHtml(response);
+
+        testContent.innerHTML = `
+          <div class="prompt-test-response-text" style="font-size: 13.5px; line-height: 1.6; color: var(--text-main);">
+            ${formattedHtml}
+          </div>
+        `;
+      }
+      UI.showToast('Prompt test execution finished!', 'success');
+    } catch (err) {
+      if (testContent) {
+        testContent.innerHTML = `
+          <div style="color: var(--status-danger); padding: 12px; font-size: 13px;">
+            ⚠️ Test execution failed: ${this.escapeHtml(err.message)}
+          </div>
+        `;
+      }
+      UI.showToast(`Test failed: ${err.message}`, 'error');
+    } finally {
+      this.isTesting = false;
+      if (testBtn) {
+        testBtn.disabled = false;
+        testBtn.textContent = '⚡ Test Run with Gemini';
+      }
+    }
+  },
+
+  /**
+   * Helper to safely copy any text to clipboard
+   */
+  async copyTextToClipboard(text, label = 'Content') {
+    try {
+      await navigator.clipboard.writeText(text);
+      UI.showToast(`${label} copied to clipboard!`, 'success');
     } catch (e) {
       const textarea = document.createElement('textarea');
-      textarea.value = prompt.content;
+      textarea.value = text;
       document.body.appendChild(textarea);
       textarea.select();
       document.execCommand('copy');
       document.body.removeChild(textarea);
-      UI.showToast(`Prompt "${prompt.title}" copied!`, 'success');
+      UI.showToast(`${label} copied!`, 'success');
     }
   },
 
   /**
-   * Launch prompt with selected AI service
-   * Copies prompt to clipboard then opens the AI tool
-   * @param {string} promptId
-   * @param {string} aiTarget ('chatgpt'|'claude'|'gemini')
+   * Compatibility stubs
    */
-  async launchWithAI(promptId, aiTarget) {
-    const prompt = this.promptsList.find(p => p.id === promptId);
-    if (!prompt) return;
-
-    await this.copyPrompt(promptId);
-    ToolsManager.launchTool(aiTarget);
-    UI.showToast(`Copied & opened ${aiTarget.toUpperCase()}! Paste prompt with Ctrl+V`, 'info');
-  },
+  renderPrompts() {},
+  addPrompt() { return false; },
+  updatePrompt() { return false; },
+  deletePrompt() {},
 
   /**
-   * Add a new prompt template
-   * @param {object} promptData
+   * Escape HTML entities for safe rendering
    */
-  async addPrompt(promptData) {
-    if (!promptData.title || !promptData.content) {
-      UI.showToast('Please provide both Title and Prompt Content', 'error');
-      return false;
-    }
-
-    const newPrompt = {
-      id: 'custom-p-' + Date.now(),
-      title: promptData.title.trim().slice(0, 100),
-      category: promptData.category || 'general',
-      content: promptData.content.trim().slice(0, 10000),
-      tags: promptData.tags ? promptData.tags.split(',').map(t => t.trim().replace(/^#/, '').toLowerCase().slice(0, 30)).filter(Boolean).slice(0, 10) : []
-    };
-
-    this.promptsList.push(newPrompt);
-    await StorageManager.set({ prompts: this.promptsList });
-    this.renderPrompts();
-    UI.showToast(`Prompt "${newPrompt.title}" saved!`, 'success');
-    return true;
-  },
-
-  /**
-   * Delete prompt
-   * @param {string} promptId
-   */
-  async deletePrompt(promptId) {
-    const prompt = this.promptsList.find(p => p.id === promptId);
-    const promptTitle = prompt ? prompt.title : 'this prompt template';
-
-    const ok = await UI.confirm({
-      title: 'Delete Prompt',
-      message: `Are you sure you want to delete "${promptTitle}"?`,
-      confirmText: 'Delete Prompt',
-      danger: true
-    });
-
-    if (ok) {
-      this.promptsList = this.promptsList.filter(p => p.id !== promptId);
-      await StorageManager.set({ prompts: this.promptsList });
-      this.renderPrompts();
-      UI.showToast('Prompt removed', 'info');
-    }
-  },
-
   escapeHtml(str) {
     if (!str) return '';
     return String(str)

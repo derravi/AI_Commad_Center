@@ -138,69 +138,16 @@ const StorageManager = {
       await this.set({ stacks: defaultStacks });
     }
 
-    // Seed default prompt templates if none exist
-    if (!data.prompts || !Array.isArray(data.prompts) || data.prompts.length === 0) {
-      const defaultPrompts = [
-        {
-          id: 'p1',
-          title: 'Senior Architect Code Review',
-          category: 'coding',
-          content: 'You are a Principal Software Architect. Review this code for performance bottlenecks, edge-case vulnerability, modularity, and clean-code principles:\n\n[PASTE CODE HERE]',
-          tags: ['architecture', 'code-review', 'clean-code']
-        },
-        {
-          id: 'p2',
-          title: 'Deep Research Synthesis & Counterarguments',
-          category: 'research',
-          content: 'Conduct an exhaustive deep dive on the following topic. Provide historical background, current state of the art, empirical consensus, top 3 counterarguments, and unanswered questions:\n\nTopic: [INSERT TOPIC]',
-          tags: ['research', 'literature', 'analysis']
-        },
-        {
-          id: 'p3',
-          title: 'Exploratory Data Analysis (EDA) Blueprint',
-          category: 'data',
-          content: 'Write a clean Python script using Pandas, Seaborn, and Scikit-Learn to perform automated Exploratory Data Analysis on a dataset with columns: [LIST COLUMNS]. Include missing value imputation, correlation heatmaps, and outlier detection.',
-          tags: ['eda', 'python', 'pandas']
-        },
-        {
-          id: 'p4',
-          title: 'Midjourney Photorealistic Prompt Master',
-          category: 'image',
-          content: 'Cinematic wide-angle shot of [SUBJECT], dramatic volumetric lighting, shot on 35mm lens f/1.8, Kodak Portra 400, hyper-detailed texture, 8k resolution, photorealistic, Unreal Engine 5 render style --ar 16:9 --v 6.0',
-          tags: ['midjourney', 'photorealism', 'prompt-craft']
-        },
-        {
-          id: 'p5',
-          title: 'Executive Summary & Action Items',
-          category: 'writing',
-          content: 'Synthesize the following meeting notes or transcript into: 1. Executive Summary (3 sentences), 2. Key Decisions Made, 3. Action Items with Owner and Deadlines:\n\n[PASTE NOTES]',
-          tags: ['productivity', 'executive', 'meeting']
-        }
-      ];
-      await this.set({ prompts: defaultPrompts });
-    }
-
-    // Seed default workspace if none exist
-    if (!data.workspaces || !Array.isArray(data.workspaces) || data.workspaces.length === 0) {
-      const defaultWorkspaces = [
-        {
-          id: 'ws-main',
-          name: 'AI Engineering & Research',
-          description: 'Daily workspace for AI development, coding models, and reading papers.',
-          toolIds: ['cursor', 'chatgpt', 'claude', 'perplexity', 'huggingface'],
-          notes: '📌 Current focus: Fine-tuning local models & building AI Command Center features.',
-          promptIds: ['p1', 'p2'],
-          isDefault: true
-        }
-      ];
-      await this.set({ workspaces: defaultWorkspaces });
+    // Initialize prompts list to empty if not present
+    if (!data.prompts || !Array.isArray(data.prompts)) {
+      await this.set({ prompts: [] });
     }
 
     // Seed default settings if none exist
     if (!data.settings) {
       const defaultSettings = {
-        theme: 'dark',
-        accentColor: '#6366f1',
+        theme: 'light',
+        accentColor: '#4f46e5',
         searchEngine: 'google',
         openInNewTab: true,
         showFavorites: true,
@@ -208,6 +155,9 @@ const StorageManager = {
         showRouterHero: true
       };
       await this.set({ settings: defaultSettings });
+    } else if (data.settings.theme !== 'light') {
+      data.settings.theme = 'light';
+      await this.set({ settings: data.settings });
     }
 
     if (!data.recentTools) {

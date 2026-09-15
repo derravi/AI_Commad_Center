@@ -109,8 +109,10 @@ const UI = {
 
     // Trigger sub-module updates if needed
     if (viewName === 'stacks' && typeof WorkflowManager !== 'undefined') WorkflowManager.renderStacks();
-    if (viewName === 'workspaces' && typeof WorkspaceManager !== 'undefined') WorkspaceManager.renderWorkspaces();
-    if (viewName === 'prompts' && typeof PromptLibrary !== 'undefined') PromptLibrary.renderPrompts();
+    if (viewName === 'prompts' && typeof PromptLibrary !== 'undefined') {
+      PromptLibrary.updateStudioEngineStatus();
+      PromptLibrary.renderPrompts();
+    }
     if (viewName === 'apihub' && typeof GeminiClient !== 'undefined') GeminiClient.updateUIStatus();
     if (viewName === 'settings' && typeof CacheManager !== 'undefined') {
       CacheManager.updateStorageStats();
@@ -125,26 +127,16 @@ const UI = {
     const data = await StorageManager.get('settings');
     const settings = data.settings || {};
 
-    // Apply Theme
-    const currentTheme = settings.theme || 'dark';
-    document.documentElement.setAttribute('data-theme', currentTheme);
+    // Apply Light Theme
+    document.documentElement.setAttribute('data-theme', 'light');
+    if (settings.theme !== 'light') {
+      settings.theme = 'light';
+      await StorageManager.set({ settings });
+    }
 
     // Apply Accent color
     if (settings.accentColor) {
       document.documentElement.style.setProperty('--accent-primary', settings.accentColor);
-    }
-
-    // Bind Theme select in settings
-    const themeSelect = document.getElementById('settings-theme-select');
-    if (themeSelect) {
-      themeSelect.value = currentTheme;
-      themeSelect.addEventListener('change', async (e) => {
-        const newTheme = e.target.value;
-        document.documentElement.setAttribute('data-theme', newTheme);
-        settings.theme = newTheme;
-        await StorageManager.set({ settings });
-        this.showToast(`Theme updated to ${newTheme.toUpperCase()}`, 'info');
-      });
     }
 
     // Theme palette swatches
@@ -794,7 +786,7 @@ const UI = {
           <div style="width: 48px; height: 48px; border-radius: 50%; background: ${isDanger ? 'rgba(239, 68, 68, 0.15)' : 'rgba(99, 102, 241, 0.15)'}; border: 1px solid ${isDanger ? 'rgba(239, 68, 68, 0.3)' : 'rgba(99, 102, 241, 0.3)'}; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 22px;">
             ${isDanger ? '🗑️' : '❓'}
           </div>
-          <h3 style="font-size: 18px; margin-bottom: 8px; color: #ffffff;">${this.escapeHtml(title)}</h3>
+          <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--text-main);">${this.escapeHtml(title)}</h3>
           <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5;">${this.escapeHtml(message)}</p>
           <div style="display: flex; gap: 10px; justify-content: center;">
             <button id="ui-confirm-cancel-btn" class="btn-secondary" style="flex: 1; justify-content: center;">Cancel</button>

@@ -35,10 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 9. Initialize Prompt Library
     await PromptLibrary.init();
 
-    // 10. Initialize Workspaces
-    await WorkspaceManager.init();
-
-    // 11. Initialize Multi-AI & Assistant Drawer
+    // 10. Initialize Multi-AI & Assistant Drawer
     AssistantManager.init();
 
     // 12. Initialize Chrome Cache & Storage Manager

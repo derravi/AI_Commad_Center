@@ -37,7 +37,8 @@ const GeminiClient = {
   personas: {
     expert_architect: 'You are the AI Command Center Core Intelligence. You are an elite Principal Software Architect, Full-Stack Engineer, and AI Tooling Strategist. Provide crisp, ultra-precise, actionable recommendations with clean code examples, step-by-step blueprints, and verified tool stacks. Use clean markdown formatting.',
     concise_copilot: 'You are a fast, concise AI Copilot. Give direct, bullet-pointed answers without unnecessary conversational fluff. Focus on immediate solutions and exact commands.',
-    creative_strategist: 'You are a Creative AI Director and Prompt Engineer. Provide hyper-detailed, visionary prompts, artistic workflows, and design guidance.'
+    creative_strategist: 'You are a Creative AI Director and Prompt Engineer. Provide hyper-detailed, visionary prompts, artistic workflows, and design guidance.',
+    deep_researcher: 'You are a Deep Technical Researcher and Lead Scientist. Provide thorough literature synthesis, edge-case evaluations, mathematical rigor, and structured evidence-based analysis.'
   },
 
   /**
@@ -233,6 +234,11 @@ const GeminiClient = {
     // Update Assistant Side Drawer status
     if (typeof AssistantManager !== 'undefined' && AssistantManager.updateDrawerStatus) {
       AssistantManager.updateDrawerStatus();
+    }
+
+    // Update Prompt Studio Engine status
+    if (typeof PromptLibrary !== 'undefined' && typeof PromptLibrary.updateStudioEngineStatus === 'function') {
+      PromptLibrary.updateStudioEngineStatus();
     }
   },
 
@@ -554,29 +560,138 @@ Return only pure JSON without markdown backticks.`;
   },
 
   /**
-   * Enhance raw prompt into Master-grade Prompt
+   * Enhance raw prompt into Master-grade Prompt (Legacy helper)
    * @param {string} rawPrompt
    * @returns {Promise<string>}
    */
   async enhancePrompt(rawPrompt) {
-    const prompt = `You are a world-class AI Prompt Engineer. Transform the following raw prompt into a high-performance, master-level structured prompt:
+    return this.transformPrompt(rawPrompt, 'enhance');
+  },
 
-RAW PROMPT:
-"${rawPrompt}"
+  /**
+   * Universal AI Prompt Transformation Studio Engine
+   * Supports local language translation, polishing, master enhancement, reasoning, image crafter, and code specs.
+   * @param {string} rawPrompt
+   * @param {'polish'|'enhance'|'translate'|'concise'|'cot'|'image'|'code'} mode
+   * @param {object} [options] { tone, language, format }
+   * @returns {Promise<string>}
+   */
+  async transformPrompt(rawPrompt, mode = 'enhance', options = {}) {
+    const tone = options.tone || 'professional';
+    const targetLang = options.language || 'english';
 
-REQUIREMENTS FOR ENHANCED PROMPT:
-1. Clear Role / Persona Definition
-2. Specific Context & Objectives
-3. Structured Step-by-Step Instructions
-4. Strict Constraints & Edge-Cases
-5. Placeholders in [UPPERCASE_BRACKETS] for customizable fields
-6. Expected Output Format
+    let instructions = '';
+    let temperature = 0.4;
 
-Return ONLY the enhanced prompt content ready to copy-paste.`;
+    switch (mode) {
+      case 'polish':
+        instructions = `You are a world-class prompt editor and communications specialist.
+TASK: Polish and refine the user's raw prompt into clear, grammatically flawless, highly articulate phrasing with high readability.
+RULES:
+1. Preserve the user's exact original goal and intent.
+2. Elevate vocabulary, eliminate ambiguity, and improve coherence.
+3. If the input is in a local or vernacular language (Hindi, Hinglish, Gujarati, Spanish, etc.), translate and polish it into crisp, natural ${targetLang === 'hinglish' ? 'Hinglish' : 'English'}.
+4. Tone should be ${tone}.
+5. Return ONLY the polished prompt text without conversational preambles or explanations.`;
+        temperature = 0.3;
+        break;
 
-    return await this.generateText(prompt, {
-      temperature: 0.4,
-      systemInstruction: 'You are a master prompt engineering specialist. Output clean, ready-to-use prompt text.'
+      case 'enhance':
+        instructions = `You are an elite AI Prompt Engineering Strategist.
+TASK: Transform the user's rough idea, query, or local language prompt into an industry-grade Master Prompt Template.
+STRUCTURE:
+- [ROLE / PERSONA]: Define the exact domain expert persona.
+- [CONTEXT & OBJECTIVE]: Clear purpose and high-value context.
+- [STEP-BY-STEP INSTRUCTIONS]: Numbered, logical workflow steps.
+- [CONSTRAINTS & EDGE CASES]: Strict boundaries, format constraints, and error prevention.
+- [PLACEHOLDERS]: Use uppercase brackets like [TOPIC], [CODE_SNIPPET], [TARGET_AUDIENCE] for user-fillable variables.
+- [DESIRED OUTPUT FORMAT]: Exact markdown/JSON/table format.
+Tone: ${tone}. Target language: ${targetLang === 'hinglish' ? 'Hinglish' : 'English'}.
+Return ONLY the master-level prompt ready to copy and run.`;
+        temperature = 0.4;
+        break;
+
+      case 'translate':
+        instructions = `You are a specialized Multilingual AI Prompt Translator & Localizer.
+TASK: Understand the user's prompt written in any local language, dialect, or colloquial slang (Hindi, Hinglish, Gujarati, Bengali, Tamil, Telugu, Spanish, French, etc.) and translate it into a high-performance, frontier-grade prompt optimized for LLMs.
+RULES:
+1. Accurately decipher cultural context, colloquialisms, and implicit intent.
+2. Translate and structure into powerful, prompt-engineered English (or Hinglish if specified).
+3. Add relevant professional keywords to maximize LLM comprehension.
+4. Return ONLY the final translated & structured prompt.`;
+        temperature = 0.3;
+        break;
+
+      case 'concise':
+        instructions = `You are an AI Efficiency Specialist and Token Optimizer.
+TASK: Compress the user's prompt into an ultra-concise, high-density instruction set.
+RULES:
+1. Remove all filler words, greetings, redundancies, and conversational fluff.
+2. Use dense imperative verbs and bulleted directives.
+3. Maximize token efficiency while keeping 100% of functional requirements intact.
+4. Return ONLY the concise prompt.`;
+        temperature = 0.2;
+        break;
+
+      case 'cot':
+        instructions = `You are a Deep Reasoning and Chain-of-Thought (CoT) Prompt Architect.
+TASK: Convert the user's task into an advanced Chain-of-Thought reasoning prompt.
+RULES:
+1. Instruct the AI to explicitly break down the problem into sequential analytical milestones.
+2. Require the AI to state underlying assumptions, analyze trade-offs, explore counterarguments, and self-correct errors before producing final answers.
+3. Include verification checks and structured reasoning markers.
+4. Return ONLY the Chain-of-Thought prompt.`;
+        temperature = 0.3;
+        break;
+
+      case 'image':
+        instructions = `You are a Master Generative AI Art Director and Visual Prompt Engineer for Midjourney v6, DALL-E 3, Stable Diffusion XL, and Flux.
+TASK: Convert the user's visual concept or rough description into a stunning, photorealistic / artistic image generation prompt.
+RULES:
+1. Include detailed subject descriptions, physical traits, dynamic composition, and environment setting.
+2. Specify cinematic lighting (e.g. volumetric rays, rim light, golden hour, moody chiaroscuro).
+3. Specify camera, lens & film attributes (e.g. 35mm lens, f/1.8, Hasselblad, 8K resolution, photorealistic, Unreal Engine 5 render).
+4. Append aspect ratio and quality parameters (e.g. --ar 16:9 --v 6.0 --style raw).
+5. Return ONLY the ready-to-use image prompt.`;
+        temperature = 0.5;
+        break;
+
+      case 'code':
+        instructions = `You are a Principal Software Architect and Lead Code Reviewer.
+TASK: Transform the user's software requirement, bug, or feature request into a production-grade Software Architecture Specification & Implementation Prompt.
+RULES:
+1. Define architectural patterns, design principles (SOLID, DRY), and clean modular file structure.
+2. Require clean type definitions, error boundary handling, and async safety.
+3. Include explicit test case requirements (Unit & Integration tests).
+4. Use placeholders like [TECH_STACK], [EXISTING_CODE] where appropriate.
+5. Return ONLY the code architecture prompt ready to give to Cursor, Claude, or ChatGPT.`;
+        temperature = 0.3;
+        break;
+
+      default:
+        instructions = `You are a master prompt engineering specialist. Polish and optimize the following prompt for maximum AI effectiveness. Return only the prompt.`;
+    }
+
+    const fullPrompt = `USER INPUT / ROUGH PROMPT:\n"""\n${rawPrompt}\n"""\n\nApply the transformation instructions now.`;
+
+    return await this.generateText(fullPrompt, {
+      temperature,
+      systemInstruction: instructions
+    });
+  },
+
+  /**
+   * Execute and Test Prompt with Gemini in real-time
+   * @param {string} promptText
+   * @returns {Promise<string>}
+   */
+  async testPromptExecution(promptText) {
+    if (!promptText || !promptText.trim()) {
+      throw new Error('Prompt content is empty');
+    }
+    return await this.generateText(promptText, {
+      temperature: 0.7,
+      systemInstruction: 'You are an intelligent AI assistant. Execute the following user prompt directly, accurately, and thoroughly.'
     });
   },
 

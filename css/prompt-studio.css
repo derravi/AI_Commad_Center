@@ -1,0 +1,356 @@
+/* ==========================================================================
+   AI COMMAND CENTER — PROMPT STUDIO & FORM ENHANCEMENTS
+   (Add after components.css)
+   ========================================================================== */
+
+/* Prompt Studio Status Pill */
+.api-status-pill-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--status-success-soft);
+  border: 1px solid rgba(16, 185, 129, 0.32);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--status-success);
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.14);
+}
+
+.api-status-pill-live .status-indicator {
+  width: 7px; height: 7px;
+  margin-right: 2px;
+  animation: livePulse 2s infinite ease-in-out;
+}
+
+/* Enhanced Step Labels */
+.prompt-step-label {
+  position: relative;
+  padding-left: 14px;
+}
+
+.prompt-step-label::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 4px; height: 14px;
+  border-radius: 2px;
+  background: var(--accent-gradient);
+}
+
+/* Enhanced Prompt Mode Pills */
+.prompt-mode-pill {
+  position: relative;
+  overflow: hidden;
+}
+
+.prompt-mode-pill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.35), transparent 55%);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  pointer-events: none;
+}
+
+.prompt-mode-pill.active::before { opacity: 1; }
+
+/* Output Box Enhancements */
+.prompt-studio-output-box {
+  position: relative;
+}
+
+.prompt-studio-output-box::before {
+  content: '✓';
+  position: absolute;
+  top: -12px; left: 24px;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.36);
+}
+
+.prompt-studio-output-header {
+  margin-top: 4px;
+}
+
+/* Live Test Card Glow */
+.prompt-studio-test-card {
+  position: relative;
+  border-color: var(--border-glow);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.10);
+}
+
+.prompt-studio-test-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2.5px;
+  background: linear-gradient(90deg, var(--status-success), var(--accent-cyan));
+  border-radius: 14px 14px 0 0;
+}
+
+/* Prompt Library Header Refinements */
+.prompt-gallery-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.prompt-search-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  background: #ffffff;
+  border: 1.5px solid var(--border-subtle);
+  width: 340px;
+  max-width: 100%;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.prompt-search-wrapper:focus-within {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.14);
+}
+
+.prompt-search-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-main);
+  font-size: 13.5px;
+  width: 100%;
+  font-weight: 500;
+}
+
+.prompt-search-input::placeholder { color: var(--text-dim); }
+
+/* --------------------------------------------------------------------------
+   FORM POLISH
+   -------------------------------------------------------------------------- */
+
+.form-group {
+  position: relative;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color var(--transition-fast);
+}
+
+.form-group:focus-within .form-label {
+  color: var(--accent-primary-dark);
+}
+
+/* Range Slider Custom Styling */
+input[type="range"].form-input {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  border-radius: var(--radius-pill);
+  outline: none;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+input[type="range"].form-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid var(--accent-primary);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.36);
+  cursor: grab;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+input[type="range"].form-input::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.48);
+}
+
+input[type="range"].form-input::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.05);
+}
+
+input[type="range"].form-input::-moz-range-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid var(--accent-primary);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.36);
+  cursor: grab;
+}
+
+/* Color Input Styling */
+input[type="color"].form-input {
+  padding: 4px;
+  height: 44px;
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+input[type="color"].form-input::-webkit-color-swatch-wrapper { padding: 2px; }
+input[type="color"].form-input::-webkit-color-swatch {
+  border: none;
+  border-radius: 8px;
+}
+
+/* Enhanced Password Toggle */
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 12px;
+  background: rgba(99, 102, 241, 0.08);
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
+  transition: all var(--transition-fast);
+}
+
+.password-toggle-btn:hover {
+  opacity: 1;
+  background: rgba(99, 102, 241, 0.16);
+  transform: scale(1.08);
+}
+
+/* --------------------------------------------------------------------------
+   KEYBOARD SHORTCUT CARD
+   -------------------------------------------------------------------------- */
+
+[data-theme="light"] .form-group > div[style*="background: var(--bg-surface-elevated)"] {
+  background: #ffffff !important;
+  border-color: var(--border-subtle) !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+kbd.search-shortcut-badge {
+  background: linear-gradient(180deg, #ffffff 0%, var(--bg-surface-elevated) 100%);
+  border: 1px solid var(--border-subtle);
+  border-bottom-width: 2.5px;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+  color: var(--accent-primary-dark);
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   GLOBAL FOCUS VISIBILITY
+   -------------------------------------------------------------------------- */
+
+:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+button:focus-visible,
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.28);
+}
+
+/* --------------------------------------------------------------------------
+   SMOOTH GRADIENT OVERLAY (for hero cards)
+   -------------------------------------------------------------------------- */
+
+.gradient-overlay {
+  position: relative;
+}
+
+.gradient-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, transparent 45%);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   ENHANCED TOOLTIP (native title just polish)
+   -------------------------------------------------------------------------- */
+
+[title] {
+  position: relative;
+}
+
+/* --------------------------------------------------------------------------
+   DARK MODE RESILIENCE — if you add a dark theme later
+   -------------------------------------------------------------------------- */
+
+[data-theme="dark"] {
+  --bg-base: #0b1220;
+  --bg-surface: #111827;
+  --bg-surface-elevated: #1a2236;
+  --bg-glass: rgba(17, 24, 39, 0.85);
+  --bg-glass-card: rgba(17, 24, 39, 0.92);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+}
+
+[data-theme="dark"] .search-box,
+[data-theme="dark"] .tool-card,
+[data-theme="dark"] .stack-card,
+[data-theme="dark"] .prompt-card,
+[data-theme="dark"] .workspace-card,
+[data-theme="dark"] .api-config-card,
+[data-theme="dark"] .api-playground-box,
+[data-theme="dark"] .modal-dialog,
+[data-theme="dark"] .cache-cleaner-card,
+[data-theme="dark"] .cache-metrics-banner {
+  background: var(--bg-surface);
+  border-color: var(--border-subtle);
+}
+
+[data-theme="dark"] .tool-name,
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4 {
+  color: var(--text-main);
+}
+
+[data-theme="dark"] .form-input,
+[data-theme="dark"] .form-select,
+[data-theme="dark"] .form-textarea {
+  background: var(--bg-surface-elevated);
+  color: var(--text-main);
+  border-color: var(--border-subtle);
+}
