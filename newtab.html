@@ -28,165 +28,144 @@
   <div class="app-container">
 
     <!-- ====================================================================
-         1. SIDEBAR NAVIGATION
-         ==================================================================== -->
-    <aside class="sidebar">
-      <div class="brand-wrapper">
-        <div class="brand-icon-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-            <polyline points="2 17 12 22 22 17"></polyline>
-            <polyline points="2 12 12 17 22 12"></polyline>
-          </svg>
-        </div>
-        <div class="brand-text">
-          <h1>AI COMMAND</h1>
-          <span>CENTER • V1.0</span>
-        </div>
-      </div>
-
-      <span class="nav-section-title">Navigation</span>
-      <ul class="nav-menu">
-        <li class="nav-item active">
-          <button data-view="dashboard">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="3" width="7" height="7"></rect>
-              <rect x="14" y="3" width="7" height="7"></rect>
-              <rect x="14" y="14" width="7" height="7"></rect>
-              <rect x="3" y="14" width="7" height="7"></rect>
-            </svg>
-            <span>Dashboard & Tools</span>
-          </button>
-        </li>
-        <li class="nav-item">
-          <button data-view="stacks">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-              <polyline points="2 17 12 22 22 17"></polyline>
-              <polyline points="2 12 12 17 22 12"></polyline>
-            </svg>
-            <span>One-Click Stacks</span>
-            <span class="nav-badge">NEW</span>
-          </button>
-        </li>
-        <li class="nav-item">
-          <button data-view="prompts">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-              <polyline points="10 9 9 9 8 9"></polyline>
-            </svg>
-            <span>Prompt Studio</span>
-          </button>
-        </li>
-        <li class="nav-item">
-          <button data-view="apihub">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-            </svg>
-            <span>Gemini AI Engine</span>
-            <span id="gemini-status-nav-badge" class="nav-badge">STATIC</span>
-          </button>
-        </li>
-        <li class="nav-item">
-          <button data-view="settings">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="3"></circle>
-              <path
-                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-              </path>
-            </svg>
-            <span>Settings & Themes</span>
-          </button>
-        </li>
-      </ul>
-
-      <div class="sidebar-footer">
-        <div class="system-status-pill">
-          <div>
-            <span class="status-indicator"></span>
-            <span>All AI Systems Online</span>
-          </div>
-          <span style="font-family: var(--font-mono); font-size: 10px;">MV3</span>
-        </div>
-      </div>
-    </aside>
-
-    <!-- ====================================================================
-         2. MAIN CONTENT WRAPPER
+         MAIN CONTENT WRAPPER (FULL WIDTH, NO SIDEBAR)
          ==================================================================== -->
     <main class="main-wrapper">
 
-      <!-- Top Navigation & Universal Search -->
+      <!-- Top Navigation & Universal Search Header -->
       <header class="top-header">
-        <div class="header-clock-widget">
-          <span id="header-clock-time" class="clock-time">12:00:00 PM</span>
-          <span id="header-clock-date" class="clock-date">Saturday, Sep 5</span>
-        </div>
+        <div class="top-header-main-row">
+          <!-- Live Clock Widget -->
+          <div class="header-clock-widget">
+            <span id="header-clock-time" class="clock-time">12:00:00 PM</span>
+            <span id="header-clock-date" class="clock-date">Saturday, Sep 5</span>
+          </div>
 
-        <!-- Universal Search Box -->
-        <div class="search-container">
-          <div class="search-box">
-            <div class="search-engine-wrapper" id="search-engine-wrapper">
-              <button id="search-engine-selector" class="search-engine-selector" title="Select Search Engine"
-                type="button" aria-haspopup="true" aria-expanded="false">
-                <span id="search-engine-label">🔍 Google</span>
-                <svg class="engine-dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
+          <!-- Universal Search Box -->
+          <div class="search-container">
+            <div class="search-box">
+              <div class="search-engine-wrapper" id="search-engine-wrapper">
+                <button id="search-engine-selector" class="search-engine-selector" title="Select Search Engine"
+                  type="button" aria-haspopup="true" aria-expanded="false">
+                  <span id="search-engine-label">🔍 Google</span>
+                  <svg class="engine-dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
 
-              <!-- Search Engine Dropdown Menu -->
-              <div id="search-engine-dropdown" class="search-engine-dropdown">
-                <div class="engine-dropdown-header">
-                  <span>Search Engines</span>
-                  <button id="btn-open-add-engine" class="engine-add-btn" type="button"
-                    data-open-modal="modal-add-engine" title="Add Custom Search Engine">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                      stroke-width="2.5">
-                      <line x1="12" y1="5" x2="12" y2="19"></line>
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
-                    <span>Add New</span>
-                  </button>
-                </div>
-                <div id="search-engine-list" class="engine-list-container">
-                  <!-- Dynamically populated engine items -->
+                <!-- Search Engine Dropdown Menu -->
+                <div id="search-engine-dropdown" class="search-engine-dropdown">
+                  <div class="engine-dropdown-header">
+                    <span>Search Engines</span>
+                    <button id="btn-open-add-engine" class="engine-add-btn" type="button"
+                      data-open-modal="modal-add-engine" title="Add Custom Search Engine">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                      </svg>
+                      <span>Add New</span>
+                    </button>
+                  </div>
+                  <div id="search-engine-list" class="engine-list-container">
+                    <!-- Dynamically populated engine items -->
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <input id="main-search-input" class="search-input" type="text"
-              placeholder="Search AI tools or query web... (Press / to focus)" autocomplete="off" />
-            <span class="search-shortcut-badge">/</span>
-            <button id="search-action-btn" class="search-action-btn" title="Search">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <input id="main-search-input" class="search-input" type="text"
+                placeholder="Search AI tools or query web... (Press / to focus)" autocomplete="off" />
+              <span class="search-shortcut-badge">/</span>
+              <button id="search-action-btn" class="search-action-btn" title="Search">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Header Actions -->
+          <div class="header-actions">
+            <div class="system-status-pill">
+              <span class="status-indicator"></span>
+              <span>All Systems Online</span>
+            </div>
+            <button id="btn-toggle-assistant" class="icon-button" title="Open AI Assistant Drawer (Alt+A)">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
               </svg>
+            </button>
+            <button class="btn-primary" data-open-modal="modal-add-tool">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Add Tool
             </button>
           </div>
         </div>
 
-        <!-- Header Actions -->
-        <div class="header-actions">
-          <button id="btn-toggle-assistant" class="icon-button" title="Open AI Assistant Drawer (Alt+A)">
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            </svg>
-          </button>
-          <button class="btn-primary" data-open-modal="modal-add-tool">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-            Add Tool
-          </button>
-        </div>
+        <!-- Horizontal Navigation Tabs Bar (Directly below the Search Bar Row) -->
+        <nav class="horizontal-nav-bar" id="horizontal-nav-bar">
+          <ul class="nav-menu">
+            <li class="nav-item active">
+              <button data-view="dashboard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Dashboard & Tools</span>
+              </button>
+            </li>
+            <li class="nav-item">
+              <button data-view="stacks">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                  <polyline points="2 17 12 22 22 17"></polyline>
+                  <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+                <span>One-Click Stacks</span>
+                <span class="nav-badge">NEW</span>
+              </button>
+            </li>
+            <li class="nav-item">
+              <button data-view="prompts">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <span>Prompt Studio</span>
+              </button>
+            </li>
+            <li class="nav-item">
+              <button data-view="apihub">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+                <span>AI Engine</span>
+                <span id="gemini-status-nav-badge" class="nav-badge">STATIC</span>
+              </button>
+            </li>
+            <li class="nav-item">
+              <button data-view="settings">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="3"></circle>
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                  </path>
+                </svg>
+                <span>Settings & Themes</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
       </header>
 
       <!-- ====================================================================
@@ -199,17 +178,20 @@
           </div>
         </div>
         <div class="localhost-bar-actions">
-          <label class="localhost-toggle-newtab" id="localhost-toggle-newtab-label" title="When checked: Open localhost in new tab. When unchecked: Open in same tab.">
+          <label class="localhost-toggle-newtab" id="localhost-toggle-newtab-label"
+            title="When checked: Open localhost in new tab. When unchecked: Open in same tab.">
             <input type="checkbox" id="toggle-localhost-newtab" class="localhost-toggle-checkbox" checked>
             <span class="localhost-toggle-box">
-              <svg class="localhost-check-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="localhost-check-icon" width="10" height="10" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
             </span>
             <span class="localhost-toggle-text">New Tab</span>
           </label>
           <button id="btn-add-localhost" class="btn-add-localhost" type="button" title="Add Localhost Port or Server">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
               <line x1="12" y1="5" x2="12" y2="19"></line>
               <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
@@ -272,7 +254,8 @@
         <!-- Quick Access: Recent Tools -->
         <div id="recent-tools-section" class="section-header" style="margin-top: 14px;">
           <div class="section-title">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
               <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
@@ -328,13 +311,14 @@
            VIEW 4: AI PROMPT ENGINEERING STUDIO & UNIVERSAL PROMPT LIBRARY
            ==================================================================== -->
       <section id="view-prompts" class="view-content">
-        
+
         <!-- View Header -->
         <div class="section-header">
           <div>
             <h2>AI Prompt Engineering Studio</h2>
             <p style="font-size: 13.5px; color: var(--text-muted); margin-top: 4px;">
-              Input rough ideas or local language prompts (Hindi, Hinglish, Gujarati, etc.) to polish, master-enhance, translate, and test run with real AI.
+              Input rough ideas or local language prompts (Hindi, Hinglish, Gujarati, etc.) to polish, master-enhance,
+              translate, and test run with real AI.
             </p>
           </div>
         </div>
@@ -343,34 +327,36 @@
              AI PROMPT STUDIO (Intuitive 3-Step Optimizer)
              ================================================================== -->
         <div class="prompt-studio-card">
-          
+
           <!-- Step 1: Input Header -->
           <div class="prompt-studio-header">
             <div class="prompt-studio-title-box">
               <div class="prompt-studio-icon">✨</div>
               <div>
-                <h3 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin: 0;">AI Prompt Optimizer</h3>
-                <span style="font-size: 12px; color: var(--text-muted);">Write rough text in Hindi, Hinglish, or English &mdash; get a powerful AI prompt</span>
+                <h3 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin: 0;">AI Prompt Optimizer
+                </h3>
+                <span style="font-size: 12px; color: var(--text-muted);">Write rough text in Hindi, Hinglish, or English
+                  &mdash; get a powerful AI prompt</span>
               </div>
             </div>
-            <div id="prompt-studio-engine-pill" class="api-status-pill-live" style="font-size: 11px; padding: 3px 10px; border-radius: var(--radius-pill);">
-              <span id="prompt-studio-status-dot" class="status-indicator" style="background: var(--status-success); margin-right: 5px;"></span>
+            <div id="prompt-studio-engine-pill" class="api-status-pill-live"
+              style="font-size: 11px; padding: 3px 10px; border-radius: var(--radius-pill);">
+              <span id="prompt-studio-status-dot" class="status-indicator"
+                style="background: var(--status-success); margin-right: 5px;"></span>
               <span id="prompt-studio-status-text">Gemini 2.0 Live</span>
             </div>
           </div>
 
           <!-- Main Input Textarea Box -->
           <div class="prompt-studio-input-box">
-            <textarea 
-              id="prompt-studio-input" 
-              class="prompt-studio-textarea" 
+            <textarea id="prompt-studio-input" class="prompt-studio-textarea"
               placeholder="Type your rough idea in Hindi, Hinglish, or English (e.g. 'mujhe ek modern React portfolio website banani hai with dark mode', 'write polite email to client for payment delay')..."
-              rows="3"
-            ></textarea>
-            
+              rows="3"></textarea>
+
             <div class="prompt-studio-input-toolbar">
               <div style="display: flex; align-items: center; gap: 8px;">
-                <span id="prompt-studio-char-count" style="font-size: 11.5px; color: var(--text-dim); font-family: var(--font-mono);">0 chars</span>
+                <span id="prompt-studio-char-count"
+                  style="font-size: 11.5px; color: var(--text-dim); font-family: var(--font-mono);">0 chars</span>
                 <button type="button" id="btn-prompt-studio-clear" class="prompt-studio-tool-btn">Clear</button>
               </div>
               <span style="font-size: 11px; color: var(--text-dim);">
@@ -383,25 +369,32 @@
           <div class="prompt-modes-bar-wrapper">
             <span class="prompt-step-label">Choose Action:</span>
             <div class="prompt-modes-pills-list">
-              <button type="button" class="prompt-mode-pill active" data-mode="enhance" title="Build a full structured master prompt template">
+              <button type="button" class="prompt-mode-pill active" data-mode="enhance"
+                title="Build a full structured master prompt template">
                 🚀 Master Prompt
               </button>
-              <button type="button" class="prompt-mode-pill" data-mode="polish" title="Fix grammar, flow, and professional phrasing">
+              <button type="button" class="prompt-mode-pill" data-mode="polish"
+                title="Fix grammar, flow, and professional phrasing">
                 ✨ Polish & Refine
               </button>
-              <button type="button" class="prompt-mode-pill" data-mode="translate" title="Convert Hindi/Hinglish/Vernacular into standard prompt syntax">
+              <button type="button" class="prompt-mode-pill" data-mode="translate"
+                title="Convert Hindi/Hinglish/Vernacular into standard prompt syntax">
                 🌐 Translate to Prompt
               </button>
-              <button type="button" class="prompt-mode-pill" data-mode="concise" title="Remove all fluff and make token-efficient">
+              <button type="button" class="prompt-mode-pill" data-mode="concise"
+                title="Remove all fluff and make token-efficient">
                 🎯 Make Short
               </button>
-              <button type="button" class="prompt-mode-pill" data-mode="cot" title="Add step-by-step thinking & validation steps">
+              <button type="button" class="prompt-mode-pill" data-mode="cot"
+                title="Add step-by-step thinking & validation steps">
                 🧠 Deep Reasoning
               </button>
-              <button type="button" class="prompt-mode-pill" data-mode="image" title="Generate Midjourney / DALL-E camera & lighting prompt">
+              <button type="button" class="prompt-mode-pill" data-mode="image"
+                title="Generate Midjourney / DALL-E camera & lighting prompt">
                 🎨 Image Prompt
               </button>
-              <button type="button" class="prompt-mode-pill" data-mode="code" title="Generate software architecture & coding specification">
+              <button type="button" class="prompt-mode-pill" data-mode="code"
+                title="Generate software architecture & coding specification">
                 💻 Code Spec
               </button>
             </div>
@@ -422,7 +415,8 @@
               </div>
             </div>
 
-            <button id="btn-run-prompt-transform" type="button" class="btn-primary" style="padding: 9px 24px; font-size: 13.5px;">
+            <button id="btn-run-prompt-transform" type="button" class="btn-primary"
+              style="padding: 9px 24px; font-size: 13.5px;">
               <span id="btn-transform-spinner" style="display: none;" class="spinner">⚡</span>
               <span id="btn-transform-text">⚡ Enhance Prompt</span>
             </button>
@@ -430,7 +424,7 @@
 
           <!-- Studio Output Panel (Clean Result Box) -->
           <div id="prompt-studio-output-container" class="prompt-studio-output-box" style="display: none;">
-            
+
             <div class="prompt-studio-output-header">
               <div style="display: flex; align-items: center; gap: 8px;">
                 <span style="font-size: 14px;">✅</span>
@@ -438,10 +432,12 @@
                 <span id="prompt-output-badge" class="badge badge-accent" style="font-size: 10px;">Master Prompt</span>
               </div>
               <div class="prompt-output-quick-actions">
-                <button type="button" id="btn-studio-copy" class="btn-primary" style="padding: 5px 14px; font-size: 12px;">
+                <button type="button" id="btn-studio-copy" class="btn-primary"
+                  style="padding: 5px 14px; font-size: 12px;">
                   📋 Copy Prompt
                 </button>
-                <button type="button" id="btn-studio-test-run" class="btn-secondary" style="padding: 5px 12px; font-size: 12px;">
+                <button type="button" id="btn-studio-test-run" class="btn-secondary"
+                  style="padding: 5px 12px; font-size: 12px;">
                   ⚡ Test Run
                 </button>
               </div>
@@ -498,7 +494,9 @@
           <button type="button" class="settings-tab-btn active" data-settings-tab="appearance">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="3"></circle>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+              </path>
             </svg>
             <span>Appearance & Themes</span>
           </button>
@@ -518,7 +516,8 @@
               <line x1="14" y1="11" x2="14" y2="17"></line>
             </svg>
             <span>Cache & Storage</span>
-            <span class="nav-badge" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); margin-left: 6px; font-size: 10px;">CHROME</span>
+            <span class="nav-badge"
+              style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); margin-left: 6px; font-size: 10px;">CHROME</span>
           </button>
         </div>
 
@@ -527,7 +526,8 @@
           <div class="form-group">
             <label class="form-label">Accent Color</label>
             <div class="theme-palette-picker">
-              <div class="theme-swatch active" style="background: #6366f1;" data-color="#6366f1" title="Indigo Purple"></div>
+              <div class="theme-swatch active" style="background: #6366f1;" data-color="#6366f1" title="Indigo Purple">
+              </div>
               <div class="theme-swatch" style="background: #0284c7;" data-color="#0284c7" title="Electric Blue"></div>
               <div class="theme-swatch" style="background: #10b981;" data-color="#10b981" title="Emerald Green"></div>
               <div class="theme-swatch" style="background: #f43f5e;" data-color="#f43f5e" title="Rose Pink"></div>
@@ -537,12 +537,18 @@
 
           <div class="form-group">
             <label class="form-label">Keyboard Shortcuts Reference</label>
-            <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px; font-size: 13px; display: flex; flex-direction: column; gap: 8px;">
-              <div style="display: flex; justify-content: space-between;"><span>Quick launch ChatGPT:</span><kbd class="search-shortcut-badge">Alt + C</kbd></div>
-              <div style="display: flex; justify-content: space-between;"><span>Quick launch Google Gemini:</span><kbd class="search-shortcut-badge">Alt + G</kbd></div>
-              <div style="display: flex; justify-content: space-between;"><span>Quick launch Perplexity AI:</span><kbd class="search-shortcut-badge">Alt + P</kbd></div>
-              <div style="display: flex; justify-content: space-between;"><span>Toggle AI Assistant:</span><kbd class="search-shortcut-badge">Alt + A</kbd></div>
-              <div style="display: flex; justify-content: space-between;"><span>Jump to Universal Search:</span><kbd class="search-shortcut-badge">/</kbd></div>
+            <div
+              style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px; font-size: 13px; display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; justify-content: space-between;"><span>Quick launch ChatGPT:</span><kbd
+                  class="search-shortcut-badge">Alt + C</kbd></div>
+              <div style="display: flex; justify-content: space-between;"><span>Quick launch Google Gemini:</span><kbd
+                  class="search-shortcut-badge">Alt + G</kbd></div>
+              <div style="display: flex; justify-content: space-between;"><span>Quick launch Perplexity AI:</span><kbd
+                  class="search-shortcut-badge">Alt + P</kbd></div>
+              <div style="display: flex; justify-content: space-between;"><span>Toggle AI Assistant:</span><kbd
+                  class="search-shortcut-badge">Alt + A</kbd></div>
+              <div style="display: flex; justify-content: space-between;"><span>Jump to Universal Search:</span><kbd
+                  class="search-shortcut-badge">/</kbd></div>
             </div>
           </div>
         </div>
@@ -551,7 +557,8 @@
         <div id="settings-pane-backup" class="settings-tab-pane" style="max-width: 600px;">
           <div class="form-group">
             <label class="form-label">Backup & Restore Workspace Data</label>
-            <p class="form-hint" style="margin-bottom: 12px;">Export all your custom tools, workspaces, stacks, and prompts as a JSON backup file or restore from an existing file.</p>
+            <p class="form-hint" style="margin-bottom: 12px;">Export all your custom tools, workspaces, stacks, and
+              prompts as a JSON backup file or restore from an existing file.</p>
             <div style="display: flex; gap: 12px;">
               <button id="btn-export-backup" class="btn-secondary">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -588,7 +595,8 @@
             </div>
             <div class="cache-metric-item">
               <span class="cache-metric-label">Last Purged</span>
-              <span id="cache-last-cleared-text" class="cache-metric-val" style="font-size: 12px; font-weight: 500; color: var(--text-muted);">No record yet</span>
+              <span id="cache-last-cleared-text" class="cache-metric-val"
+                style="font-size: 12px; font-weight: 500; color: var(--text-muted);">No record yet</span>
             </div>
           </div>
 
@@ -596,7 +604,8 @@
           <div class="cache-hero-card">
             <div class="cache-hero-header">
               <div class="cache-hero-title">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2.2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)"
+                  stroke-width="2.2">
                   <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                 </svg>
                 <h3>1-Click Instant Chrome Cache Purge</h3>
@@ -604,10 +613,13 @@
               <span class="badge badge-accent" style="font-size: 11px;">Recommended</span>
             </div>
             <p class="cache-hero-desc">
-              Instantly flush Chrome's temporary HTTP web cache, style files, scripts, and cached media across all websites. This frees up disk space and fixes outdated page asset bugs immediately without logging you out of your accounts.
+              Instantly flush Chrome's temporary HTTP web cache, style files, scripts, and cached media across all
+              websites. This frees up disk space and fixes outdated page asset bugs immediately without logging you out
+              of your accounts.
             </p>
             <div style="display: flex; gap: 12px; align-items: center;">
-              <button id="btn-quick-clear-cache" class="btn-primary" type="button" style="padding: 10px 22px; font-size: 13.5px; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);">
+              <button id="btn-quick-clear-cache" class="btn-primary" type="button"
+                style="padding: 10px 22px; font-size: 13.5px; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                 </svg>
@@ -627,8 +639,10 @@
                 </p>
               </div>
               <div style="display: flex; align-items: center; gap: 8px;">
-                <button id="btn-cache-select-all" type="button" class="btn-secondary" style="padding: 4px 10px; font-size: 11.5px;">Select All</button>
-                <button id="btn-cache-deselect-all" type="button" class="btn-secondary" style="padding: 4px 10px; font-size: 11.5px;">Deselect All</button>
+                <button id="btn-cache-select-all" type="button" class="btn-secondary"
+                  style="padding: 4px 10px; font-size: 11.5px;">Select All</button>
+                <button id="btn-cache-deselect-all" type="button" class="btn-secondary"
+                  style="padding: 4px 10px; font-size: 11.5px;">Deselect All</button>
               </div>
             </div>
 
@@ -660,7 +674,8 @@
                 <input type="checkbox" id="cb-cache-storage" class="cache-option-checkbox" checked>
                 <div class="cache-option-content">
                   <span class="cache-option-title">⚡ CacheStorage & Service Workers</span>
-                  <span class="cache-option-desc">Progressive web app offline assets and background worker caches.</span>
+                  <span class="cache-option-desc">Progressive web app offline assets and background worker
+                    caches.</span>
                 </div>
               </label>
 
@@ -669,7 +684,8 @@
                 <input type="checkbox" id="cb-cache-app" class="cache-option-checkbox" checked>
                 <div class="cache-option-content">
                   <span class="cache-option-title">🤖 AI Command Center Memory</span>
-                  <span class="cache-option-desc">Clears router AI recommendation cache and temporary session buffers.</span>
+                  <span class="cache-option-desc">Clears router AI recommendation cache and temporary session
+                    buffers.</span>
                 </div>
               </label>
 
@@ -678,7 +694,8 @@
                 <input type="checkbox" id="cb-cache-cookies" class="cache-option-checkbox">
                 <div class="cache-option-content">
                   <span class="cache-option-title">🍪 Cookies & Site Data</span>
-                  <span class="cache-option-desc">Logs you out of most active website logins and cleans tracking cookies.</span>
+                  <span class="cache-option-desc">Logs you out of most active website logins and cleans tracking
+                    cookies.</span>
                 </div>
               </label>
 
@@ -696,7 +713,8 @@
                 <input type="checkbox" id="cb-cache-serviceworkers" class="cache-option-checkbox">
                 <div class="cache-option-content">
                   <span class="cache-option-title">⚙️ Web Service Workers</span>
-                  <span class="cache-option-desc">Unregisters active background service workers for visited domains.</span>
+                  <span class="cache-option-desc">Unregisters active background service workers for visited
+                    domains.</span>
                 </div>
               </label>
 
@@ -705,7 +723,8 @@
                 <input type="checkbox" id="cb-cache-downloads" class="cache-option-checkbox">
                 <div class="cache-option-content">
                   <span class="cache-option-title">📥 Download History List</span>
-                  <span class="cache-option-desc">Clears Chrome's download history list (downloaded files remain safe).</span>
+                  <span class="cache-option-desc">Clears Chrome's download history list (downloaded files remain
+                    safe).</span>
                 </div>
               </label>
 
@@ -719,15 +738,18 @@
               </label>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px; padding-top: 14px; border-top: 1px solid var(--border-subtle);">
-              <button id="btn-clear-app-cache" type="button" class="btn-secondary" title="Reset only Command Center memory without clearing Chrome browser cache">
+            <div
+              style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px; padding-top: 14px; border-top: 1px solid var(--border-subtle);">
+              <button id="btn-clear-app-cache" type="button" class="btn-secondary"
+                title="Reset only Command Center memory without clearing Chrome browser cache">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M23 4v6h-6"></path>
                   <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
                 </svg>
                 Reset AI Memory Only
               </button>
-              <button id="btn-custom-clear-cache" type="button" class="btn-primary" style="background: linear-gradient(135deg, #f43f5e 0%, #ec4899 100%);">
+              <button id="btn-custom-clear-cache" type="button" class="btn-primary"
+                style="background: linear-gradient(135deg, #f43f5e 0%, #ec4899 100%);">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <path d="M3 6h18"></path>
                   <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -744,16 +766,18 @@
            ==================================================================== -->
       <section id="view-apihub" class="view-content">
         <div class="apihub-container">
-          
+
           <!-- View Header -->
           <div class="view-header">
             <div>
               <h2>Google Gemini AI Engine & API Hub</h2>
               <p style="font-size: 13.5px; color: var(--text-muted); margin-top: 4px;">
-                Connect your free Google Gemini API key to activate real AI across the entire Command Center — Live Chat Copilot, Dynamic Task Architect, and Master Prompt Optimizer.
+                Connect your free Google Gemini API key to activate real AI across the entire Command Center — Live Chat
+                Copilot, Dynamic Task Architect, and Master Prompt Optimizer.
               </p>
             </div>
-            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" class="btn-primary" style="text-decoration: none;">
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer"
+              class="btn-primary" style="text-decoration: none;">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                 <polyline points="15 3 21 3 21 9"></polyline>
@@ -777,17 +801,19 @@
             </div>
             <div style="display: flex; align-items: center; gap: 10px;">
               <span style="font-size: 13px; color: var(--text-muted);">Active Engine:</span>
-              <span id="hub-connected-model" class="badge badge-accent" style="font-size: 12px; padding: 4px 10px;">Gemini 2.0 Flash</span>
+              <span id="hub-connected-model" class="badge badge-accent"
+                style="font-size: 12px; padding: 4px 10px;">Gemini 2.0 Flash</span>
             </div>
           </div>
 
           <!-- Configuration Grid -->
           <div class="api-config-grid">
-            
+
             <!-- Card 1: API Key & Model Settings -->
             <div class="api-config-card">
               <div class="api-card-header">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)"
+                  stroke-width="2">
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                   <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                 </svg>
@@ -798,14 +824,10 @@
                 <div class="form-group">
                   <label class="form-label">Google Gemini API Key *</label>
                   <div class="password-input-wrapper">
-                    <input 
-                      id="input-gemini-key" 
-                      class="form-input" 
-                      type="password" 
-                      placeholder="Paste AI Studio API Key (AIzaSy...)" 
-                      autocomplete="off"
-                    />
-                    <button id="btn-toggle-key-visibility" class="password-toggle-btn" type="button" title="Show/Hide Key">👁️</button>
+                    <input id="input-gemini-key" class="form-input" type="password"
+                      placeholder="Paste AI Studio API Key (AIzaSy...)" autocomplete="off" />
+                    <button id="btn-toggle-key-visibility" class="password-toggle-btn" type="button"
+                      title="Show/Hide Key">👁️</button>
                   </div>
                   <span style="font-size: 11.5px; color: var(--text-dim); margin-top: 4px;">
                     Stored safely in your browser local storage. Free tier available via Google AI Studio.
@@ -814,9 +836,11 @@
 
                 <div class="form-row">
                   <div class="form-group">
-                    <div style="display: flex; justify-content: space-between; align-items: center; min-height: 24px; margin-bottom: 6px;">
+                    <div
+                      style="display: flex; justify-content: space-between; align-items: center; min-height: 24px; margin-bottom: 6px;">
                       <label class="form-label" style="margin-bottom: 0;">Gemini Model</label>
-                      <button id="btn-fetch-models" type="button" title="Auto-detect models supported by your API key" style="font-size: 11px; padding: 2px 8px; border-radius: var(--radius-sm); background: rgba(79, 70, 229, 0.08); border: 1px solid rgba(79, 70, 229, 0.25); color: var(--accent-primary); cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all var(--transition-fast);">
+                      <button id="btn-fetch-models" type="button" title="Auto-detect models supported by your API key"
+                        style="font-size: 11px; padding: 2px 8px; border-radius: var(--radius-sm); background: rgba(79, 70, 229, 0.08); border: 1px solid rgba(79, 70, 229, 0.25); color: var(--accent-primary); cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all var(--transition-fast);">
                         🔄 Auto-Detect
                       </button>
                     </div>
@@ -831,7 +855,8 @@
                     </span>
                   </div>
                   <div class="form-group">
-                    <div style="display: flex; justify-content: space-between; align-items: center; min-height: 24px; margin-bottom: 6px;">
+                    <div
+                      style="display: flex; justify-content: space-between; align-items: center; min-height: 24px; margin-bottom: 6px;">
                       <label class="form-label" style="margin-bottom: 0;">System Persona</label>
                       <span class="badge badge-accent" style="font-size: 10px; padding: 1px 7px;">Role</span>
                     </div>
@@ -849,19 +874,24 @@
 
                 <div class="form-row">
                   <div class="form-group">
-                    <div style="display: flex; justify-content: space-between; align-items: center; min-height: 24px; margin-bottom: 6px;">
+                    <div
+                      style="display: flex; justify-content: space-between; align-items: center; min-height: 24px; margin-bottom: 6px;">
                       <label class="form-label" style="margin-bottom: 0;">Temperature</label>
-                      <span id="label-gemini-temp-val" class="badge badge-accent" style="font-size: 11px; padding: 1px 7px; font-family: var(--font-mono);">0.70</span>
+                      <span id="label-gemini-temp-val" class="badge badge-accent"
+                        style="font-size: 11px; padding: 1px 7px; font-family: var(--font-mono);">0.70</span>
                     </div>
-                    <input id="input-gemini-temperature" type="range" min="0.1" max="1.0" step="0.05" value="0.7" class="form-input" style="padding: 0; cursor: pointer;">
+                    <input id="input-gemini-temperature" type="range" min="0.1" max="1.0" step="0.05" value="0.7"
+                      class="form-input" style="padding: 0; cursor: pointer;">
                     <span style="font-size: 11px; color: var(--text-dim); margin-top: 4px; display: block;">
                       Lower = focused; Higher = creative & varied.
                     </span>
                   </div>
                   <div class="form-group">
-                    <div style="display: flex; justify-content: space-between; align-items: center; min-height: 24px; margin-bottom: 6px;">
+                    <div
+                      style="display: flex; justify-content: space-between; align-items: center; min-height: 24px; margin-bottom: 6px;">
                       <label class="form-label" style="margin-bottom: 0;">Max Output Tokens</label>
-                      <span class="badge" style="font-size: 10px; padding: 1px 7px; background: rgba(15, 23, 42, 0.06); color: var(--text-muted);">Limit</span>
+                      <span class="badge"
+                        style="font-size: 10px; padding: 1px 7px; background: rgba(15, 23, 42, 0.06); color: var(--text-muted);">Limit</span>
                     </div>
                     <select id="select-gemini-max-tokens" class="form-select">
                       <option value="1024">1,024 Tokens (Fast Responses)</option>
@@ -877,7 +907,8 @@
 
                 <div class="api-actions-row">
                   <button id="btn-test-save-gemini" class="btn-primary" type="submit" style="flex: 2;">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.2">
                       <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                     </svg>
                     Test & Save Key
@@ -887,14 +918,16 @@
                   </button>
                 </div>
 
-                <div id="hub-test-result-alert" style="display: none; padding: 10px 14px; border-radius: var(--radius-md); font-size: 12.5px;"></div>
+                <div id="hub-test-result-alert"
+                  style="display: none; padding: 10px 14px; border-radius: var(--radius-md); font-size: 12.5px;"></div>
               </form>
             </div>
 
             <!-- Card 2: Real AI Feature Matrix -->
             <div class="api-config-card">
               <div class="api-card-header">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)"
+                  stroke-width="2">
                   <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                 </svg>
                 <h3>Real AI Superpowers Matrix</h3>
@@ -928,7 +961,8 @@
 
           <!-- Interactive Gemini Test Playground -->
           <div class="api-playground-box">
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <div
+              style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
               <div>
                 <h3 style="font-size: 16px; font-weight: 700;">Interactive Gemini Playground</h3>
                 <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">
@@ -936,14 +970,20 @@
                 </p>
               </div>
               <div style="display: flex; gap: 6px;">
-                <button class="quick-prompt-tag" data-playground-prompt="Write a modern Python FastAPI boilerplate with async SQLite">FastAPI Boilerplate</button>
-                <button class="quick-prompt-tag" data-playground-prompt="Explain Transformers Attention mechanism in 3 sentences">Attention in 3 lines</button>
-                <button class="quick-prompt-tag" data-playground-prompt="Architect an AI YouTube shorts automation workflow">YouTube AI Stack</button>
+                <button class="quick-prompt-tag"
+                  data-playground-prompt="Write a modern Python FastAPI boilerplate with async SQLite">FastAPI
+                  Boilerplate</button>
+                <button class="quick-prompt-tag"
+                  data-playground-prompt="Explain Transformers Attention mechanism in 3 sentences">Attention in 3
+                  lines</button>
+                <button class="quick-prompt-tag"
+                  data-playground-prompt="Architect an AI YouTube shorts automation workflow">YouTube AI Stack</button>
               </div>
             </div>
 
             <div style="display: flex; gap: 10px;">
-              <input id="input-playground-query" class="form-input" type="text" placeholder="Type a test prompt for Gemini..." style="flex: 1;" />
+              <input id="input-playground-query" class="form-input" type="text"
+                placeholder="Type a test prompt for Gemini..." style="flex: 1;" />
               <button id="btn-run-playground" class="btn-primary" type="button" style="padding: 0 18px;">
                 Run with Gemini ⚡
               </button>
@@ -963,17 +1003,21 @@
     <div id="assistant-drawer" class="assistant-drawer">
       <div class="assistant-header">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <div class="mini-tool-avatar" style="background: var(--accent-gradient); width: 32px; height: 32px; box-shadow: var(--accent-glow);">✨</div>
+          <div class="mini-tool-avatar"
+            style="background: var(--accent-gradient); width: 32px; height: 32px; box-shadow: var(--accent-glow);">✨
+          </div>
           <div>
             <div style="display: flex; align-items: center; gap: 6px;">
               <strong>Gemini AI Copilot</strong>
               <span id="drawer-gemini-status" class="drawer-status-badge offline">Offline</span>
             </div>
-            <span id="drawer-gemini-model-label" style="font-size: 11px; color: var(--text-dim);">Gemini 2.0 Flash</span>
+            <span id="drawer-gemini-model-label" style="font-size: 11px; color: var(--text-dim);">Gemini 2.0
+              Flash</span>
           </div>
         </div>
         <div style="display: flex; align-items: center; gap: 6px;">
-          <button id="btn-drawer-clear-chat" class="icon-button" style="width: 32px; height: 32px;" title="Clear Chat History">
+          <button id="btn-drawer-clear-chat" class="icon-button" style="width: 32px; height: 32px;"
+            title="Clear Chat History">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="3 6 5 6 21 6"></polyline>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -998,10 +1042,13 @@
           Paste your free Gemini API key to start real-time, live AI conversations directly inside this copilot drawer.
         </p>
         <div style="display: flex; gap: 8px;">
-          <input id="input-drawer-gemini-key" class="form-input" type="password" placeholder="Paste API Key (AIzaSy...)" style="font-size: 12px; flex: 1;" />
-          <button id="btn-drawer-connect-gemini" class="btn-primary" type="button" style="padding: 0 14px; font-size: 12px; white-space: nowrap;">Connect ⚡</button>
+          <input id="input-drawer-gemini-key" class="form-input" type="password" placeholder="Paste API Key (AIzaSy...)"
+            style="font-size: 12px; flex: 1;" />
+          <button id="btn-drawer-connect-gemini" class="btn-primary" type="button"
+            style="padding: 0 14px; font-size: 12px; white-space: nowrap;">Connect ⚡</button>
         </div>
-        <a href="https://aistudio.google.com/app/apikey" target="_blank" style="display: inline-block; margin-top: 8px; font-size: 11px; color: var(--accent-primary); text-decoration: underline;">
+        <a href="https://aistudio.google.com/app/apikey" target="_blank"
+          style="display: inline-block; margin-top: 8px; font-size: 11px; color: var(--accent-primary); text-decoration: underline;">
           Get free key from Google AI Studio &rarr;
         </a>
       </div>
@@ -1012,15 +1059,19 @@
 
       <!-- Quick Suggested Prompts Chips -->
       <div id="drawer-quick-prompts" class="drawer-quick-prompts">
-        <button type="button" class="drawer-prompt-chip" data-prompt="Explain the difference between FastAPI and Django">FastAPI vs Django</button>
-        <button type="button" class="drawer-prompt-chip" data-prompt="Write a modern React custom hook for localStorage">React Storage Hook</button>
-        <button type="button" class="drawer-prompt-chip" data-prompt="Architect an optimal AI tool stack for building a SaaS">AI SaaS Stack</button>
-        <button type="button" class="drawer-prompt-chip" data-prompt="Give me 3 best tips for prompt engineering">Prompt Tips</button>
+        <button type="button" class="drawer-prompt-chip"
+          data-prompt="Explain the difference between FastAPI and Django">FastAPI vs Django</button>
+        <button type="button" class="drawer-prompt-chip"
+          data-prompt="Write a modern React custom hook for localStorage">React Storage Hook</button>
+        <button type="button" class="drawer-prompt-chip"
+          data-prompt="Architect an optimal AI tool stack for building a SaaS">AI SaaS Stack</button>
+        <button type="button" class="drawer-prompt-chip" data-prompt="Give me 3 best tips for prompt engineering">Prompt
+          Tips</button>
       </div>
 
       <div class="assistant-input-box">
-        <input id="assistant-chat-input" class="form-input" type="text" placeholder="Message Gemini Copilot... (Press Enter)"
-          style="flex: 1;" autocomplete="off">
+        <input id="assistant-chat-input" class="form-input" type="text"
+          placeholder="Message Gemini Copilot... (Press Enter)" style="flex: 1;" autocomplete="off">
         <button id="assistant-chat-send" class="btn-primary" style="padding: 0 16px;" title="Send Message">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -1053,7 +1104,8 @@
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">Tool Name *</label>
-              <input id="input-tool-name" class="form-input" type="text" placeholder="e.g., Perplexity AI" maxlength="80" required>
+              <input id="input-tool-name" class="form-input" type="text" placeholder="e.g., Perplexity AI"
+                maxlength="80" required>
             </div>
             <div class="form-group">
               <label class="form-label">Category</label>
@@ -1074,7 +1126,8 @@
           <div class="form-group">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
               <label class="form-label" style="margin-bottom: 0;">Website URL *</label>
-              <button type="button" id="btn-test-tool-url" class="btn-secondary" style="padding: 2px 8px; font-size: 11px; height: auto;">
+              <button type="button" id="btn-test-tool-url" class="btn-secondary"
+                style="padding: 2px 8px; font-size: 11px; height: auto;">
                 Test URL ↗
               </button>
             </div>
@@ -1083,8 +1136,8 @@
 
           <div class="form-group">
             <label class="form-label">Description</label>
-            <textarea id="input-tool-description" class="form-textarea"
-              placeholder="What does this AI tool do?" maxlength="500"></textarea>
+            <textarea id="input-tool-description" class="form-textarea" placeholder="What does this AI tool do?"
+              maxlength="500"></textarea>
           </div>
 
           <div class="form-row">
@@ -1101,7 +1154,8 @@
 
           <div class="form-group">
             <label class="form-label">Tags (comma separated)</label>
-            <input id="input-tool-tags" class="form-input" type="text" placeholder="search, citations, ai" maxlength="200">
+            <input id="input-tool-tags" class="form-input" type="text" placeholder="search, citations, ai"
+              maxlength="200">
           </div>
 
           <label class="switch-label">
@@ -1182,7 +1236,8 @@
           </div>
           <div class="form-group">
             <label class="form-label">Description</label>
-            <input id="input-stack-description" class="form-input" type="text" placeholder="Brief workflow summary" maxlength="300">
+            <input id="input-stack-description" class="form-input" type="text" placeholder="Brief workflow summary"
+              maxlength="300">
           </div>
           <div class="form-group">
             <label class="form-label">Select Tools to Include in Stack:</label>
@@ -1237,8 +1292,10 @@
     <div class="modal-dialog" style="max-width: 480px;">
       <div class="modal-header">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(99, 102, 241, 0.15); border: 1px solid var(--border-glow); display: flex; align-items: center; justify-content: center; color: var(--accent-primary);">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <div
+            style="width: 32px; height: 32px; border-radius: 8px; background: rgba(99, 102, 241, 0.15); border: 1px solid var(--border-glow); display: flex; align-items: center; justify-content: center; color: var(--accent-primary);">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+              stroke-linecap="round" stroke-linejoin="round">
               <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
               <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
               <line x1="6" y1="6" x2="6.01" y2="6"></line>
@@ -1266,11 +1323,13 @@
             </div>
             <div class="form-group" style="flex: 2;">
               <label class="form-label" for="input-lh-url">Port or Host *</label>
-              <input id="input-lh-url" class="form-input" type="text" placeholder="e.g. 8000, 3000, 5173" required autocomplete="off" />
+              <input id="input-lh-url" class="form-input" type="text" placeholder="e.g. 8000, 3000, 5173" required
+                autocomplete="off" />
             </div>
           </div>
           <span style="font-size: 11px; color: var(--text-dim); margin-top: 4px; display: block; margin-bottom: 12px;">
-            Tip: Enter a port (e.g. <code>8000</code>) or full host (e.g. <code>localhost:5000</code>, <code>127.0.0.1:8080</code>).
+            Tip: Enter a port (e.g. <code>8000</code>) or full host (e.g. <code>localhost:5000</code>,
+            <code>127.0.0.1:8080</code>).
           </span>
 
           <!-- Quick Presets -->
@@ -1299,12 +1358,14 @@
     <div class="modal-dialog" style="max-width: 620px;">
       <div class="modal-header">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--accent-glow, rgba(99, 102, 241, 0.15)); border: 1px solid var(--border-glow); display: flex; align-items: center; justify-content: center; font-size: 18px;">
+          <div
+            style="width: 36px; height: 36px; border-radius: 10px; background: var(--accent-glow, rgba(99, 102, 241, 0.15)); border: 1px solid var(--border-glow); display: flex; align-items: center; justify-content: center; font-size: 18px;">
             🚀
           </div>
           <div>
             <h3 style="margin: 0; font-size: 18px;">Welcome to AI Command Center</h3>
-            <span style="font-size: 12px; color: var(--text-muted);">Your all-in-one AI new tab & productivity dashboard</span>
+            <span style="font-size: 12px; color: var(--text-muted);">Your all-in-one AI new tab & productivity
+              dashboard</span>
           </div>
         </div>
         <button class="modal-close-btn" data-close-modal type="button">
@@ -1320,59 +1381,79 @@
         </p>
 
         <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
-          <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 14px; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
+          <div
+            style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 14px; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
             <div style="font-size: 20px; flex-shrink: 0;">⚡</div>
             <div>
-              <strong style="font-size: 13.5px; color: var(--text-main); display: block;">1. Smart AI Intent Router</strong>
-              <span style="font-size: 12.5px; color: var(--text-muted);">Type your goal (e.g. "Build ML model", "Design UI") to get instant optimal AI stacks.</span>
+              <strong style="font-size: 13.5px; color: var(--text-main); display: block;">1. Smart AI Intent
+                Router</strong>
+              <span style="font-size: 12.5px; color: var(--text-muted);">Type your goal (e.g. "Build ML model", "Design
+                UI") to get instant optimal AI stacks.</span>
             </div>
           </div>
 
-          <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 14px; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
+          <div
+            style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 14px; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
             <div style="font-size: 20px; flex-shrink: 0;">📦</div>
             <div>
-              <strong style="font-size: 13.5px; color: var(--text-main); display: block;">2. One-Click AI Stacks</strong>
-              <span style="font-size: 12.5px; color: var(--text-muted);">Launch bundles of tools in separate tabs at once with 1-click workflows.</span>
+              <strong style="font-size: 13.5px; color: var(--text-main); display: block;">2. One-Click AI
+                Stacks</strong>
+              <span style="font-size: 12.5px; color: var(--text-muted);">Launch bundles of tools in separate tabs at
+                once with 1-click workflows.</span>
             </div>
           </div>
 
-          <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 14px; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
+          <div
+            style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 14px; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
             <div style="font-size: 20px; flex-shrink: 0;">🪄</div>
             <div>
-              <strong style="font-size: 13.5px; color: var(--text-main); display: block;">3. Prompt Library & AI Enhancer</strong>
-              <span style="font-size: 12.5px; color: var(--text-muted);">Save templates, enhance them with Gemini AI, and copy/launch with one click.</span>
+              <strong style="font-size: 13.5px; color: var(--text-main); display: block;">3. Prompt Library & AI
+                Enhancer</strong>
+              <span style="font-size: 12.5px; color: var(--text-muted);">Save templates, enhance them with Gemini AI,
+                and copy/launch with one click.</span>
             </div>
           </div>
 
-          <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 14px; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
+          <div
+            style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 14px; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
             <div style="font-size: 20px; flex-shrink: 0;">🖥️</div>
             <div>
-              <strong style="font-size: 13.5px; color: var(--text-main); display: block;">4. Localhost Quick Access Bar</strong>
-              <span style="font-size: 12.5px; color: var(--text-muted);">Instant one-click access to running dev servers (e.g. local:3000, 8000, 5173).</span>
+              <strong style="font-size: 13.5px; color: var(--text-main); display: block;">4. Localhost Quick Access
+                Bar</strong>
+              <span style="font-size: 12.5px; color: var(--text-muted);">Instant one-click access to running dev servers
+                (e.g. local:3000, 8000, 5173).</span>
             </div>
           </div>
 
-          <div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 14px; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
+          <div
+            style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 14px; background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
             <div style="font-size: 20px; flex-shrink: 0;">🤖</div>
             <div>
-              <strong style="font-size: 13.5px; color: var(--text-main); display: block;">5. Live Gemini Copilot Drawer (Alt+A)</strong>
-              <span style="font-size: 12.5px; color: var(--text-muted);">Real-time conversational sidecar for code architecture and problem-solving.</span>
+              <strong style="font-size: 13.5px; color: var(--text-main); display: block;">5. Live Gemini Copilot Drawer
+                (Alt+A)</strong>
+              <span style="font-size: 12.5px; color: var(--text-muted);">Real-time conversational sidecar for code
+                architecture and problem-solving.</span>
             </div>
           </div>
         </div>
 
-        <div style="padding: 12px; background: var(--accent-glow, rgba(99, 102, 241, 0.1)); border: 1px solid var(--border-glow); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+        <div
+          style="padding: 12px; background: var(--accent-glow, rgba(99, 102, 241, 0.1)); border: 1px solid var(--border-glow); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: space-between; gap: 12px;">
           <div>
-            <strong style="font-size: 13px; color: var(--text-main); display: block;">🔑 Activate Real AI Features</strong>
-            <span style="font-size: 12px; color: var(--text-muted);">Add your free Google Gemini API key to unleash full real-time intelligence.</span>
+            <strong style="font-size: 13px; color: var(--text-main); display: block;">🔑 Activate Real AI
+              Features</strong>
+            <span style="font-size: 12px; color: var(--text-muted);">Add your free Google Gemini API key to unleash full
+              real-time intelligence.</span>
           </div>
-          <button id="btn-onboarding-connect-gemini" type="button" class="btn-primary" style="padding: 6px 14px; font-size: 12px; white-space: nowrap;">
+          <button id="btn-onboarding-connect-gemini" type="button" class="btn-primary"
+            style="padding: 6px 14px; font-size: 12px; white-space: nowrap;">
             Connect Key
           </button>
         </div>
       </div>
       <div class="modal-footer">
-        <button id="btn-onboarding-dismiss" type="button" class="btn-primary" style="width: 100%; justify-content: center;">
+        <button id="btn-onboarding-dismiss" type="button" class="btn-primary"
+          style="width: 100%; justify-content: center;">
           Get Started ✨
         </button>
       </div>
