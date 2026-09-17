@@ -37,6 +37,12 @@
       },
       "description": "Quick launch ChatGPT"
     },
+    "open_claude": {
+      "suggested_key": {
+        "default": "Alt+L"
+      },
+      "description": "Quick launch Claude"
+    },
     "open_gemini": {
       "suggested_key": {
         "default": "Alt+G"

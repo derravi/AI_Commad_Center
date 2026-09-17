@@ -240,17 +240,21 @@ Personalization aur complete data safety.
 
 ---
 
-## 12. Keyboard Shortcuts Cheat Sheet
+## 12. Dynamic Keyboard Shortcuts & Hotkeys Manager
+AI Command Center me sabhi keyboard shortcuts **dynamically configurable** hain (**Settings > Shortcuts**):
 
-| Shortcut | Action | Description |
-| :--- | :--- | :--- |
-| **`Ctrl + T`** | Open Command Center | Naya tab kholne par AI Command Center load hota hai |
-| **`/`** | Focus Search | Cursor seedha universal search input me chala jata hai |
-| **`Alt + C`** | Launch ChatGPT | ChatGPT ko instant new tab me launch karta hai |
-| **`Alt + G`** | Launch Google Gemini | Gemini ko instant new tab me launch karta hai |
-| **`Alt + P`** | Launch Perplexity AI | Perplexity ko instant new tab me launch karta hai |
-| **`Alt + A`** | Toggle AI Assistant | AI Copilot side drawer ko open / close karta hai |
-| **`Escape`** | Close Modals / Drawer | Kisi bhi open modal ya drawer ko dismiss karta hai |
+| Shortcut | Action | Target / Type | Description |
+| :--- | :--- | :--- | :--- |
+| **`Ctrl + T`** | Open Command Center | Dashboard | Naya tab kholne par AI Command Center load hota hai |
+| **`/`** | Focus Search | Universal Search | Cursor seedha universal search input me chala jata hai |
+| **`Alt + C`** | Launch ChatGPT | AI Tool | ChatGPT ko instant new tab me launch karta hai |
+| **`Ctrl + C + D` / `Alt + L`** | Launch Claude | AI Tool | Claude ko instant launch karta hai (fully customizable!) |
+| **`Alt + G`** | Launch Google Gemini | AI Tool | Gemini ko instant new tab me launch karta hai |
+| **`Alt + P`** | Launch Perplexity AI | AI Tool | Perplexity ko instant new tab me launch karta hai |
+| **`Alt + A`** | Toggle AI Assistant | AI Drawer | AI Copilot side drawer ko open / close karta hai |
+| **`Escape`** | Close Modals / Drawer | UI | Kisi bhi open modal ya drawer ko dismiss karta hai |
+
+> 💡 **Custom Hotkeys:** Settings me **Shortcuts** tab par jakar aap kisi bhi AI tool ya system action ke liye apna custom keyboard combination (jaise `Ctrl + C + D`, `Ctrl + Shift + D`, etc.) record aur save kar sakte hain!
 
 ---
 

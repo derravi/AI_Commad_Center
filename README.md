@@ -175,17 +175,22 @@ Whether you are a **Software Engineer**, **ML Researcher**, **Content Creator**,
 
 ---
 
-## ⌨️ Keyboard Shortcuts
+## ⌨️ Dynamic Keyboard Shortcuts & Hotkeys Manager
 
-| Shortcut | Action | Description |
-| :--- | :--- | :--- |
-| **`Ctrl + T`** | Open New Tab | Launches the AI Command Center dashboard |
-| **`/`** | Focus Search | Instantly jumps cursor to the universal search input |
-| **`Alt + C`** | Launch ChatGPT | Opens ChatGPT in a new background/foreground tab |
-| **`Alt + G`** | Launch Google Gemini | Opens Google Gemini in a new tab |
-| **`Alt + P`** | Launch Perplexity | Opens Perplexity AI in a new tab |
-| **`Alt + A`** | Toggle AI Assistant | Opens / closes the slide-out AI Copilot Drawer |
-| **`Escape`** | Close Modals & Drawers | Dismisses any active modal, popup, or side panel |
+All shortcuts in AI Command Center are **100% dynamically customizable** in **Settings > Shortcuts**:
+
+| Default Shortcut | Action | Target / Action | Description |
+| :--- | :--- | :--- | :--- |
+| **`Ctrl + T`** | Open New Tab | Dashboard | Launches the AI Command Center dashboard |
+| **`/`** | Focus Search | Universal Search | Instantly jumps cursor to the search bar |
+| **`Alt + C`** | Launch ChatGPT | AI Tool | Opens ChatGPT in a new tab |
+| **`Ctrl + C + D` / `Alt + L`** | Launch Claude | AI Tool | Opens Anthropic Claude in a new tab |
+| **`Alt + G`** | Launch Google Gemini | AI Tool | Opens Google Gemini in a new tab |
+| **`Alt + P`** | Launch Perplexity | AI Tool | Opens Perplexity AI in a new tab |
+| **`Alt + A`** | Toggle AI Assistant | AI Drawer | Opens / closes the slide-out AI Copilot Drawer |
+| **`Escape`** | Close Modals & Drawers | UI | Dismisses any active modal, popup, or side panel |
+
+> 💡 **Custom Hotkeys:** Go to **Settings > Shortcuts** to record your own custom key combinations (e.g. `Ctrl + C + D`, `Ctrl + Shift + D`, `Alt + K`), create hotkeys for any custom AI tools, or toggle individual shortcuts.
 
 ---
 

@@ -174,13 +174,25 @@ const StorageManager = {
       ];
       await this.set({ localhostTabs: defaultLocalhosts });
     }
+    // Seed default shortcuts if none exist
+    if (!data.shortcuts || !Array.isArray(data.shortcuts) || data.shortcuts.length === 0) {
+      const defaultShortcuts = [
+        { id: 'sc-chatgpt', name: 'Launch ChatGPT', type: 'tool', target: 'chatgpt', keyCombo: 'Alt+C', enabled: true },
+        { id: 'sc-claude', name: 'Launch Claude', type: 'tool', target: 'claude', keyCombo: 'Ctrl+C+D', enabled: true },
+        { id: 'sc-gemini', name: 'Launch Google Gemini', type: 'tool', target: 'gemini', keyCombo: 'Alt+G', enabled: true },
+        { id: 'sc-perplexity', name: 'Launch Perplexity AI', type: 'tool', target: 'perplexity', keyCombo: 'Alt+P', enabled: true },
+        { id: 'sc-assistant', name: 'Toggle AI Assistant Drawer', type: 'action', target: 'toggle_assistant', keyCombo: 'Alt+A', enabled: true },
+        { id: 'sc-search', name: 'Focus Universal Search', type: 'action', target: 'focus_search', keyCombo: '/', enabled: true }
+      ];
+      await this.set({ shortcuts: defaultShortcuts });
+    }
   },
 
   /**
    * Export all data to JSON file
    */
   async exportBackup() {
-    const allData = await this.get(['tools', 'stacks', 'prompts', 'workspaces', 'settings', 'recentTools', 'customSearchEngines', 'localhostTabs', 'localhostOpenInNewTab']);
+    const allData = await this.get(['tools', 'stacks', 'prompts', 'workspaces', 'settings', 'recentTools', 'customSearchEngines', 'localhostTabs', 'localhostOpenInNewTab', 'shortcuts']);
     const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -206,7 +218,7 @@ const StorageManager = {
         throw new Error('Backup root must be an object');
       }
 
-      const allowedArrayKeys = ['tools', 'stacks', 'prompts', 'workspaces', 'recentTools', 'customSearchEngines', 'localhostTabs'];
+      const allowedArrayKeys = ['tools', 'stacks', 'prompts', 'workspaces', 'recentTools', 'customSearchEngines', 'localhostTabs', 'shortcuts'];
       const allowedObjectKeys = ['settings', 'geminiConfig'];
       const allowedPrimitiveKeys = ['activeSearchEngine', 'localhostOpenInNewTab'];
       const allowedKeys = [...allowedArrayKeys, ...allowedObjectKeys, ...allowedPrimitiveKeys];
@@ -249,6 +261,12 @@ const StorageManager = {
                 throw new Error('Workspaces array contains invalid items (missing id or name)');
               }
             }
+          } else if (key === 'shortcuts') {
+            for (const item of value) {
+              if (!item || typeof item !== 'object' || !item.id || !item.keyCombo) {
+                throw new Error('Shortcuts array contains invalid items');
+              }
+            }
           }
           validatedData[key] = value;
           validKeyCount++;
@@ -286,7 +304,7 @@ const StorageManager = {
    * Reset all storage data and re-seed defaults
    */
   async resetToDefaults() {
-    await this.remove(['tools', 'stacks', 'prompts', 'workspaces', 'settings', 'recentTools', 'localhostTabs', 'localhostOpenInNewTab', 'customSearchEngines', 'geminiConfig']);
+    await this.remove(['tools', 'stacks', 'prompts', 'workspaces', 'settings', 'recentTools', 'localhostTabs', 'localhostOpenInNewTab', 'customSearchEngines', 'geminiConfig', 'shortcuts']);
     await this.initDefaults();
   }
 };

@@ -43,8 +43,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       await CacheManager.init();
     }
 
-    // 13. Bind Global Keyboard Shortcuts
-    initKeyboardShortcuts();
+    // 13. Initialize Dynamic Keyboard Shortcuts Manager
+    if (typeof ShortcutsManager !== 'undefined') {
+      await ShortcutsManager.init();
+    }
 
     // 14. First-Time Onboarding Check
     await checkFirstRunOnboarding();
@@ -243,44 +245,5 @@ function showInitErrorBoundary(error) {
   });
 }
 
-/**
- * Global Keyboard Shortcuts Handler
- * Alt + C -> ChatGPT
- * Alt + G -> Gemini
- * Alt + P -> Perplexity
- * Alt + A -> Toggle AI Assistant Drawer
- */
-function initKeyboardShortcuts() {
-  window.addEventListener('keydown', (e) => {
-    // Check if user is typing in an input field or editable element
-    const isContentEditable = Boolean(document.activeElement && (document.activeElement.isContentEditable || document.activeElement.getAttribute('contenteditable') === 'true'));
-    const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
-    if (activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select' || isContentEditable) {
-      return;
-    }
+// Global keyboard shortcut routing is now handled by ShortcutsManager (js/shortcuts.js)
 
-    if (e.altKey && (e.key === 'c' || e.key === 'C')) {
-      e.preventDefault();
-      ToolsManager.launchTool('chatgpt');
-    } else if (e.altKey && (e.key === 'g' || e.key === 'G')) {
-      e.preventDefault();
-      ToolsManager.launchTool('gemini');
-    } else if (e.altKey && (e.key === 'p' || e.key === 'P')) {
-      e.preventDefault();
-      ToolsManager.launchTool('perplexity');
-    } else if (e.altKey && (e.key === 'a' || e.key === 'A')) {
-      e.preventDefault();
-      const drawer = document.getElementById('assistant-drawer');
-      if (drawer) drawer.classList.toggle('open');
-    }
-  });
-
-  // Listen to Chrome Extension command shortcuts if available
-  if (typeof chrome !== 'undefined' && chrome.commands && chrome.commands.onCommand) {
-    chrome.commands.onCommand.addListener((command) => {
-      if (command === 'open_chatgpt') ToolsManager.launchTool('chatgpt');
-      if (command === 'open_gemini') ToolsManager.launchTool('gemini');
-      if (command === 'open_perplexity') ToolsManager.launchTool('perplexity');
-    });
-  }
-}

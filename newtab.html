@@ -480,109 +480,167 @@
            VIEW 6: SETTINGS & PREFERENCES
            ==================================================================== -->
       <section id="view-settings" class="view-content">
-        <div class="section-header">
-          <div>
-            <h2>Settings & Preferences</h2>
-            <p style="font-size: 13.5px; color: var(--text-muted); margin-top: 4px;">
-              Customize themes, default search engines, accent colors, manage data backups, and clean browser cache.
-            </p>
+        <!-- Centered Settings Hero Header -->
+        <div class="settings-hero-header">
+          <div class="settings-badge-pill">
+            <span class="settings-badge-dot"></span>
+            <span>SYSTEM PREFERENCES</span>
+          </div>
+          <h2 class="settings-hero-title">Settings & Preferences</h2>
+          <p class="settings-hero-desc">
+            Personalize your workspace aesthetics, configure dynamic key combinations, backup configurations, and optimize browser performance.
+          </p>
+        </div>
+
+        <!-- Centered Sub-Navigation Tabs Menu -->
+        <div class="settings-nav-wrapper">
+          <div class="settings-tab-nav">
+            <button type="button" class="settings-tab-btn active" data-settings-tab="appearance">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                </path>
+              </svg>
+              <span>Appearance</span>
+            </button>
+            <button type="button" class="settings-tab-btn" data-settings-tab="shortcuts">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                <line x1="6" y1="8" x2="6.01" y2="8"></line>
+                <line x1="10" y1="8" x2="10.01" y2="8"></line>
+                <line x1="14" y1="8" x2="14.01" y2="8"></line>
+                <line x1="18" y1="8" x2="18.01" y2="8"></line>
+                <line x1="6" y1="12" x2="6.01" y2="12"></line>
+                <line x1="10" y1="12" x2="10.01" y2="12"></line>
+                <line x1="14" y1="12" x2="14.01" y2="12"></line>
+                <line x1="18" y1="12" x2="18.01" y2="12"></line>
+                <line x1="7" y1="16" x2="17" y2="16"></line>
+              </svg>
+              <span>Hotkeys & Shortcuts</span>
+              <span class="nav-badge" style="background: rgba(99, 102, 241, 0.15); color: #6366f1; border: 1px solid rgba(99, 102, 241, 0.3); margin-left: 6px; font-size: 10px;">HOTKEYS</span>
+            </button>
+            <button type="button" class="settings-tab-btn" data-settings-tab="backup">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Data & Backup</span>
+            </button>
+            <button type="button" class="settings-tab-btn" data-settings-tab="cache">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18"></path>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+              </svg>
+              <span>Cache & Storage</span>
+              <span class="nav-badge"
+                style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); margin-left: 6px; font-size: 10px;">CHROME</span>
+            </button>
           </div>
         </div>
 
-        <!-- Settings Sub-Navigation Tabs -->
-        <div class="settings-tab-nav">
-          <button type="button" class="settings-tab-btn active" data-settings-tab="appearance">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="3"></circle>
-              <path
-                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-              </path>
-            </svg>
-            <span>Appearance & Themes</span>
-          </button>
-          <button type="button" class="settings-tab-btn" data-settings-tab="backup">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            <span>Data & Backup</span>
-          </button>
-          <button type="button" class="settings-tab-btn" data-settings-tab="cache">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M3 6h18"></path>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-              <line x1="10" y1="11" x2="10" y2="17"></line>
-              <line x1="14" y1="11" x2="14" y2="17"></line>
-            </svg>
-            <span>Cache & Storage</span>
-            <span class="nav-badge"
-              style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); margin-left: 6px; font-size: 10px;">CHROME</span>
-          </button>
-        </div>
-
-        <!-- Pane 1: Appearance & Accent Color -->
-        <div id="settings-pane-appearance" class="settings-tab-pane active" style="max-width: 600px;">
-          <div class="form-group">
-            <label class="form-label">Accent Color</label>
-            <div class="theme-palette-picker">
-              <div class="theme-swatch active" style="background: #6366f1;" data-color="#6366f1" title="Indigo Purple">
+        <!-- Centered Settings Container -->
+        <div class="settings-container">
+          <!-- Pane 1: Appearance & Accent Color -->
+          <div id="settings-pane-appearance" class="settings-tab-pane active">
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <div>
+                  <h3 class="settings-card-title">🎨 Accent Theme Color</h3>
+                  <p class="settings-card-desc">Choose a primary accent tone tailored across glows, highlights, and active elements.</p>
+                </div>
               </div>
-              <div class="theme-swatch" style="background: #0284c7;" data-color="#0284c7" title="Electric Blue"></div>
-              <div class="theme-swatch" style="background: #10b981;" data-color="#10b981" title="Emerald Green"></div>
-              <div class="theme-swatch" style="background: #f43f5e;" data-color="#f43f5e" title="Rose Pink"></div>
-              <div class="theme-swatch" style="background: #f59e0b;" data-color="#f59e0b" title="Amber Orange"></div>
+              <div class="theme-palette-picker">
+                <div class="theme-swatch active" style="background: #6366f1;" data-color="#6366f1" title="Indigo Purple"></div>
+                <div class="theme-swatch" style="background: #0284c7;" data-color="#0284c7" title="Electric Blue"></div>
+                <div class="theme-swatch" style="background: #10b981;" data-color="#10b981" title="Emerald Green"></div>
+                <div class="theme-swatch" style="background: #f43f5e;" data-color="#f43f5e" title="Rose Pink"></div>
+                <div class="theme-swatch" style="background: #f59e0b;" data-color="#f59e0b" title="Amber Orange"></div>
+                <div class="theme-swatch" style="background: #8b5cf6;" data-color="#8b5cf6" title="Radiant Violet"></div>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <div>
+                  <h3 class="settings-card-title">⌨️ Dynamic Hotkeys Integration</h3>
+                  <p class="settings-card-desc">Assign fast keyboard triggers to your AI models, assistant side-drawer, and search bar.</p>
+                </div>
+                <button type="button" class="btn-secondary" style="font-size: 12.5px; padding: 8px 16px;" onclick="document.querySelector('[data-settings-tab=\'shortcuts\']').click()">
+                  Manage Hotkeys ⚡
+                </button>
+              </div>
             </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Keyboard Shortcuts Reference</label>
-            <div
-              style="background: var(--bg-surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px; font-size: 13px; display: flex; flex-direction: column; gap: 8px;">
-              <div style="display: flex; justify-content: space-between;"><span>Quick launch ChatGPT:</span><kbd
-                  class="search-shortcut-badge">Alt + C</kbd></div>
-              <div style="display: flex; justify-content: space-between;"><span>Quick launch Google Gemini:</span><kbd
-                  class="search-shortcut-badge">Alt + G</kbd></div>
-              <div style="display: flex; justify-content: space-between;"><span>Quick launch Perplexity AI:</span><kbd
-                  class="search-shortcut-badge">Alt + P</kbd></div>
-              <div style="display: flex; justify-content: space-between;"><span>Toggle AI Assistant:</span><kbd
-                  class="search-shortcut-badge">Alt + A</kbd></div>
-              <div style="display: flex; justify-content: space-between;"><span>Jump to Universal Search:</span><kbd
-                  class="search-shortcut-badge">/</kbd></div>
+          <!-- Pane 2: Dynamic Keyboard Shortcuts -->
+          <div id="settings-pane-shortcuts" class="settings-tab-pane">
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <div>
+                  <h3 class="settings-card-title">⌨️ Dynamic Hotkeys & Shortcuts</h3>
+                  <p class="settings-card-desc">Customize global key combinations to trigger AI tools or core actions directly.</p>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button id="btn-reset-shortcuts" type="button" class="btn-secondary" style="font-size: 12px; padding: 7px 13px;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                      <path d="M3 3v5h5"></path>
+                    </svg>
+                    Reset Defaults
+                  </button>
+                  <button id="btn-add-shortcut" type="button" class="btn-primary" style="font-size: 12px; padding: 7px 15px;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Add Shortcut
+                  </button>
+                </div>
+              </div>
+
+              <div id="shortcuts-list-container" class="shortcuts-list-container">
+                <!-- Dynamically rendered by ShortcutsManager -->
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Pane 2: Data & Backup -->
-        <div id="settings-pane-backup" class="settings-tab-pane" style="max-width: 600px;">
-          <div class="form-group">
-            <label class="form-label">Backup & Restore Workspace Data</label>
-            <p class="form-hint" style="margin-bottom: 12px;">Export all your custom tools, workspaces, stacks, and
-              prompts as a JSON backup file or restore from an existing file.</p>
-            <div style="display: flex; gap: 12px;">
-              <button id="btn-export-backup" class="btn-secondary">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <polyline points="7 10 12 15 17 10"></polyline>
-                  <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-                Export JSON Backup
-              </button>
-              <label class="btn-secondary" style="cursor: pointer;">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <polyline points="17 8 12 3 7 8"></polyline>
-                  <line x1="12" y1="3" x2="12" y2="15"></line>
-                </svg>
-                Restore Backup
-                <input id="input-import-backup" type="file" accept=".json" style="display: none;">
-              </label>
+          <!-- Pane 3: Data & Backup -->
+          <div id="settings-pane-backup" class="settings-tab-pane">
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <div>
+                  <h3 class="settings-card-title">📦 Workspace Backup & Data Portability</h3>
+                  <p class="settings-card-desc">Export and restore all your custom tools, workspace collections, prompt stacks, and keyboard hotkeys as a portable JSON file.</p>
+                </div>
+              </div>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px;">
+                <button id="btn-export-backup" class="btn-secondary" style="padding: 10px 18px;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  Export JSON Backup
+                </button>
+                <label class="btn-secondary" style="cursor: pointer; padding: 10px 18px; display: inline-flex; align-items: center; gap: 8px;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                  Restore from Backup
+                  <input id="input-import-backup" type="file" accept=".json" style="display: none;">
+                </label>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Pane 3: Cache & Storage Cleaner -->
-        <div id="settings-pane-cache" class="settings-tab-pane" style="max-width: 760px;">
+          <!-- Pane 4: Cache & Storage Cleaner -->
+          <div id="settings-pane-cache" class="settings-tab-pane">
           <!-- Real-Time Metrics & Status Banner -->
           <div class="cache-metrics-banner">
             <div class="cache-metric-item">
@@ -759,7 +817,8 @@
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
       <!-- ====================================================================
            VIEW 6: GOOGLE GEMINI AI ENGINE & API HUB
@@ -1460,6 +1519,80 @@
     </div>
   </div>
 
+  <!-- Modal: Add / Edit Keyboard Shortcut -->
+  <div id="modal-shortcut" class="modal-backdrop">
+    <div class="modal-dialog" style="max-width: 540px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div
+            style="width: 36px; height: 36px; border-radius: 10px; background: var(--accent-glow, rgba(99, 102, 241, 0.15)); border: 1px solid var(--border-glow); display: flex; align-items: center; justify-content: center; font-size: 18px;">
+            ⌨️
+          </div>
+          <div>
+            <h3 id="shortcut-modal-title" style="margin: 0; font-size: 17px;">Configure Shortcut</h3>
+            <span style="font-size: 12px; color: var(--text-muted);">Assign custom key combination to AI tools or actions</span>
+          </div>
+        </div>
+        <button id="btn-close-shortcut-modal" class="modal-close-btn" type="button" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <form id="form-shortcut">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px;">
+          
+          <div class="form-group">
+            <label class="form-label" for="shortcut-type-select">Action Category</label>
+            <select id="shortcut-type-select" class="form-select">
+              <option value="tool">Launch AI Tool / Custom Tool</option>
+              <option value="action">System Action (Search, Drawer, Canvas)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="shortcut-target-select">Target Action / Tool</label>
+            <select id="shortcut-target-select" class="form-select">
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="shortcut-name-input">Shortcut Display Name *</label>
+            <input type="text" id="shortcut-name-input" class="form-input" placeholder="e.g. Launch Claude" required>
+          </div>
+
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label class="form-label" style="margin: 0;">Key Combination *</label>
+              <button type="button" id="btn-clear-recorded-key" class="btn-text" style="font-size: 11px; color: var(--text-muted); background: none; border: none; cursor: pointer;">Clear Key</button>
+            </div>
+            
+            <div id="shortcut-key-recorder" class="shortcut-recorder-box" tabindex="0">
+              <div id="shortcut-recorder-display" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                <span style="color: var(--text-muted); font-size: 13px;">Click here and press key combination...</span>
+              </div>
+              <span class="recorder-hint-tag">Click to Record</span>
+            </div>
+            <p class="form-hint" style="margin-top: 6px; font-size: 11.5px;">
+              Click the box and press any combination on your keyboard (e.g., <strong>Ctrl + C + D</strong>, <strong>Alt + L</strong>, <strong>Ctrl + Shift + C</strong>).
+            </p>
+          </div>
+
+          <div id="shortcut-conflict-warning" class="shortcut-conflict-alert" style="display: none;">
+            <!-- Rendered if duplicate / conflict detected -->
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btn-cancel-shortcut-modal" class="btn-secondary">Cancel</button>
+          <button type="submit" id="btn-save-shortcut" class="btn-primary">Save Shortcut</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toast-container" class="toast-container"></div>
 
@@ -1479,6 +1612,7 @@
   <script src="js/prompts.js"></script>
   <script src="js/assistant.js"></script>
   <script src="js/cache.js"></script>
+  <script src="js/shortcuts.js"></script>
   <script src="js/app.js"></script>
 </body>
 

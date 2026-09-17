@@ -114,9 +114,14 @@ const UI = {
       PromptLibrary.renderPrompts();
     }
     if (viewName === 'apihub' && typeof GeminiClient !== 'undefined') GeminiClient.updateUIStatus();
-    if (viewName === 'settings' && typeof CacheManager !== 'undefined') {
-      CacheManager.updateStorageStats();
-      CacheManager.updateLastClearedUI();
+    if (viewName === 'settings') {
+      if (typeof CacheManager !== 'undefined') {
+        CacheManager.updateStorageStats();
+        CacheManager.updateLastClearedUI();
+      }
+      if (typeof ShortcutsManager !== 'undefined') {
+        ShortcutsManager.renderSettingsUI();
+      }
     }
   },
 
@@ -779,7 +784,7 @@ const UI = {
       const isDanger = options.danger !== false;
 
       const modalEl = document.createElement('div');
-      modalEl.className = 'modal-backdrop active';
+      modalEl.className = 'modal-backdrop open active';
       modalEl.style.zIndex = '100000';
       modalEl.innerHTML = `
         <div class="modal-dialog" style="max-width: 420px; text-align: center; padding: 28px;">
@@ -798,7 +803,7 @@ const UI = {
       document.body.appendChild(modalEl);
 
       const cleanup = (result) => {
-        modalEl.classList.remove('active');
+        modalEl.classList.remove('open', 'active');
         setTimeout(() => modalEl.remove(), 150);
         resolve(result);
       };
