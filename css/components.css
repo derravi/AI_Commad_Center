@@ -1246,28 +1246,16 @@
 .api-status-left { display: flex; align-items: center; gap: 18px; }
 
 .api-core-orb {
-  width: 56px; height: 56px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: var(--accent-gradient);
+  background: var(--bg-surface-soft);
+  border: 1px solid var(--border-soft);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
-  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.36), inset 0 2px 8px rgba(255, 255, 255, 0.3);
+  font-size: 22px;
   flex-shrink: 0;
-  position: relative;
-}
-
-.api-core-orb::before {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  background: var(--accent-gradient);
-  opacity: 0.4;
-  filter: blur(10px);
-  z-index: -1;
-  animation: livePulse 3s infinite ease-in-out;
 }
 
 .api-status-meta h3 { font-size: 18px; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.02em; }
