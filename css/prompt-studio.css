@@ -354,3 +354,18 @@ button:focus-visible,
   color: var(--text-main);
   border-color: var(--border-subtle);
 }
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE PROMPT GALLERY & FORM RULES
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .prompt-gallery-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .prompt-search-wrapper {
+    width: 100%;
+  }
+}

@@ -1002,10 +1002,13 @@
 
 .assistant-drawer {
   position: fixed;
-  top: 0; right: -440px;
-  width: 420px;
+  top: 0;
+  right: -100%;
+  width: min(420px, 100vw);
   height: 100vh;
-  background: rgba(255, 255, 255, 0.95);
+  height: 100dvh;
+  max-width: 100vw;
+  background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(32px) saturate(180%);
   -webkit-backdrop-filter: blur(32px) saturate(180%);
   border-left: 1.5px solid var(--border-glow);
@@ -1020,7 +1023,7 @@
 .assistant-drawer.open { right: 0; }
 
 .assistant-header {
-  padding: 18px 22px;
+  padding: 16px 20px;
   border-bottom: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
@@ -1207,11 +1210,12 @@
 }
 
 .assistant-input-box {
-  padding: 16px 20px;
+  padding: 14px 18px;
+  padding-bottom: max(14px, env(safe-area-inset-bottom));
   border-top: 1px solid var(--border-subtle);
   display: flex;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.95);
 }
 
 /* --------------------------------------------------------------------------
@@ -1964,23 +1968,331 @@
 }
 
 /* --------------------------------------------------------------------------
-   RESPONSIVE SETTINGS ADJUSTMENTS
+   RESPONSIVE COMPONENTS SYSTEM (ALL DEVICES & SCREENS)
    -------------------------------------------------------------------------- */
+
+/* Large Tablets & Small Laptops (1024px and below) */
+@media (max-width: 1024px) {
+  .stacks-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 18px;
+  }
+  
+  .prompts-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: 16px;
+  }
+  
+  .workspaces-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 18px;
+  }
+  
+  .api-config-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .cache-options-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
+
+/* Tablets Portrait & Medium Screens (768px and below) */
 @media (max-width: 768px) {
+  /* Settings & Preferences */
+  .settings-hero-header {
+    margin-bottom: 20px;
+  }
+  
+  .settings-hero-title {
+    font-size: 22px;
+  }
+  
+  .settings-hero-desc {
+    font-size: 13px;
+    padding: 0 10px;
+  }
+  
   .settings-nav-wrapper {
     justify-content: flex-start;
     overflow-x: auto;
     padding-bottom: 8px;
     -webkit-overflow-scrolling: touch;
   }
+  
   .settings-tab-nav {
     max-width: 100%;
     min-width: max-content;
   }
-  .settings-hero-title {
-    font-size: 22px;
-  }
+  
   .settings-card {
-    padding: 18px 18px;
+    padding: 18px 16px;
+    border-radius: 18px;
+  }
+  
+  .settings-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  /* Dynamic Shortcuts List */
+  .shortcut-item-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 12px 14px;
+  }
+  
+  .shortcut-item-info {
+    width: 100%;
+  }
+  
+  .shortcut-item-keys {
+    flex-wrap: wrap;
+  }
+  
+  .shortcut-item-actions {
+    align-self: flex-end;
+  }
+  
+  /* Form Grids */
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  /* Cache & Storage Cleaner */
+  .cache-metrics-banner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 14px;
+  }
+  
+  .cache-metric-item:nth-child(3) {
+    grid-column: span 2;
+  }
+  
+  .cache-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .cache-options-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .cache-hero-card {
+    padding: 18px 16px;
+  }
+  
+  .cache-hero-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  
+  /* Prompt Studio */
+  .prompt-studio-card {
+    padding: 18px 16px;
+    border-radius: 18px;
+  }
+  
+  .prompt-studio-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .prompt-studio-footer-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  #btn-run-prompt-transform {
+    width: 100%;
+    justify-content: center;
+    padding: 12px;
+  }
+  
+  .prompt-studio-options-group {
+    width: 100%;
+  }
+  
+  .prompt-studio-option-item {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .prompt-mini-select {
+    flex: 1;
+    max-width: 200px;
+  }
+  
+  /* Gemini API Hub */
+  .api-status-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px 16px;
+    gap: 12px;
+  }
+  
+  .api-config-card {
+    padding: 18px 16px;
+    border-radius: 18px;
+  }
+  
+  .api-features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .api-actions-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .api-playground-box {
+    padding: 18px 16px;
+    border-radius: 18px;
+  }
+  
+  .view-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .view-header .btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  /* Stacks & Workspaces */
+  .stacks-grid,
+  .prompts-grid,
+  .workspaces-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+/* Small Phones & Foldables (480px and below) */
+@media (max-width: 480px) {
+  /* Tool Cards */
+  .tool-card {
+    padding: 14px;
+    border-radius: 16px;
+  }
+  
+  .tool-icon-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+    border-radius: 12px;
+  }
+  
+  .tool-name {
+    font-size: 15px;
+  }
+  
+  .tool-description {
+    font-size: 12.5px;
+    min-height: 36px;
+    margin-bottom: 12px;
+  }
+  
+  .tool-tags-row {
+    max-width: 50%;
+  }
+  
+  .tool-launch-btn {
+    padding: 5px 12px;
+    font-size: 12px;
+  }
+  
+  /* Stacks */
+  .stack-card {
+    padding: 16px 14px;
+    border-radius: 16px;
+  }
+  
+  /* Prompt Studio */
+  .prompt-modes-pills-list {
+    gap: 5px;
+  }
+  
+  .prompt-mode-pill {
+    padding: 5px 10px;
+    font-size: 11.5px;
+  }
+  
+  .prompt-studio-output-box {
+    padding: 14px;
+    border-radius: 14px;
+  }
+  
+  .prompt-output-quick-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .prompt-studio-launch-bar {
+    gap: 5px;
+  }
+  
+  .prompt-ai-chip {
+    padding: 4px 9px;
+    font-size: 11px;
+  }
+  
+  /* Settings & Themes */
+  .theme-palette-picker {
+    gap: 10px;
+  }
+  
+  .theme-swatch {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+  }
+  
+  .cache-metrics-banner {
+    grid-template-columns: 1fr;
+  }
+  
+  .cache-metric-item:nth-child(3) {
+    grid-column: auto;
+  }
+  
+  .api-features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Assistant Drawer */
+  .assistant-drawer {
+    width: 100vw;
+  }
+  
+  .assistant-header {
+    padding: 12px 14px;
+  }
+  
+  .drawer-connect-card {
+    margin: 12px 12px 0;
+    padding: 12px;
+  }
+  
+  .assistant-messages {
+    padding: 12px 14px;
+  }
+  
+  .assistant-input-box {
+    padding: 10px 12px;
   }
 }
