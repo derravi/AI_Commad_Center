@@ -596,24 +596,13 @@
   padding: 28px 36px 60px;
   display: none;
   opacity: 0;
-  transform: translateZ(0);
 }
 
 .view-content.active {
   display: block;
-  animation: viewSmoothEnter 0.36s var(--ease-out-quint) forwards;
+  opacity: 1;
+  animation: viewSmoothEnter 0.2s ease-out forwards;
 }
-
-.view-content.active > * {
-  animation: viewChildCascade 0.4s var(--ease-out-quint) both;
-}
-
-.view-content.active > *:nth-child(1) { animation-delay: 0.02s; }
-.view-content.active > *:nth-child(2) { animation-delay: 0.05s; }
-.view-content.active > *:nth-child(3) { animation-delay: 0.08s; }
-.view-content.active > *:nth-child(4) { animation-delay: 0.11s; }
-.view-content.active > *:nth-child(5) { animation-delay: 0.14s; }
-.view-content.active > *:nth-child(6) { animation-delay: 0.17s; }
 
 /* --------------------------------------------------------------------------
    SMART ROUTER HERO
