@@ -284,6 +284,11 @@ Feel free to fork this project and customize it for your personal workflow:
 
 This is the New project architecture.
 
+# File Tree: AI Command Center
+
+**Generated:** 9/19/2026, 8:31:25 PM
+**Root Path:** `d:\E drive\Github Projects\AI Command Center\AI Command Center`
+
 ```
 ├── 📁 assets
 │   └── 📁 icons
@@ -295,6 +300,7 @@ This is the New project architecture.
 │   ├── 🎨 components.css
 │   ├── 🎨 dashboard.css
 │   ├── 🎨 modal.css
+│   ├── 🎨 prompt-studio.css
 │   └── 🎨 style.css
 ├── 📁 data
 │   ├── 📄 categories.js
@@ -308,6 +314,7 @@ This is the New project architecture.
 │   ├── 📄 prompts.js
 │   ├── 📄 router.js
 │   ├── 📄 search.js
+│   ├── 📄 shortcuts.js
 │   ├── 📄 storage.js
 │   ├── 📄 tools.js
 │   ├── 📄 ui.js
