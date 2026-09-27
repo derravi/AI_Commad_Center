@@ -19,6 +19,51 @@ const ToolsManager = {
     this.renderQuickAccess();
     this.renderRecentTools();
     this.setupHorizontalScroll();
+    this.initViewMode();
+  },
+
+  /**
+   * Initialize View Mode (Grid vs Compact list layout)
+   */
+  async initViewMode() {
+    const gridBtn = document.getElementById('btn-view-grid');
+    const compactBtn = document.getElementById('btn-view-compact');
+    const toolsGrid = document.getElementById('tools-grid');
+    if (!toolsGrid) return;
+
+    const data = await StorageManager.get('settings');
+    const settings = data.settings || {};
+    const viewMode = settings.viewMode || 'grid';
+
+    if (viewMode === 'compact') {
+      toolsGrid.classList.add('compact-view');
+      if (gridBtn) gridBtn.classList.remove('active');
+      if (compactBtn) compactBtn.classList.add('active');
+    } else {
+      toolsGrid.classList.remove('compact-view');
+      if (gridBtn) gridBtn.classList.add('active');
+      if (compactBtn) compactBtn.classList.remove('active');
+    }
+
+    if (gridBtn) {
+      gridBtn.addEventListener('click', async () => {
+        toolsGrid.classList.remove('compact-view');
+        gridBtn.classList.add('active');
+        if (compactBtn) compactBtn.classList.remove('active');
+        settings.viewMode = 'grid';
+        await StorageManager.set({ settings });
+      });
+    }
+
+    if (compactBtn) {
+      compactBtn.addEventListener('click', async () => {
+        toolsGrid.classList.add('compact-view');
+        compactBtn.classList.add('active');
+        if (gridBtn) gridBtn.classList.remove('active');
+        settings.viewMode = 'compact';
+        await StorageManager.set({ settings });
+      });
+    }
   },
 
   /**

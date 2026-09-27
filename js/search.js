@@ -1,10 +1,12 @@
 /**
  * AI Command Center - Universal Search Manager
  * Handles multi-engine web search queries, custom search engine management,
- * interactive dropdown selection, and instant local AI tool filtering.
+ * interactive search suggestions dropdown, keyboard navigation, and instant local AI tool filtering.
  */
 const SearchManager = {
   activeEngine: 'google',
+  selectedSuggestionIdx: -1,
+  currentSuggestions: [],
 
   // Built-in Default Search Engines
   defaultEngines: {
@@ -54,8 +56,10 @@ const SearchManager = {
   async init() {
     const searchInput = document.getElementById('main-search-input');
     const searchBtn = document.getElementById('search-action-btn');
+    const clearBtn = document.getElementById('search-clear-btn');
     const engineSelector = document.getElementById('search-engine-selector');
     const engineWrapper = document.getElementById('search-engine-wrapper');
+    const suggestionsDropdown = document.getElementById('search-suggestions-dropdown');
 
     // Load custom engines & saved active engine from storage
     const data = await StorageManager.get(['settings', 'customSearchEngines']);
@@ -81,33 +85,81 @@ const SearchManager = {
       });
     }
 
-    // Close dropdown when clicking outside
+    // Close dropdowns when clicking outside
     document.addEventListener('click', (e) => {
       if (engineWrapper && !engineWrapper.contains(e.target)) {
         this.closeDropdown();
       }
+      if (suggestionsDropdown && !e.target.closest('.search-container')) {
+        this.closeSuggestions();
+      }
     });
+
+    if (clearBtn && searchInput) {
+      clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        clearBtn.classList.remove('visible');
+        this.handleLiveFilter('');
+        this.closeSuggestions();
+        searchInput.focus();
+      });
+    }
 
     if (searchInput) {
       let filterDebounceTimer = null;
-      // Live instant filtering of AI tool cards with 150ms debounce
+
+      // Live instant filtering and suggestions rendering
       searchInput.addEventListener('input', (e) => {
         const val = e.target.value;
+        if (clearBtn) {
+          clearBtn.classList.toggle('visible', val.length > 0);
+        }
+
         clearTimeout(filterDebounceTimer);
         filterDebounceTimer = setTimeout(() => {
           this.handleLiveFilter(val);
-        }, 150);
+          this.renderSuggestions(val);
+        }, 100);
+      });
+
+      searchInput.addEventListener('focus', () => {
+        if (searchInput.value.trim().length > 0) {
+          this.renderSuggestions(searchInput.value);
+        }
       });
 
       // Keyboard navigation inside search input
       searchInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
+        const hasSuggestions = this.currentSuggestions.length > 0 && suggestionsDropdown && suggestionsDropdown.classList.contains('visible');
+
+        if (e.key === 'ArrowDown') {
+          if (hasSuggestions) {
+            e.preventDefault();
+            this.selectedSuggestionIdx = (this.selectedSuggestionIdx + 1) % this.currentSuggestions.length;
+            this.updateSuggestionHighlight();
+          }
+        } else if (e.key === 'ArrowUp') {
+          if (hasSuggestions) {
+            e.preventDefault();
+            this.selectedSuggestionIdx = (this.selectedSuggestionIdx - 1 + this.currentSuggestions.length) % this.currentSuggestions.length;
+            this.updateSuggestionHighlight();
+          }
+        } else if (e.key === 'Enter') {
           e.preventDefault();
-          this.executeWebSearch(searchInput.value);
+          if (hasSuggestions && this.selectedSuggestionIdx >= 0 && this.currentSuggestions[this.selectedSuggestionIdx]) {
+            const item = this.currentSuggestions[this.selectedSuggestionIdx];
+            this.closeSuggestions();
+            item.action();
+          } else {
+            this.closeSuggestions();
+            this.executeWebSearch(searchInput.value);
+          }
         } else if (e.key === 'Escape') {
           searchInput.value = '';
+          if (clearBtn) clearBtn.classList.remove('visible');
           this.handleLiveFilter('');
           this.closeDropdown();
+          this.closeSuggestions();
           searchInput.blur();
         }
       });
@@ -116,6 +168,7 @@ const SearchManager = {
     if (searchBtn) {
       searchBtn.addEventListener('click', () => {
         const query = searchInput ? searchInput.value : '';
+        this.closeSuggestions();
         this.executeWebSearch(query);
       });
     }
@@ -131,6 +184,103 @@ const SearchManager = {
         }
       }
     });
+  },
+
+  /**
+   * Render Search Suggestions dropdown
+   * @param {string} query
+   */
+  renderSuggestions(query) {
+    const container = document.getElementById('search-suggestions-dropdown');
+    if (!container) return;
+
+    const q = (query || '').trim().toLowerCase();
+    if (!q) {
+      this.closeSuggestions();
+      return;
+    }
+
+    const items = [];
+    const engineObj = this.getEngineById(this.activeEngine) || this.defaultEngines.google;
+
+    // Web Search Action
+    items.push({
+      type: 'web',
+      icon: engineObj.icon || '🔍',
+      title: `Search ${engineObj.name} for "${UI.escapeHtml(query.trim())}"`,
+      category: 'Web Query',
+      action: () => this.executeWebSearch(query)
+    });
+
+    // Matched AI Tools
+    if (typeof ToolsManager !== 'undefined' && Array.isArray(ToolsManager.toolsList)) {
+      const matchedTools = ToolsManager.toolsList.filter(t => 
+        t.name.toLowerCase().includes(q) || 
+        (t.description && t.description.toLowerCase().includes(q)) ||
+        (t.tags && t.tags.some(tag => tag.toLowerCase().includes(q)))
+      ).slice(0, 5);
+
+      matchedTools.forEach(tool => {
+        items.push({
+          type: 'tool',
+          icon: tool.icon || '⚡',
+          title: `Launch ${tool.name}`,
+          category: tool.category || 'AI Tool',
+          action: () => ToolsManager.launchTool(tool.id)
+        });
+      });
+    }
+
+    this.currentSuggestions = items;
+    this.selectedSuggestionIdx = -1;
+
+    container.innerHTML = items.map((item, idx) => `
+      <div class="search-suggestion-item ${idx === 0 ? 'selected' : ''}" data-idx="${idx}">
+        <span class="suggestion-icon">${item.icon}</span>
+        <div class="suggestion-content">
+          <span class="suggestion-title">${item.title}</span>
+        </div>
+        <span class="suggestion-category-tag">${item.category}</span>
+      </div>
+    `).join('');
+
+    this.selectedSuggestionIdx = 0;
+    container.classList.add('visible');
+
+    // Click handler on suggestions
+    container.querySelectorAll('.search-suggestion-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const idx = parseInt(el.getAttribute('data-idx'), 10);
+        if (!isNaN(idx) && this.currentSuggestions[idx]) {
+          this.closeSuggestions();
+          this.currentSuggestions[idx].action();
+        }
+      });
+      el.addEventListener('mousemove', () => {
+        const idx = parseInt(el.getAttribute('data-idx'), 10);
+        if (!isNaN(idx) && idx !== this.selectedSuggestionIdx) {
+          this.selectedSuggestionIdx = idx;
+          this.updateSuggestionHighlight();
+        }
+      });
+    });
+  },
+
+  updateSuggestionHighlight() {
+    const container = document.getElementById('search-suggestions-dropdown');
+    if (!container) return;
+    container.querySelectorAll('.search-suggestion-item').forEach((el, idx) => {
+      el.classList.toggle('selected', idx === this.selectedSuggestionIdx);
+    });
+  },
+
+  closeSuggestions() {
+    const container = document.getElementById('search-suggestions-dropdown');
+    if (container) {
+      container.classList.remove('visible');
+    }
+    this.selectedSuggestionIdx = -1;
+    this.currentSuggestions = [];
   },
 
   /**
@@ -354,7 +504,7 @@ const SearchManager = {
    */
   handleLiveFilter(query) {
     const q = (query || '').trim().toLowerCase();
-    
+
     // Switch to dashboard view if user is in another view and typing
     if (q.length > 0 && typeof UI !== 'undefined' && UI.currentView !== 'dashboard') {
       UI.switchView('dashboard');
@@ -408,3 +558,4 @@ const SearchManager = {
     }
   }
 };
+

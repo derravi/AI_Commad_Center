@@ -307,52 +307,81 @@ button:focus-visible,
 
 [title] {
   position: relative;
-}
-
 /* --------------------------------------------------------------------------
-   DARK MODE RESILIENCE — if you add a dark theme later
+   DIRECT AI LAUNCH CHIPS & TOKEN METRICS
    -------------------------------------------------------------------------- */
 
-[data-theme="dark"] {
-  --bg-base: #0b1220;
-  --bg-surface: #111827;
-  --bg-surface-elevated: #1a2236;
-  --bg-glass: rgba(17, 24, 39, 0.85);
-  --bg-glass-card: rgba(17, 24, 39, 0.92);
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --text-main: #f1f5f9;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
+.prompt-studio-launch-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
 }
 
-[data-theme="dark"] .search-box,
-[data-theme="dark"] .tool-card,
-[data-theme="dark"] .stack-card,
-[data-theme="dark"] .prompt-card,
-[data-theme="dark"] .workspace-card,
-[data-theme="dark"] .api-config-card,
-[data-theme="dark"] .api-playground-box,
-[data-theme="dark"] .modal-dialog,
-[data-theme="dark"] .cache-cleaner-card,
-[data-theme="dark"] .cache-metrics-banner {
-  background: var(--bg-surface);
-  border-color: var(--border-subtle);
-}
-
-[data-theme="dark"] .tool-name,
-[data-theme="dark"] h1,
-[data-theme="dark"] h2,
-[data-theme="dark"] h3,
-[data-theme="dark"] h4 {
-  color: var(--text-main);
-}
-
-[data-theme="dark"] .form-input,
-[data-theme="dark"] .form-select,
-[data-theme="dark"] .form-textarea {
+.prompt-ai-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
   background: var(--bg-surface-elevated);
+  border: 1.5px solid var(--border-subtle);
   color: var(--text-main);
-  border-color: var(--border-subtle);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.prompt-ai-chip:hover {
+  background: var(--accent-gradient);
+  color: #ffffff;
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+}
+
+.prompt-ai-chip:active {
+  transform: scale(0.95);
+}
+
+/* Prompt Studio Output Textarea */
+.prompt-studio-output-textarea {
+  width: 100%;
+  min-height: 140px;
+  background: var(--bg-surface-elevated);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 14px 16px;
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  resize: vertical;
+  margin-top: 10px;
+}
+
+.prompt-studio-output-textarea:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+/* Token & Char Counter Pill */
+.prompt-metrics-pill {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
 }
 
 /* --------------------------------------------------------------------------
@@ -368,4 +397,10 @@ button:focus-visible,
   .prompt-search-wrapper {
     width: 100%;
   }
-}
+
+  .prompt-modes-pills-list {
+    overflow-x: auto;
+    padding-bottom: 6px;
+    width: 100%;
+  }
+}

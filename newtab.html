@@ -35,13 +35,16 @@
       <!-- Top Navigation & Universal Search Header -->
       <header class="top-header">
         <div class="top-header-main-row">
-          <!-- Live Clock Widget -->
-          <div class="header-clock-widget">
-            <span id="header-clock-time" class="clock-time">12:00:00 PM</span>
+          <!-- Live Clock Widget with Personalized Greeting -->
+          <div class="header-clock-widget" id="header-clock-widget" title="Live Clock (Click to cycle format)">
+            <div class="clock-time-row">
+              <span id="header-clock-time" class="clock-time">12:00:00 PM</span>
+              <span id="header-clock-greeting" class="clock-greeting-pill">⚡ Architect</span>
+            </div>
             <span id="header-clock-date" class="clock-date">Saturday, Sep 5</span>
           </div>
 
-          <!-- Universal Search Box -->
+          <!-- Universal Search Box with Interactive Suggestions -->
           <div class="search-container">
             <div class="search-box">
               <div class="search-engine-wrapper" id="search-engine-wrapper">
@@ -76,6 +79,7 @@
 
               <input id="main-search-input" class="search-input" type="text"
                 placeholder="Search AI tools or query web... (Press / to focus)" autocomplete="off" />
+              <button id="search-clear-btn" class="search-clear-btn" type="button" title="Clear Search">✕</button>
               <span class="search-shortcut-badge">/</span>
               <button id="search-action-btn" class="search-action-btn" title="Search">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -84,10 +88,20 @@
                 </svg>
               </button>
             </div>
+
+            <!-- Dynamic Search Suggestions Dropdown -->
+            <div id="search-suggestions-dropdown" class="search-suggestions-dropdown">
+              <!-- Dynamically populated suggestions -->
+            </div>
           </div>
 
           <!-- Header Actions -->
           <div class="header-actions">
+            <!-- Fast Theme Switcher Toggle -->
+            <button id="btn-header-theme-toggle" class="icon-button" title="Toggle Theme (Alt+T)" type="button">
+              <span id="theme-toggle-icon" style="font-size: 16px;">🌙</span>
+            </button>
+
             <div class="system-status-pill">
               <span class="status-indicator"></span>
               <span>All Systems Online</span>
@@ -106,6 +120,7 @@
             </button>
           </div>
         </div>
+
 
         <!-- Horizontal Navigation Tabs Bar (Directly below the Search Bar Row) -->
         <nav class="horizontal-nav-bar" id="horizontal-nav-bar">
@@ -264,7 +279,7 @@
         </div>
         <div id="recent-tools-scroll-bar" class="quick-access-scroll"></div>
 
-        <!-- Category Filter Pills -->
+        <!-- Category Filter Pills & Layout Switcher -->
         <div class="section-header" style="margin-top: 14px;">
           <div class="section-title">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -275,6 +290,26 @@
             </svg>
             <span>AI Tool Directory</span>
             <span id="tools-count-badge" class="section-counter">Loading...</span>
+          </div>
+          <div class="view-mode-toggle" id="view-mode-toggle">
+            <button id="btn-view-grid" class="view-mode-btn active" type="button" title="Rich Grid View">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+            </button>
+            <button id="btn-view-compact" class="view-mode-btn" type="button" title="Compact List View">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+              </svg>
+            </button>
           </div>
         </div>
         <div id="category-filter-bar" class="category-filter-bar"></div>
@@ -549,17 +584,66 @@
             <div class="settings-card">
               <div class="settings-card-header">
                 <div>
-                  <h3 class="settings-card-title">🎨 Accent Theme Color</h3>
-                  <p class="settings-card-desc">Choose a primary accent tone tailored across glows, highlights, and active elements.</p>
+                  <h3 class="settings-card-title">🎨 Theme Mode & Visual Aesthetic</h3>
+                  <p class="settings-card-desc">Choose your visual environment mode with custom ambient lighting, glassmorphism, and contrast.</p>
+                </div>
+              </div>
+              <div class="theme-mode-picker">
+                <div class="theme-mode-card active" data-theme-mode="dark">
+                  <div class="theme-mode-preview preview-dark">
+                    <span class="preview-dot"></span>
+                  </div>
+                  <div class="theme-mode-info">
+                    <strong>Cyber Slate</strong>
+                    <span>Deep slate dark mode</span>
+                  </div>
+                </div>
+                <div class="theme-mode-card" data-theme-mode="midnight">
+                  <div class="theme-mode-preview preview-midnight">
+                    <span class="preview-dot"></span>
+                  </div>
+                  <div class="theme-mode-info">
+                    <strong>Midnight OLED</strong>
+                    <span>True black contrast</span>
+                  </div>
+                </div>
+                <div class="theme-mode-card" data-theme-mode="aurora">
+                  <div class="theme-mode-preview preview-aurora">
+                    <span class="preview-dot"></span>
+                  </div>
+                  <div class="theme-mode-info">
+                    <strong>Deep Aurora</strong>
+                    <span>Cosmic nebula glow</span>
+                  </div>
+                </div>
+                <div class="theme-mode-card" data-theme-mode="light">
+                  <div class="theme-mode-preview preview-light">
+                    <span class="preview-dot"></span>
+                  </div>
+                  <div class="theme-mode-info">
+                    <strong>Frosted Light</strong>
+                    <span>Crisp, clean airy mode</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <div>
+                  <h3 class="settings-card-title">✨ Accent Theme Color</h3>
+                  <p class="settings-card-desc">Choose a primary accent tone tailored across glows, highlights, borders, and interactive elements.</p>
                 </div>
               </div>
               <div class="theme-palette-picker">
                 <div class="theme-swatch active" style="background: #6366f1;" data-color="#6366f1" title="Indigo Purple"></div>
                 <div class="theme-swatch" style="background: #0284c7;" data-color="#0284c7" title="Electric Blue"></div>
+                <div class="theme-swatch" style="background: #06b6d4;" data-color="#06b6d4" title="Cyber Cyan"></div>
                 <div class="theme-swatch" style="background: #10b981;" data-color="#10b981" title="Emerald Green"></div>
-                <div class="theme-swatch" style="background: #f43f5e;" data-color="#f43f5e" title="Rose Pink"></div>
-                <div class="theme-swatch" style="background: #f59e0b;" data-color="#f59e0b" title="Amber Orange"></div>
                 <div class="theme-swatch" style="background: #8b5cf6;" data-color="#8b5cf6" title="Radiant Violet"></div>
+                <div class="theme-swatch" style="background: #ec4899;" data-color="#ec4899" title="Neon Pink"></div>
+                <div class="theme-swatch" style="background: #f43f5e;" data-color="#f43f5e" title="Rose Red"></div>
+                <div class="theme-swatch" style="background: #f59e0b;" data-color="#f59e0b" title="Amber Orange"></div>
               </div>
             </div>
 
@@ -1114,18 +1198,6 @@
 
       <div id="assistant-messages-container" class="assistant-messages">
         <!-- Messages loaded dynamically -->
-      </div>
-
-      <!-- Quick Suggested Prompts Chips -->
-      <div id="drawer-quick-prompts" class="drawer-quick-prompts">
-        <button type="button" class="drawer-prompt-chip"
-          data-prompt="Explain the difference between FastAPI and Django">FastAPI vs Django</button>
-        <button type="button" class="drawer-prompt-chip"
-          data-prompt="Write a modern React custom hook for localStorage">React Storage Hook</button>
-        <button type="button" class="drawer-prompt-chip"
-          data-prompt="Architect an optimal AI tool stack for building a SaaS">AI SaaS Stack</button>
-        <button type="button" class="drawer-prompt-chip" data-prompt="Give me 3 best tips for prompt engineering">Prompt
-          Tips</button>
       </div>
 
       <div class="assistant-input-box">

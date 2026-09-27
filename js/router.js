@@ -91,6 +91,8 @@ const SmartRouter = {
           this.routeTask(routerInput.value);
         }
       });
+
+      this.initPlaceholderTicker(routerInput);
     }
 
     quickTags.forEach(tag => {
@@ -100,6 +102,28 @@ const SmartRouter = {
         this.routeTask(query);
       });
     });
+  },
+
+  /**
+   * Animated Placeholder Ticker for Router Input
+   */
+  initPlaceholderTicker(inputEl) {
+    if (!inputEl) return;
+    const placeholders = [
+      "e.g., 'Build an autonomous agent with Python and FastAPI'...",
+      "e.g., 'Design a sleek glassmorphic React landing page'...",
+      "e.g., 'Analyze 500k CSV sales records and predict Q4 trends'...",
+      "e.g., 'Synthesize 20 research papers on Transformer architectures'...",
+      "e.g., 'Generate photorealistic 8k cyber city landscape'...",
+      "e.g., 'Produce a 60s viral video with voiceover and sound effects'..."
+    ];
+    let index = 0;
+    setInterval(() => {
+      if (document.activeElement !== inputEl && !inputEl.value) {
+        index = (index + 1) % placeholders.length;
+        inputEl.placeholder = placeholders[index];
+      }
+    }, 4000);
   },
 
   /**

@@ -1,6 +1,6 @@
 /**
  * AI Command Center - UI & State Controller
- * Manages view routing, themes, live clock, modals, and toast notifications.
+ * Manages view routing, themes, live clock, modals, spotlight tracking, command palette, and notifications.
  */
 const UI = {
   currentView: 'dashboard',
@@ -12,6 +12,7 @@ const UI = {
     this.initClock();
     this.initNavigation();
     this.initThemeAndSettings();
+    this.initSpotlightTracking();
     this.initModals();
     this.initAssistantDrawer();
     this.initApiHub();
@@ -36,19 +37,35 @@ const UI = {
   },
 
   /**
-   * Start live ticking clock
+   * Start live ticking clock and personalized greeting
    */
   initClock() {
     const timeEl = document.getElementById('header-clock-time');
     const dateEl = document.getElementById('header-clock-date');
+    const greetingEl = document.getElementById('header-clock-greeting');
 
     const updateTime = () => {
       const now = new Date();
+      const hours = now.getHours();
+
       if (timeEl) {
         timeEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
       }
       if (dateEl) {
         dateEl.textContent = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+      }
+      if (greetingEl) {
+        let greeting = '⚡ Architect';
+        if (hours >= 5 && hours < 12) {
+          greeting = '☀️ Morning, Explorer';
+        } else if (hours >= 12 && hours < 17) {
+          greeting = '⚡ Afternoon, Builder';
+        } else if (hours >= 17 && hours < 21) {
+          greeting = '🌆 Evening, Architect';
+        } else {
+          greeting = '🌙 Night, Hacker';
+        }
+        greetingEl.textContent = greeting;
       }
     };
 
@@ -131,27 +148,70 @@ const UI = {
   async initThemeAndSettings() {
     const data = await StorageManager.get('settings');
     const settings = data.settings || {};
+    const validThemes = ['dark', 'midnight', 'aurora', 'light'];
+    const currentTheme = validThemes.includes(settings.theme) ? settings.theme : 'dark';
 
-    // Apply Light Theme
-    document.documentElement.setAttribute('data-theme', 'light');
-    if (settings.theme !== 'light') {
-      settings.theme = 'light';
-      await StorageManager.set({ settings });
-    }
+    // Apply Theme
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    this.updateThemeIcon(currentTheme);
+    this.updateThemeModeActiveCards(currentTheme);
 
     // Apply Accent color
     if (settings.accentColor) {
       document.documentElement.style.setProperty('--accent-primary', settings.accentColor);
+      document.querySelectorAll('.theme-swatch').forEach(s => {
+        if (s.getAttribute('data-color') === settings.accentColor) {
+          s.classList.add('active');
+        } else {
+          s.classList.remove('active');
+        }
+      });
+    }
+
+    // Theme Mode Cards click handler
+    document.querySelectorAll('.theme-mode-card').forEach(card => {
+      card.addEventListener('click', async () => {
+        const selectedTheme = card.getAttribute('data-theme-mode');
+        if (!selectedTheme) return;
+
+        document.documentElement.setAttribute('data-theme', selectedTheme);
+        settings.theme = selectedTheme;
+        await StorageManager.set({ settings });
+
+        this.updateThemeIcon(selectedTheme);
+        this.updateThemeModeActiveCards(selectedTheme);
+        this.showToast(`Theme switched to ${card.querySelector('strong')?.textContent || selectedTheme}`, 'info');
+      });
+    });
+
+    // Fast Theme Switcher button in top header
+    const headerThemeBtn = document.getElementById('btn-header-theme-toggle');
+    if (headerThemeBtn) {
+      headerThemeBtn.addEventListener('click', async () => {
+        const themeOrder = ['dark', 'midnight', 'aurora', 'light'];
+        const activeTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        const currentIndex = themeOrder.indexOf(activeTheme);
+        const nextTheme = themeOrder[(currentIndex + 1) % themeOrder.length];
+
+        document.documentElement.setAttribute('data-theme', nextTheme);
+        settings.theme = nextTheme;
+        await StorageManager.set({ settings });
+
+        this.updateThemeIcon(nextTheme);
+        this.updateThemeModeActiveCards(nextTheme);
+        this.showToast(`Switched theme to ${nextTheme.toUpperCase()}`, 'info');
+      });
     }
 
     // Theme palette swatches
     document.querySelectorAll('.theme-swatch').forEach(swatch => {
       swatch.addEventListener('click', async () => {
         const color = swatch.getAttribute('data-color');
+        if (!color) return;
         document.documentElement.style.setProperty('--accent-primary', color);
         settings.accentColor = color;
         await StorageManager.set({ settings });
-        
+
         document.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('active'));
         swatch.classList.add('active');
         this.showToast('Accent color updated', 'info');
@@ -183,6 +243,48 @@ const UI = {
         reader.readAsText(file);
       });
     }
+  },
+
+  updateThemeIcon(theme) {
+    const iconEl = document.getElementById('theme-toggle-icon');
+    if (!iconEl) return;
+    const icons = {
+      dark: '🌙',
+      midnight: '🌌',
+      aurora: '🔮',
+      light: '☀️'
+    };
+    iconEl.textContent = icons[theme] || '🌙';
+  },
+
+  updateThemeModeActiveCards(theme) {
+    document.querySelectorAll('.theme-mode-card').forEach(card => {
+      if (card.getAttribute('data-theme-mode') === theme) {
+        card.classList.add('active');
+      } else {
+        card.classList.remove('active');
+      }
+    });
+  },
+
+  /**
+   * Interactive Spotlight & 3D Tilt Sheen Cursor Tracking
+   * Tracks cursor position on interactive cards and passes --mouse-x / --mouse-y coordinates
+   */
+  initSpotlightTracking() {
+    const selector = '.tool-card, .mini-tool-card, .stack-card, .router-hero, .api-config-card, .settings-card, .theme-mode-card, .cache-hero-card';
+
+    document.addEventListener('mousemove', (e) => {
+      const targetCard = e.target.closest(selector);
+      if (!targetCard) return;
+
+      const rect = targetCard.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      targetCard.style.setProperty('--mouse-x', `${x}px`);
+      targetCard.style.setProperty('--mouse-y', `${y}px`);
+    }, { passive: true });
   },
 
   /**

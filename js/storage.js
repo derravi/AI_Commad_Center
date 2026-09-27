@@ -146,18 +146,16 @@ const StorageManager = {
     // Seed default settings if none exist
     if (!data.settings) {
       const defaultSettings = {
-        theme: 'light',
-        accentColor: '#4f46e5',
+        theme: 'dark',
+        accentColor: '#6366f1',
         searchEngine: 'google',
         openInNewTab: true,
         showFavorites: true,
         showRecents: true,
-        showRouterHero: true
+        showRouterHero: true,
+        viewMode: 'grid'
       };
       await this.set({ settings: defaultSettings });
-    } else if (data.settings.theme !== 'light') {
-      data.settings.theme = 'light';
-      await this.set({ settings: data.settings });
     }
 
     if (!data.recentTools) {
