@@ -12,6 +12,7 @@ const UI = {
     this.initClock();
     this.initNavigation();
     this.initThemeAndSettings();
+    this.initWallpaper();
     this.initSpotlightTracking();
     this.initModals();
     this.initAssistantDrawer();
@@ -265,6 +266,515 @@ const UI = {
         card.classList.remove('active');
       }
     });
+  },
+
+  /**
+   * Curated & Dynamic Ultra-HD Natural Wallpapers
+   */
+  naturalWallpapers: [
+    {
+      id: 'dynamic-nature',
+      name: '🌐 Live Internet Nature',
+      desc: 'Auto-refreshes dynamic scenic photography from web',
+      icon: '🌐',
+      isLive: true,
+      url: '',
+      thumb: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=75'
+    },
+    {
+      id: 'misty-pines',
+      name: '🌲 Misty Pines',
+      desc: 'Emerald forest fog & alpine valley',
+      icon: '🌲',
+      url: 'https://images.unsplash.com/photo-1511497584788-87676104235f?auto=format&fit=crop&w=2560&q=85',
+      thumb: 'https://images.unsplash.com/photo-1511497584788-87676104235f?auto=format&fit=crop&w=400&q=75'
+    },
+    {
+      id: 'alpine-sunset',
+      name: '🏔️ Alpine Sunset',
+      desc: 'Glow over dramatic mountain summits',
+      icon: '🏔️',
+      url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2560&q=85',
+      thumb: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=400&q=75'
+    },
+    {
+      id: 'aurora-lake',
+      name: '🌌 Aurora Lake',
+      desc: 'Vibrant celestial green aurora reflections',
+      icon: '🌌',
+      url: 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=2560&q=85',
+      thumb: 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=400&q=75'
+    },
+    {
+      id: 'tropical-rainforest',
+      name: '🌿 Lush Rainforest',
+      desc: 'Deep canopy sunbeams & dewy foliage',
+      icon: '🌿',
+      url: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=2560&q=85',
+      thumb: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=400&q=75'
+    },
+    {
+      id: 'moraine-lake',
+      name: '⛰️ Glacial Lake',
+      desc: 'Turquoise alpine waters & rugged peaks',
+      icon: '⛰️',
+      url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=2560&q=85',
+      thumb: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=75'
+    },
+    {
+      id: 'pacific-coast',
+      name: '🌊 Pacific Sunset',
+      desc: 'Golden ocean horizon & gentle waves',
+      icon: '🌊',
+      url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2560&q=85',
+      thumb: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=75'
+    },
+    {
+      id: 'mossy-waterfall',
+      name: '💧 Jungle Waterfall',
+      desc: 'Ethereal mist cascade & emerald moss',
+      icon: '💧',
+      url: 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=2560&q=85',
+      thumb: 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=400&q=75'
+    },
+    {
+      id: 'autumn-woods',
+      name: '🍁 Golden Autumn',
+      desc: 'Warm sunbeams piercing amber canopy',
+      icon: '🍁',
+      url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=2560&q=85',
+      thumb: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=400&q=75'
+    },
+    {
+      id: 'cherry-blossom',
+      name: '🌸 Sakura Sunrise',
+      desc: 'Morning dawn through blooming cherry trees',
+      icon: '🌸',
+      url: 'https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=2560&q=85',
+      thumb: 'https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=400&q=75'
+    },
+    {
+      id: 'iceland-canyon',
+      name: '🌋 Icelandic Canyon',
+      desc: 'Emerald cliffs and winding glacial river',
+      icon: '🌋',
+      url: 'https://images.unsplash.com/photo-1504893524553-b855bce32c67?auto=format&fit=crop&w=2560&q=85',
+      thumb: 'https://images.unsplash.com/photo-1504893524553-b855bce32c67?auto=format&fit=crop&w=400&q=75'
+    },
+    {
+      id: 'starry-galaxy',
+      name: '✨ Cosmic Horizon',
+      desc: 'Deep starry night sky and Milky Way galaxy',
+      icon: '✨',
+      url: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=2560&q=85',
+      thumb: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=400&q=75'
+    },
+    {
+      id: 'none',
+      name: '🔮 Cyber Mesh',
+      desc: 'Original animated glowing mesh gradient',
+      icon: '🔮',
+      url: '',
+      thumb: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=400&q=75'
+    }
+  ],
+
+  /**
+   * Dynamic Live Scenic Nature Photos Pool for internet rotation
+   */
+  dynamicNaturePool: [
+    { name: '🌲 Misty Pine Valley', url: 'https://images.unsplash.com/photo-1511497584788-87676104235f?auto=format&fit=crop&w=2560&q=85', icon: '🌲' },
+    { name: '🏔️ Alpine Alps Sunset', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2560&q=85', icon: '🏔️' },
+    { name: '🌌 Aurora Night Lake', url: 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=2560&q=85', icon: '🌌' },
+    { name: '🌿 Emerald Rainforest', url: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=2560&q=85', icon: '🌿' },
+    { name: '⛰️ Banff Moraine Waters', url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=2560&q=85', icon: '⛰️' },
+    { name: '🌊 Pacific Golden Shore', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2560&q=85', icon: '🌊' },
+    { name: '💧 Cascading Waterfall', url: 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=2560&q=85', icon: '💧' },
+    { name: '🍁 Sunlit Autumn Canopy', url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=2560&q=85', icon: '🍁' },
+    { name: '🌸 Sakura Morning Grove', url: 'https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=2560&q=85', icon: '🌸' },
+    { name: '🌋 Icelandic Green Fjord', url: 'https://images.unsplash.com/photo-1504893524553-b855bce32c67?auto=format&fit=crop&w=2560&q=85', icon: '🌋' },
+    { name: '🏜️ Golden Sahara Dunes', url: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=2560&q=85', icon: '🏜️' },
+    { name: '❄️ Snowy Mountain Peak', url: 'https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?auto=format&fit=crop&w=2560&q=85', icon: '❄️' },
+    { name: '🌅 Serene Mountain Dusk', url: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=2560&q=85', icon: '🌅' },
+    { name: '🏞️ Lush Emerald Valley', url: 'https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=2560&q=85', icon: '🏞️' },
+    { name: '✨ Starry Cosmic Galaxy', url: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=2560&q=85', icon: '✨' },
+    { name: '🍃 Bamboo Forest Path', url: 'https://images.unsplash.com/photo-1503614472-8c93d56e92ce?auto=format&fit=crop&w=2560&q=85', icon: '🍃' },
+    { name: '🌲 Misty Redwood National Park', url: 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=2560&q=85', icon: '🌲' },
+    { name: '🏔️ Lake Tahoe Horizon', url: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=2560&q=85', icon: '🏔️' }
+  ],
+
+  /**
+   * Initialize Natural Wallpaper & Frosted Blur Studio
+   */
+  async initWallpaper() {
+    const data = await StorageManager.get('settings');
+    const settings = data.settings || {};
+    const autoChange = settings.wallpaperAutoChange !== false;
+    const wallpaperId = settings.wallpaper !== undefined ? settings.wallpaper : 'dynamic-nature';
+    const blur = settings.wallpaperBlur !== undefined ? Number(settings.wallpaperBlur) : 14;
+    const overlay = settings.wallpaperOverlay !== undefined ? Number(settings.wallpaperOverlay) : 40;
+
+    // Render gallery thumbnails
+    this.renderWallpaperGallery(wallpaperId);
+
+    // If autoChange is enabled or dynamic-nature is active, fetch a fresh wallpaper from internet
+    if (autoChange || wallpaperId === 'dynamic-nature') {
+      await this.fetchRandomInternetWallpaper(false, blur, overlay);
+    } else {
+      this.applyWallpaper(wallpaperId, blur, overlay, false);
+    }
+
+    // Auto-change checkbox handler
+    const autoCheckbox = document.getElementById('checkbox-auto-wallpaper');
+    if (autoCheckbox) {
+      autoCheckbox.checked = autoChange;
+      autoCheckbox.addEventListener('change', async (e) => {
+        const curData = await StorageManager.get('settings');
+        const curSettings = curData.settings || {};
+        curSettings.wallpaperAutoChange = e.target.checked;
+        await StorageManager.set({ settings: curSettings });
+        this.showToast(e.target.checked ? '🌐 Auto-refresh wallpaper from internet enabled' : 'Auto-refresh wallpaper disabled', 'info');
+      });
+    }
+
+    // Fetch Live Internet Wallpaper button
+    const fetchLiveBtn = document.getElementById('btn-fetch-live-wallpaper');
+    if (fetchLiveBtn) {
+      fetchLiveBtn.addEventListener('click', () => {
+        this.fetchRandomInternetWallpaper(true);
+      });
+    }
+
+    // Blur slider handler
+    const blurInput = document.getElementById('input-wallpaper-blur');
+    if (blurInput) {
+      blurInput.value = blur;
+      this.updateBlurBadge(blur);
+
+      blurInput.addEventListener('input', (e) => {
+        const val = Number(e.target.value);
+        this.setWallpaperBlur(val);
+      });
+
+      blurInput.addEventListener('change', async (e) => {
+        const val = Number(e.target.value);
+        const curData = await StorageManager.get('settings');
+        const curSettings = curData.settings || {};
+        curSettings.wallpaperBlur = val;
+        await StorageManager.set({ settings: curSettings });
+      });
+    }
+
+    // Blur preset pills
+    document.querySelectorAll('.wallpaper-preset-pill').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const val = Number(btn.getAttribute('data-blur'));
+        if (blurInput) blurInput.value = val;
+        this.setWallpaperBlur(val);
+        const curData = await StorageManager.get('settings');
+        const curSettings = curData.settings || {};
+        curSettings.wallpaperBlur = val;
+        await StorageManager.set({ settings: curSettings });
+      });
+    });
+
+    // Dimming / Overlay slider handler
+    const overlayInput = document.getElementById('input-wallpaper-overlay');
+    if (overlayInput) {
+      overlayInput.value = overlay;
+      this.updateOverlayBadge(overlay);
+
+      overlayInput.addEventListener('input', (e) => {
+        const val = Number(e.target.value);
+        this.setWallpaperOverlay(val);
+      });
+
+      overlayInput.addEventListener('change', async (e) => {
+        const val = Number(e.target.value);
+        const curData = await StorageManager.get('settings');
+        const curSettings = curData.settings || {};
+        curSettings.wallpaperOverlay = val;
+        await StorageManager.set({ settings: curSettings });
+      });
+    }
+
+    // Random Curated Wallpaper button
+    const randomBtn = document.getElementById('btn-random-wallpaper');
+    if (randomBtn) {
+      randomBtn.addEventListener('click', () => {
+        this.fetchRandomInternetWallpaper(true);
+      });
+    }
+
+    // Remove Wallpaper / Cyber Mesh button
+    const removeBtn = document.getElementById('btn-remove-wallpaper');
+    if (removeBtn) {
+      removeBtn.addEventListener('click', () => {
+        this.applyWallpaper('none', undefined, undefined, true);
+      });
+    }
+
+    // Custom Wallpaper URL button
+    const applyCustomBtn = document.getElementById('btn-apply-custom-wallpaper');
+    const customUrlInput = document.getElementById('input-custom-wallpaper-url');
+    if (applyCustomBtn && customUrlInput) {
+      applyCustomBtn.addEventListener('click', () => {
+        const url = customUrlInput.value.trim();
+        if (url) {
+          this.applyWallpaper(url, undefined, undefined, true);
+          customUrlInput.value = '';
+        } else {
+          this.showToast('Please enter a valid image URL', 'error');
+        }
+      });
+    }
+
+    // Upload Local Photo handler
+    const uploadInput = document.getElementById('input-upload-wallpaper');
+    if (uploadInput) {
+      uploadInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (!file.type.startsWith('image/')) {
+          this.showToast('Please select a valid image file', 'error');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          const dataUrl = evt.target.result;
+          this.applyWallpaper(dataUrl, undefined, undefined, true);
+          this.showToast('Custom photo wallpaper applied!', 'success');
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Fast Wallpaper Switcher button in Top Header
+    const headerWallpaperBtn = document.getElementById('btn-header-wallpaper-toggle');
+    if (headerWallpaperBtn) {
+      headerWallpaperBtn.addEventListener('click', () => {
+        this.fetchRandomInternetWallpaper(true);
+      });
+    }
+
+    // Keyboard shortcut Alt+W to cycle/fetch new live natural wallpaper
+    document.addEventListener('keydown', (e) => {
+      if (e.altKey && (e.key === 'w' || e.key === 'W') && !e.ctrlKey && !e.metaKey) {
+        const activeTag = document.activeElement ? document.activeElement.tagName : '';
+        if (activeTag === 'INPUT' || activeTag === 'TEXTAREA') return;
+        e.preventDefault();
+        this.fetchRandomInternetWallpaper(true);
+      }
+    });
+  },
+
+  /**
+   * Fetch and smoothly preload a fresh live nature wallpaper from internet
+   * @param {boolean} [showToastMsg=false]
+   * @param {number} [blurVal]
+   * @param {number} [overlayVal]
+   */
+  async fetchRandomInternetWallpaper(showToastMsg = false, blurVal, overlayVal) {
+    const pool = this.dynamicNaturePool;
+    const item = pool[Math.floor(Math.random() * pool.length)];
+    if (!item) return;
+
+    // Cache-busting timestamp to guarantee fresh network fetch
+    const freshUrl = `${item.url}&sig=${Date.now()}`;
+
+    // Preload image smoothly in the background
+    const img = new Image();
+    img.onload = () => {
+      this.applyWallpaperDirect(freshUrl, item.name, item.icon, blurVal, overlayVal);
+      if (showToastMsg) {
+        this.showToast(`🌐 Live Wallpaper updated: ${item.name}`, 'success');
+      }
+    };
+    img.onerror = () => {
+      // Fallback to static direct URL
+      this.applyWallpaperDirect(item.url, item.name, item.icon, blurVal, overlayVal);
+      if (showToastMsg) {
+        this.showToast(`Wallpaper updated: ${item.name}`, 'success');
+      }
+    };
+    img.src = freshUrl;
+  },
+
+  /**
+   * Render thumbnail cards in Wallpaper Gallery
+   * @param {string} activeId
+   */
+  renderWallpaperGallery(activeId) {
+    const grid = document.getElementById('wallpaper-gallery-grid');
+    if (!grid) return;
+
+    grid.innerHTML = this.naturalWallpapers.map(wp => {
+      const isActive = wp.id === activeId || (wp.url && activeId === wp.url);
+      const isLive = wp.isLive ? 'live-nature-card' : '';
+      return `
+        <div class="wallpaper-thumb-card ${isLive} ${isActive ? 'active' : ''}" data-wallpaper-id="${wp.id}" title="${wp.name} — ${wp.desc}">
+          ${wp.isLive ? '<span class="wallpaper-live-tag">LIVE ROTATING</span>' : ''}
+          <img class="wallpaper-thumb-img" src="${wp.thumb}" alt="${wp.name}" loading="lazy" />
+          <div class="wallpaper-thumb-overlay"></div>
+          <div class="wallpaper-active-badge">✓</div>
+          <div class="wallpaper-thumb-info">
+            <span class="wallpaper-thumb-name">${wp.name}</span>
+            <span class="wallpaper-thumb-desc">${wp.desc}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Attach click listeners to cards
+    grid.querySelectorAll('.wallpaper-thumb-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const wpId = card.getAttribute('data-wallpaper-id');
+        if (wpId === 'dynamic-nature') {
+          this.fetchRandomInternetWallpaper(true);
+        } else if (wpId) {
+          this.applyWallpaper(wpId, undefined, undefined, true);
+        }
+      });
+    });
+  },
+
+  /**
+   * Apply natural wallpaper, blur, and opacity
+   * @param {string} idOrUrl
+   * @param {number} [blurVal]
+   * @param {number} [overlayVal]
+   * @param {boolean} [showToastMsg=false]
+   */
+  async applyWallpaper(idOrUrl, blurVal, overlayVal, showToastMsg = false) {
+    const item = this.naturalWallpapers.find(w => w.id === idOrUrl || (w.url && w.url === idOrUrl));
+    if (idOrUrl === 'dynamic-nature') {
+      return this.fetchRandomInternetWallpaper(showToastMsg, blurVal, overlayVal);
+    }
+    const isNone = idOrUrl === 'none' || (!item && !idOrUrl);
+    const wallpaperUrl = item ? item.url : idOrUrl;
+    const wallpaperName = item ? item.name : 'Custom Wallpaper';
+    const icon = item ? item.icon : '🖼️';
+
+    await this.applyWallpaperDirect(wallpaperUrl, wallpaperName, icon, blurVal, overlayVal, isNone);
+    if (showToastMsg) {
+      if (isNone) this.showToast('Background set to Dynamic Cyber Mesh', 'info');
+      else this.showToast(`Wallpaper applied: ${wallpaperName}`, 'success');
+    }
+  },
+
+  /**
+   * Directly apply wallpaper background, filters, and state
+   */
+  async applyWallpaperDirect(wallpaperUrl, wallpaperName, icon = '🌲', blurVal, overlayVal, isNone = false) {
+    const wallpaperEl = document.getElementById('ambient-wallpaper');
+    const overlayEl = document.getElementById('ambient-wallpaper-overlay');
+    const toggleIcon = document.getElementById('wallpaper-toggle-icon');
+
+    const data = await StorageManager.get('settings');
+    const settings = data.settings || {};
+
+    const blur = blurVal !== undefined ? blurVal : (settings.wallpaperBlur !== undefined ? Number(settings.wallpaperBlur) : 14);
+    const overlay = overlayVal !== undefined ? overlayVal : (settings.wallpaperOverlay !== undefined ? Number(settings.wallpaperOverlay) : 40);
+
+    // Set CSS properties
+    this.setWallpaperBlur(blur);
+    this.setWallpaperOverlay(overlay);
+
+    if (isNone || !wallpaperUrl) {
+      if (wallpaperEl) {
+        wallpaperEl.style.backgroundImage = 'none';
+        wallpaperEl.classList.remove('active');
+      }
+      if (overlayEl) overlayEl.classList.remove('active');
+      document.body.classList.remove('has-wallpaper');
+      if (toggleIcon) toggleIcon.textContent = '🔮';
+      settings.wallpaper = 'none';
+    } else {
+      if (wallpaperEl) {
+        wallpaperEl.style.backgroundImage = `url('${wallpaperUrl}')`;
+        wallpaperEl.classList.add('active');
+      }
+      if (overlayEl) overlayEl.classList.add('active');
+      document.body.classList.add('has-wallpaper');
+      if (toggleIcon) toggleIcon.textContent = icon || '🌲';
+      settings.wallpaper = wallpaperUrl;
+    }
+
+    settings.wallpaperBlur = blur;
+    settings.wallpaperOverlay = overlay;
+    await StorageManager.set({ settings });
+
+    // Update active highlight in gallery cards
+    document.querySelectorAll('.wallpaper-thumb-card').forEach(card => {
+      const cId = card.getAttribute('data-wallpaper-id');
+      if (isNone && cId === 'none') {
+        card.classList.add('active');
+      } else if (!isNone && (card.getAttribute('data-wallpaper-id') === 'dynamic-nature' || card.getAttribute('data-wallpaper-id') === settings.wallpaper)) {
+        card.classList.add('active');
+      } else {
+        card.classList.remove('active');
+      }
+    });
+  },
+
+  /**
+   * Set wallpaper frosted blur filter
+   * @param {number} px
+   */
+  setWallpaperBlur(px) {
+    document.documentElement.style.setProperty('--wallpaper-blur', `${px}px`);
+    this.updateBlurBadge(px);
+
+    // Update active preset button
+    document.querySelectorAll('.wallpaper-preset-pill').forEach(btn => {
+      const btnBlur = Number(btn.getAttribute('data-blur'));
+      if (btnBlur === px) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  },
+
+  /**
+   * Set wallpaper overlay opacity (contrast dimming)
+   * @param {number} percentage 0 - 100
+   */
+  setWallpaperOverlay(percentage) {
+    const decimal = Math.max(0.1, Math.min(0.9, percentage / 100));
+    document.documentElement.style.setProperty('--wallpaper-overlay-opacity', `${decimal}`);
+    this.updateOverlayBadge(percentage);
+  },
+
+  /**
+   * Update blur value badge
+   * @param {number} px
+   */
+  updateBlurBadge(px) {
+    const badge = document.getElementById('wallpaper-blur-val-badge');
+    if (!badge) return;
+    let label = 'Frosted Glass';
+    if (px === 0) label = 'Crisp HD';
+    else if (px <= 6) label = 'Soft Focus';
+    else if (px <= 16) label = 'Frosted Glass';
+    else label = 'Deep Dream';
+    badge.textContent = `${px}px • ${label}`;
+  },
+
+  /**
+   * Update overlay value badge
+   * @param {number} pct
+   */
+  updateOverlayBadge(pct) {
+    const badge = document.getElementById('wallpaper-overlay-val-badge');
+    if (badge) badge.textContent = `${pct}%`;
+  },
+
+  /**
+   * Fast cycle to next natural wallpaper
+   */
+  async cycleWallpaper() {
+    this.fetchRandomInternetWallpaper(true);
   },
 
   /**

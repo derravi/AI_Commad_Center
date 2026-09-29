@@ -153,7 +153,11 @@ const StorageManager = {
         showFavorites: true,
         showRecents: true,
         showRouterHero: true,
-        viewMode: 'grid'
+        viewMode: 'grid',
+        wallpaper: 'dynamic-nature',
+        wallpaperAutoChange: true,
+        wallpaperBlur: 14,
+        wallpaperOverlay: 40
       };
       await this.set({ settings: defaultSettings });
     }

@@ -222,8 +222,69 @@ html, body {
 }
 
 /* ==========================================================================
-   AMBIENT BACKGROUND — Dynamic Mesh + Cyber Grid + Floating Orbs
+   AMBIENT BACKGROUND & NATURAL WALLPAPER ENGINE (ULTRA-PREMIUM)
    ========================================================================== */
+
+/* Dedicated Ultra-HD Natural Wallpaper Layer with Hardware Accelerated Frosted Blur */
+.ambient-wallpaper {
+  position: fixed;
+  inset: -30px; /* Slight overflow to completely prevent white/transparent edge bleeding when blurred */
+  z-index: -3;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transform: scale(1.04);
+  filter: blur(var(--wallpaper-blur, 12px)) brightness(var(--wallpaper-brightness, 0.88)) saturate(var(--wallpaper-saturate, 115%));
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              filter 0.3s ease,
+              background-image 0.5s ease;
+  will-change: transform, filter, opacity;
+  pointer-events: none;
+}
+
+.ambient-wallpaper.active {
+  opacity: 1;
+}
+
+/* Frosted Ambient Overlay for Visual Contrast & Legibility */
+.ambient-wallpaper-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: radial-gradient(circle at 50% 20%, rgba(11, 15, 25, calc(var(--wallpaper-overlay-opacity, 0.42) * 0.75)), rgba(11, 15, 25, var(--wallpaper-overlay-opacity, 0.52)));
+  opacity: 0;
+  transition: opacity 0.5s ease, background 0.3s ease;
+  pointer-events: none;
+}
+
+[data-theme="light"] .ambient-wallpaper-overlay {
+  background: radial-gradient(circle at 50% 20%, rgba(248, 250, 252, calc(var(--wallpaper-overlay-opacity, 0.42) * 0.75)), rgba(241, 245, 249, var(--wallpaper-overlay-opacity, 0.55)));
+}
+
+[data-theme="midnight"] .ambient-wallpaper-overlay {
+  background: radial-gradient(circle at 50% 20%, rgba(0, 0, 0, calc(var(--wallpaper-overlay-opacity, 0.5) * 0.8)), rgba(0, 0, 0, calc(var(--wallpaper-overlay-opacity, 0.5) * 1.15)));
+}
+
+[data-theme="aurora"] .ambient-wallpaper-overlay {
+  background: radial-gradient(circle at 50% 20%, rgba(10, 15, 30, calc(var(--wallpaper-overlay-opacity, 0.45) * 0.75)), rgba(10, 15, 30, var(--wallpaper-overlay-opacity, 0.55)));
+}
+
+.ambient-wallpaper-overlay.active {
+  opacity: 1;
+}
+
+/* Glassmorphism Refinements when Wallpaper is Active */
+body.has-wallpaper .router-hero,
+body.has-wallpaper .tool-card,
+body.has-wallpaper .section-header,
+body.has-wallpaper .settings-card,
+body.has-wallpaper .search-box,
+body.has-wallpaper .localhost-bar,
+body.has-wallpaper .horizontal-nav-bar {
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+}
 
 .ambient-bg {
   position: fixed;
@@ -236,7 +297,11 @@ html, body {
     radial-gradient(900px 500px at 95% 5%, rgba(236, 72, 153, 0.12), transparent 65%),
     radial-gradient(1000px 700px at 50% 110%, rgba(139, 92, 246, 0.14), transparent 60%),
     var(--bg-base);
-  transition: background 0.4s var(--ease-out-quint);
+  transition: background 0.4s var(--ease-out-quint), opacity 0.4s ease;
+}
+
+body.has-wallpaper .ambient-bg {
+  background: transparent;
 }
 
 [data-theme="light"] .ambient-bg {

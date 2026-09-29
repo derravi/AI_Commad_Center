@@ -15,7 +15,11 @@
   <link rel="stylesheet" href="css/modal.css">
 </head>
 
-<body>
+<body class="has-wallpaper">
+
+  <!-- Ambient Natural Wallpaper Layer & Frosted Overlay (Blurry Background Engine) -->
+  <div class="ambient-wallpaper active" id="ambient-wallpaper" style="background-image: url('https://images.unsplash.com/photo-1511497584788-87676104235f?auto=format&fit=crop&w=2560&q=85');"></div>
+  <div class="ambient-wallpaper-overlay active" id="ambient-wallpaper-overlay"></div>
 
   <!-- Ambient Glow & Cyber Grid Background -->
   <div class="ambient-bg">
@@ -100,6 +104,11 @@
             <!-- Fast Theme Switcher Toggle -->
             <button id="btn-header-theme-toggle" class="icon-button" title="Toggle Theme (Alt+T)" type="button">
               <span id="theme-toggle-icon" style="font-size: 16px;">🌙</span>
+            </button>
+
+            <!-- Fast Nature Wallpaper Cycle Button -->
+            <button id="btn-header-wallpaper-toggle" class="icon-button" title="Cycle Natural Wallpaper (Alt+W)" type="button">
+              <span id="wallpaper-toggle-icon" style="font-size: 16px;">🌲</span>
             </button>
 
             <div class="system-status-pill">
@@ -623,6 +632,105 @@
                   <div class="theme-mode-info">
                     <strong>Frosted Light</strong>
                     <span>Crisp, clean airy mode</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 🌲 Natural Wallpapers & Frosted Blur Studio -->
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <div>
+                  <h3 class="settings-card-title">🌐 Live Internet Wallpapers & Frosted Blur Engine</h3>
+                  <p class="settings-card-desc">Automatically rotates stunning high-definition nature wallpapers from the web with customizable frosted optical blur and frosted glass lighting.</p>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <button id="btn-fetch-live-wallpaper" type="button" class="btn-primary" style="font-size: 12px; padding: 7px 15px;" title="Fetch a brand new live scenic wallpaper from the internet">
+                    🔄 New From Internet
+                  </button>
+                  <button id="btn-random-wallpaper" type="button" class="btn-secondary" style="font-size: 12px; padding: 7px 13px;" title="Pick a random curated nature wallpaper">
+                    🎲 Random Scenic
+                  </button>
+                  <button id="btn-remove-wallpaper" type="button" class="btn-secondary" style="font-size: 12px; padding: 7px 13px;" title="Revert to Cyber Mesh background">
+                    ❌ Cyber Mesh
+                  </button>
+                </div>
+              </div>
+
+              <!-- Auto-Change on every new tab switch -->
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: var(--radius-md); margin-top: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="font-size: 18px;">✨</span>
+                  <div>
+                    <strong style="font-size: 13px; color: var(--text-main);">Auto-Change from Internet on Every New Tab</strong>
+                    <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 1px;">Loads a brand new breathtaking nature wallpaper automatically every time you launch or refresh.</p>
+                  </div>
+                </div>
+                <label class="toggle-switch-wrapper" style="position: relative; display: inline-block; width: 44px; height: 24px; margin-bottom: 0;">
+                  <input type="checkbox" id="checkbox-auto-wallpaper" style="opacity: 0; width: 0; height: 0;" checked>
+                  <span class="toggle-slider" style="position: absolute; cursor: pointer; inset: 0; background-color: var(--bg-surface-elevated); border: 1px solid var(--border-soft); transition: .3s; border-radius: 24px;"></span>
+                </label>
+              </div>
+
+              <!-- Nature Wallpaper Thumbnails Grid -->
+              <div class="wallpaper-gallery-grid" id="wallpaper-gallery-grid">
+                <!-- Dynamically populated by UI.initWallpaper() -->
+              </div>
+
+              <!-- Interactive Frosted Blur & Ambient Contrast Controls -->
+              <div class="wallpaper-controls-box">
+                <!-- Blur Intensity Slider -->
+                <div class="wallpaper-slider-row">
+                  <div class="wallpaper-slider-header">
+                    <span class="wallpaper-slider-title">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                      </svg>
+                      Frosted Blur Intensity
+                    </span>
+                    <span id="wallpaper-blur-val-badge" class="badge badge-accent" style="font-family: var(--font-mono); font-size: 11.5px;">12px • Frosted Glass</span>
+                  </div>
+                  <input id="input-wallpaper-blur" type="range" min="0" max="30" step="1" value="12" class="form-input" style="padding: 0; cursor: pointer;">
+                  <div class="wallpaper-preset-pills">
+                    <button type="button" class="wallpaper-preset-pill" data-blur="0">0px (Crisp HD)</button>
+                    <button type="button" class="wallpaper-preset-pill" data-blur="6">6px (Soft Focus)</button>
+                    <button type="button" class="wallpaper-preset-pill active" data-blur="12">12px (Frosted Glass - Best)</button>
+                    <button type="button" class="wallpaper-preset-pill" data-blur="20">20px (Deep Dream)</button>
+                  </div>
+                </div>
+
+                <!-- Dark Dimming / Overlay Opacity Slider -->
+                <div class="wallpaper-slider-row">
+                  <div class="wallpaper-slider-header">
+                    <span class="wallpaper-slider-title">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+                      </svg>
+                      Background Dimming / Contrast Overlay
+                    </span>
+                    <span id="wallpaper-overlay-val-badge" class="badge badge-accent" style="font-family: var(--font-mono); font-size: 11.5px;">40%</span>
+                  </div>
+                  <input id="input-wallpaper-overlay" type="range" min="10" max="80" step="5" value="40" class="form-input" style="padding: 0; cursor: pointer;">
+                </div>
+
+                <!-- Custom Wallpaper URL & File Upload -->
+                <div class="wallpaper-slider-row">
+                  <span class="wallpaper-slider-title" style="font-size: 12px; color: var(--text-dim);">
+                    Custom Image or Personal Photo:
+                  </span>
+                  <div class="wallpaper-custom-bar">
+                    <input id="input-custom-wallpaper-url" class="form-input" type="url" placeholder="Paste custom image URL (https://...)" style="flex: 1; font-size: 12.5px;">
+                    <button id="btn-apply-custom-wallpaper" class="btn-primary" type="button" style="padding: 7px 14px; font-size: 12px;">Apply URL</button>
+                    <label class="btn-secondary" style="cursor: pointer; padding: 7px 14px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; margin: 0;">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                      </svg>
+                      Upload Photo
+                      <input id="input-upload-wallpaper" type="file" accept="image/*" style="display: none;">
+                    </label>
                   </div>
                 </div>
               </div>

@@ -9,11 +9,13 @@ const DEFAULT_SHORTCUTS = [
   { id: 'sc-gemini', name: 'Launch Google Gemini', type: 'tool', target: 'gemini', keyCombo: 'Alt+G', enabled: true },
   { id: 'sc-perplexity', name: 'Launch Perplexity AI', type: 'tool', target: 'perplexity', keyCombo: 'Alt+P', enabled: true },
   { id: 'sc-assistant', name: 'Toggle AI Assistant Drawer', type: 'action', target: 'toggle_assistant', keyCombo: 'Alt+A', enabled: true },
+  { id: 'sc-wallpaper', name: 'Cycle Natural Wallpaper', type: 'action', target: 'cycle_wallpaper', keyCombo: 'Alt+W', enabled: true },
   { id: 'sc-search', name: 'Focus Universal Search', type: 'action', target: 'focus_search', keyCombo: '/', enabled: true }
 ];
 
 const SYSTEM_ACTIONS = [
   { id: 'toggle_assistant', name: 'Toggle AI Assistant Drawer', icon: '💬', desc: 'Opens or closes the AI Copilot side drawer' },
+  { id: 'cycle_wallpaper', name: 'Cycle Natural Wallpaper', icon: '🌲', desc: 'Cycles through high-definition natural wallpapers' },
   { id: 'focus_search', name: 'Focus Universal Search', icon: '🔍', desc: 'Jumps cursor directly into the search bar' },
   { id: 'open_prompts', name: 'Open Prompt Studio', icon: '✨', desc: 'Switches view to the Prompt Studio' },
   { id: 'open_workflows', name: 'Open Workflow Canvas', icon: '⚡', desc: 'Switches view to Workflow Pipelines' },
@@ -236,6 +238,12 @@ const ShortcutsManager = {
               const input = document.getElementById('assistant-input');
               if (input) setTimeout(() => input.focus(), 150);
             }
+          }
+          break;
+        }
+        case 'cycle_wallpaper': {
+          if (typeof UI !== 'undefined' && UI.cycleWallpaper) {
+            UI.cycleWallpaper();
           }
           break;
         }
