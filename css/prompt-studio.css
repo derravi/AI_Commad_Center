@@ -116,12 +116,12 @@
   gap: 8px;
   padding: 8px 16px;
   border-radius: var(--radius-pill);
-  background: #ffffff;
+  background: var(--bg-surface-elevated);
   border: 1.5px solid var(--border-subtle);
   width: 340px;
   max-width: 100%;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: var(--shadow-xs);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
 }
 
 .prompt-search-wrapper:focus-within {
@@ -157,7 +157,7 @@
 }
 
 .form-group:focus-within .form-label {
-  color: var(--accent-primary-dark);
+  color: var(--text-highlight);
 }
 
 /* Range Slider Custom Styling */
@@ -252,18 +252,12 @@ input[type="color"].form-input::-webkit-color-swatch {
    KEYBOARD SHORTCUT CARD
    -------------------------------------------------------------------------- */
 
-[data-theme="light"] .form-group > div[style*="background: var(--bg-surface-elevated)"] {
-  background: #ffffff !important;
-  border-color: var(--border-subtle) !important;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
-}
-
 kbd.search-shortcut-badge {
-  background: linear-gradient(180deg, #ffffff 0%, var(--bg-surface-elevated) 100%);
+  background: var(--bg-surface-elevated);
   border: 1px solid var(--border-subtle);
   border-bottom-width: 2.5px;
-  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
-  color: var(--accent-primary-dark);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+  color: var(--text-highlight);
   font-weight: 700;
 }
 
@@ -301,12 +295,6 @@ button:focus-visible,
   pointer-events: none;
 }
 
-/* --------------------------------------------------------------------------
-   ENHANCED TOOLTIP (native title just polish)
-   -------------------------------------------------------------------------- */
-
-[title] {
-  position: relative;
 /* --------------------------------------------------------------------------
    DIRECT AI LAUNCH CHIPS & TOKEN METRICS
    -------------------------------------------------------------------------- */

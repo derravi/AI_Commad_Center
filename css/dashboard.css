@@ -1452,7 +1452,7 @@
     padding: 8px 14px;
     flex-wrap: wrap;
     gap: 8px;
-    background: #ffffff;
+    background: var(--bg-glass);
   }
   
   .localhost-tabs-container {

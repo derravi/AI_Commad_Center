@@ -435,14 +435,14 @@
 
 .prompt-studio-card {
   position: relative;
-  background: #ffffff;
+  background: var(--bg-surface);
   border: 1.5px solid var(--border-glow);
   border-radius: 24px;
   padding: 26px;
   margin-top: 14px;
   margin-bottom: 24px;
   box-shadow: 0 12px 36px rgba(99, 102, 241, 0.08), var(--shadow-inset);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
   overflow: hidden;
 }
 
@@ -504,7 +504,7 @@
 }
 
 .prompt-studio-input-box:focus-within {
-  background: #ffffff;
+  background: var(--bg-surface-elevated);
   border-color: var(--accent-primary);
   box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.14);
 }
@@ -588,9 +588,9 @@
 }
 
 .prompt-mode-pill:hover {
-  background: #ffffff;
+  background: var(--bg-surface-soft);
   border-color: var(--accent-primary);
-  color: var(--accent-primary-dark);
+  color: var(--text-main);
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(99, 102, 241, 0.14);
 }
@@ -624,7 +624,7 @@
   font-size: 12px;
   font-weight: 600;
   border-radius: 9px;
-  background: #ffffff;
+  background: var(--bg-surface-elevated);
   border: 1.5px solid var(--border-subtle);
   color: var(--text-main);
   cursor: pointer;
@@ -635,7 +635,7 @@
   background-repeat: no-repeat;
   background-position: right 10px center;
   background-size: 12px 12px;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
   transition: all var(--transition-fast);
 }
 
@@ -674,7 +674,7 @@
 
 .prompt-studio-output-textarea {
   width: 100%;
-  background: #ffffff;
+  background: var(--bg-surface-elevated);
   border: 1.5px solid var(--border-subtle);
   border-radius: 14px;
   padding: 14px 16px;
@@ -684,7 +684,7 @@
   color: var(--text-main);
   box-sizing: border-box;
   resize: vertical;
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
 }
 
 .prompt-studio-output-textarea:focus {
@@ -725,10 +725,10 @@
 .prompt-studio-test-card {
   margin-top: 16px;
   padding: 16px 18px;
-  background: #ffffff;
+  background: var(--bg-surface-elevated);
   border: 1.5px solid var(--border-subtle);
   border-radius: 14px;
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+  box-shadow: var(--shadow-xs);
 }
 
 .prompt-studio-test-header {
@@ -757,7 +757,7 @@
 }
 
 .prompt-card {
-  background: #ffffff;
+  background: var(--bg-surface);
   border: 1.5px solid var(--border-subtle);
   border-radius: 18px;
   padding: 20px;
@@ -765,7 +765,8 @@
   flex-direction: column;
   transition: transform var(--transition-spring),
               border-color var(--transition-fast),
-              box-shadow var(--transition-smooth);
+              box-shadow var(--transition-smooth),
+              background-color var(--transition-fast);
   position: relative;
   overflow: hidden;
 }
@@ -781,6 +782,7 @@
 }
 
 .prompt-card:hover {
+  background: var(--bg-surface-elevated);
   border-color: var(--accent-primary);
   transform: translateY(-5px);
   box-shadow: 0 16px 36px rgba(99, 102, 241, 0.14);
@@ -822,7 +824,7 @@
   padding: 4px 10px;
   border-radius: 7px;
   background: rgba(99, 102, 241, 0.12);
-  color: var(--accent-primary-dark);
+  color: var(--text-highlight);
   border: 1px solid rgba(99, 102, 241, 0.3);
   font-size: 11px;
   font-weight: 700;
@@ -853,7 +855,7 @@
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
-  color: var(--accent-primary-dark);
+  color: var(--text-highlight);
   min-width: 100px;
   max-width: 130px;
   overflow: hidden;
@@ -880,13 +882,13 @@
    -------------------------------------------------------------------------- */
 
 .multi-ai-panel {
-  background: #ffffff;
+  background: var(--bg-surface);
   border: 1.5px solid var(--border-subtle);
   border-radius: 24px;
   padding: 28px;
   margin-bottom: 30px;
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
 }
 
 .multi-ai-panel:hover {
@@ -919,7 +921,7 @@
 }
 
 .multi-ai-textarea:focus {
-  background: #ffffff;
+  background: var(--bg-surface-elevated);
   border-color: var(--accent-primary);
   box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.14);
 }
@@ -947,16 +949,16 @@
 
 .ai-checkbox-label:hover {
   transform: translateY(-2px);
-  background: #ffffff;
+  background: var(--bg-surface-soft);
   border-color: var(--accent-primary);
-  color: var(--accent-primary-dark);
+  color: var(--text-main);
   box-shadow: 0 6px 16px rgba(99, 102, 241, 0.12);
 }
 
 .ai-checkbox-label.selected {
   border-color: var(--accent-primary);
   background: var(--accent-gradient-subtle);
-  color: var(--accent-primary-dark);
+  color: var(--text-highlight);
   box-shadow: 0 4px 14px rgba(99, 102, 241, 0.18);
 }
 
@@ -981,13 +983,13 @@
 }
 
 .judge-criterion-card:hover {
-  background: #ffffff;
+  background: var(--bg-surface-soft);
   border-color: var(--accent-primary);
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(99, 102, 241, 0.10);
 }
 
-.judge-criterion-card h4 { font-size: 13px; color: var(--accent-primary-dark); margin-bottom: 4px; }
+.judge-criterion-card h4 { font-size: 13px; color: var(--text-highlight); margin-bottom: 4px; }
 .judge-criterion-card p { font-size: 11.5px; color: var(--text-muted); line-height: 1.45; }
 
 /* --------------------------------------------------------------------------
@@ -1001,19 +1003,21 @@
 }
 
 .workspace-card {
-  background: #ffffff;
+  background: var(--bg-surface);
   border: 1.5px solid var(--border-subtle);
   border-radius: 20px;
   padding: 24px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+  box-shadow: var(--shadow-sm);
   transition: transform var(--transition-spring),
               border-color var(--transition-fast),
-              box-shadow var(--transition-smooth);
+              box-shadow var(--transition-smooth),
+              background-color var(--transition-fast);
 }
 
 .workspace-card:hover {
+  background: var(--bg-surface-elevated);
   border-color: var(--accent-primary);
   transform: translateY(-5px);
   box-shadow: 0 16px 36px rgba(99, 102, 241, 0.14);
@@ -1712,7 +1716,7 @@
 .theme-mode-picker {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 10px;
+  gap: 12px;
   margin-top: 8px;
 }
 
@@ -1721,7 +1725,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   padding: 14px 12px;
   border-radius: 16px;
   background: var(--bg-surface-elevated);
@@ -1742,10 +1746,93 @@
   box-shadow: 0 0 18px rgba(99, 102, 241, 0.25);
 }
 
+/* Theme Mode Visual Thumbnail Previews */
+.theme-mode-preview {
+  width: 100%;
+  height: 48px;
+  border-radius: 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--border-subtle);
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.preview-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.theme-mode-card:hover .preview-dot {
+  transform: scale(1.18);
+}
+
+.preview-dark {
+  background: #0a0e17;
+  border-color: rgba(99, 102, 241, 0.3);
+  background-image: radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.25), transparent 60%);
+}
+.preview-dark .preview-dot {
+  background: #6366f1;
+  box-shadow: 0 0 10px #6366f1;
+}
+
+.preview-midnight {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.2);
+  background-image: radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.3), transparent 60%);
+}
+.preview-midnight .preview-dot {
+  background: #ffffff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
+}
+
+.preview-aurora {
+  background: #051319;
+  border-color: rgba(20, 184, 166, 0.45);
+  background-image: radial-gradient(circle at 80% 20%, rgba(20, 184, 166, 0.35), transparent 60%);
+}
+.preview-aurora .preview-dot {
+  background: #14b8a6;
+  box-shadow: 0 0 12px #14b8a6;
+}
+
+.preview-light {
+  background: #f4f6fb;
+  border-color: rgba(99, 102, 241, 0.25);
+  background-image: radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.15), transparent 60%);
+}
+.preview-light .preview-dot {
+  background: #4f46e5;
+  box-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
+}
+
+.theme-mode-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+}
+
+.theme-mode-info strong {
+  font-size: 13px;
+  color: var(--text-main);
+}
+
+.theme-mode-info span {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
 .theme-palette-picker {
   display: flex;
   gap: 14px;
-  margin-top: 10px;
+  margin-top: 12px;
   flex-wrap: wrap;
 }
 
@@ -2229,14 +2316,16 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 14px;
-  background: #ffffff;
+  background: var(--bg-surface-elevated);
   border: 1.5px solid var(--border-subtle);
   border-radius: 12px;
   cursor: pointer;
   min-height: 46px;
   outline: none;
+  color: var(--text-main);
   transition: border-color var(--transition-fast),
-              box-shadow var(--transition-fast);
+              box-shadow var(--transition-fast),
+              background-color var(--transition-fast);
 }
 
 .shortcut-recorder-box:hover {
@@ -2247,7 +2336,7 @@
 .shortcut-recorder-box.recording {
   border-color: var(--accent-primary);
   box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.16);
-  background: #fafafa;
+  background: var(--bg-surface-soft);
 }
 
 .recorder-hint-tag {
@@ -2257,7 +2346,7 @@
   letter-spacing: 0.05em;
   padding: 3px 8px;
   border-radius: 6px;
-  background: var(--bg-surface-elevated, #f1f5f9);
+  background: var(--bg-surface-elevated);
   color: var(--text-muted);
   border: 1px solid var(--border-subtle);
 }
@@ -2265,7 +2354,7 @@
 .recording-pulse-text {
   font-size: 12.5px;
   font-weight: 600;
-  color: #ef4444;
+  color: var(--status-danger);
   animation: recordingPulse 1.2s infinite ease-in-out;
 }
 
@@ -2280,7 +2369,7 @@
   background: rgba(245, 158, 11, 0.1);
   border: 1px solid rgba(245, 158, 11, 0.35);
   border-radius: 10px;
-  color: #b45309;
+  color: var(--status-warning);
   font-size: 12px;
   line-height: 1.45;
   display: flex;

@@ -1,11 +1,29 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>AI Command Center — AI Tool Launcher & Productivity Workspace</title>
   <link rel="icon" type="image/png" href="assets/icons/icon48.png">
+
+  <!-- Instant Anti-Flicker Theme Engine -->
+  <script>
+    (function() {
+      try {
+        const raw = localStorage.getItem('aicc_settings');
+        if (raw) {
+          const s = JSON.parse(raw);
+          if (s && s.theme) {
+            document.documentElement.setAttribute('data-theme', s.theme);
+          }
+          if (s && s.accentColor) {
+            document.documentElement.style.setProperty('--accent-primary', s.accentColor);
+          }
+        }
+      } catch(e) {}
+    })();
+  </script>
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/style.css">
@@ -634,6 +652,26 @@
                     <span>Crisp, clean airy mode</span>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <!-- Accent Color Customizer -->
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <div>
+                  <h3 class="settings-card-title">✨ Accent Color & Neon Glow</h3>
+                  <p class="settings-card-desc">Personalize your brand accent gradient, active highlights, and glow buttons.</p>
+                </div>
+              </div>
+              <div class="theme-palette-picker">
+                <div class="theme-swatch active" data-color="#6366f1" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);" title="Cyber Indigo (Default)"></div>
+                <div class="theme-swatch" data-color="#06b6d4" style="background: linear-gradient(135deg, #06b6d4, #3b82f6);" title="Electric Cyan"></div>
+                <div class="theme-swatch" data-color="#10b981" style="background: linear-gradient(135deg, #10b981, #14b8a6);" title="Emerald Green"></div>
+                <div class="theme-swatch" data-color="#8b5cf6" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);" title="Cosmic Purple"></div>
+                <div class="theme-swatch" data-color="#ec4899" style="background: linear-gradient(135deg, #ec4899, #f43f5e);" title="Neon Pink"></div>
+                <div class="theme-swatch" data-color="#f59e0b" style="background: linear-gradient(135deg, #f59e0b, #ef4444);" title="Solar Amber"></div>
+                <div class="theme-swatch" data-color="#f43f5e" style="background: linear-gradient(135deg, #f43f5e, #e11d48);" title="Crimson Rose"></div>
+                <div class="theme-swatch" data-color="#3b82f6" style="background: linear-gradient(135deg, #3b82f6, #6366f1);" title="Sapphire Blue"></div>
               </div>
             </div>
 

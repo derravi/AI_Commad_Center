@@ -177,6 +177,9 @@ const UI = {
 
         document.documentElement.setAttribute('data-theme', selectedTheme);
         settings.theme = selectedTheme;
+        if (!settings.accentColor) {
+          document.documentElement.style.removeProperty('--accent-primary');
+        }
         await StorageManager.set({ settings });
 
         this.updateThemeIcon(selectedTheme);
@@ -196,6 +199,9 @@ const UI = {
 
         document.documentElement.setAttribute('data-theme', nextTheme);
         settings.theme = nextTheme;
+        if (!settings.accentColor) {
+          document.documentElement.style.removeProperty('--accent-primary');
+        }
         await StorageManager.set({ settings });
 
         this.updateThemeIcon(nextTheme);
@@ -209,6 +215,16 @@ const UI = {
       swatch.addEventListener('click', async () => {
         const color = swatch.getAttribute('data-color');
         if (!color) return;
+
+        if (swatch.classList.contains('active') && settings.accentColor) {
+          delete settings.accentColor;
+          document.documentElement.style.removeProperty('--accent-primary');
+          swatch.classList.remove('active');
+          await StorageManager.set({ settings });
+          this.showToast('Accent color reset to theme default', 'info');
+          return;
+        }
+
         document.documentElement.style.setProperty('--accent-primary', color);
         settings.accentColor = color;
         await StorageManager.set({ settings });
