@@ -38,30 +38,81 @@ const UI = {
   },
 
   /**
-   * Start live ticking clock and personalized greeting
+   * Start live ticking Cyber/Glow HUD clock and personalized greeting
    */
   initClock() {
-    const timeEl = document.getElementById('header-clock-time');
+    const widgetEl = document.getElementById('header-clock-widget');
+    const hoursEl = document.getElementById('clock-hours');
+    const minutesEl = document.getElementById('clock-minutes');
+    const secondsEl = document.getElementById('clock-seconds');
+    const ampmEl = document.getElementById('clock-ampm-badge');
     const dateEl = document.getElementById('header-clock-date');
     const greetingEl = document.getElementById('header-clock-greeting');
+    const formatTagEl = document.getElementById('clock-format-tag');
+    const secondsBarEl = document.getElementById('hud-seconds-bar');
+    const timeEl = document.getElementById('header-clock-time');
+
+    // Load saved format (default 12h)
+    let clockFormat = localStorage.getItem('ai_clock_format') || '12h';
 
     const updateTime = () => {
       const now = new Date();
-      const hours = now.getHours();
+      const rawHours = now.getHours();
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
 
+      const padMin = String(minutes).padStart(2, '0');
+      const padSec = String(seconds).padStart(2, '0');
+      const is12H = clockFormat === '12h';
+
+      let displayHours;
+      let ampmText = '';
+
+      if (is12H) {
+        displayHours = String(rawHours % 12 || 12).padStart(2, '0');
+        ampmText = rawHours >= 12 ? 'PM' : 'AM';
+      } else {
+        displayHours = String(rawHours).padStart(2, '0');
+        ampmText = '24H';
+      }
+
+      // Update digit components
+      if (hoursEl) hoursEl.textContent = displayHours;
+      if (minutesEl) minutesEl.textContent = padMin;
+      if (secondsEl) secondsEl.textContent = padSec;
+      if (ampmEl) ampmEl.textContent = ampmText;
+      if (formatTagEl) formatTagEl.textContent = is12H ? '12H' : '24H';
+
+      // Fallback for full string
       if (timeEl) {
-        timeEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        timeEl.textContent = is12H 
+          ? `${displayHours}:${padMin}:${padSec} ${ampmText}`
+          : `${displayHours}:${padMin}:${padSec}`;
       }
+
+      // Update Date
       if (dateEl) {
-        dateEl.textContent = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+        dateEl.textContent = now.toLocaleDateString([], { 
+          weekday: 'short', 
+          month: 'short', 
+          day: 'numeric' 
+        });
       }
+
+      // Update Micro Seconds Progress Line
+      if (secondsBarEl) {
+        const percent = ((seconds + 1) / 60) * 100;
+        secondsBarEl.style.width = `${percent}%`;
+      }
+
+      // Context-aware Dynamic Greeting
       if (greetingEl) {
         let greeting = '⚡ Architect';
-        if (hours >= 5 && hours < 12) {
+        if (rawHours >= 5 && rawHours < 12) {
           greeting = '☀️ Morning, Explorer';
-        } else if (hours >= 12 && hours < 17) {
+        } else if (rawHours >= 12 && rawHours < 17) {
           greeting = '⚡ Afternoon, Builder';
-        } else if (hours >= 17 && hours < 21) {
+        } else if (rawHours >= 17 && rawHours < 22) {
           greeting = '🌆 Evening, Architect';
         } else {
           greeting = '🌙 Night, Hacker';
@@ -69,6 +120,27 @@ const UI = {
         greetingEl.textContent = greeting;
       }
     };
+
+    // Toggle format on click / keyboard
+    const toggleClockFormat = () => {
+      clockFormat = clockFormat === '12h' ? '24h' : '12h';
+      localStorage.setItem('ai_clock_format', clockFormat);
+      updateTime();
+      this.showToast(
+        `Clock switched to ${clockFormat === '24h' ? '24-Hour (Military)' : '12-Hour (AM/PM)'} format`,
+        'info'
+      );
+    };
+
+    if (widgetEl) {
+      widgetEl.addEventListener('click', toggleClockFormat);
+      widgetEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleClockFormat();
+        }
+      });
+    }
 
     updateTime();
     setInterval(updateTime, 1000);

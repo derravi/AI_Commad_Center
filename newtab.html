@@ -57,13 +57,38 @@
       <!-- Top Navigation & Universal Search Header -->
       <header class="top-header">
         <div class="top-header-main-row">
-          <!-- Live Clock Widget with Personalized Greeting -->
-          <div class="header-clock-widget" id="header-clock-widget" title="Live Clock (Click to cycle format)">
-            <div class="clock-time-row">
-              <span id="header-clock-time" class="clock-time">12:00:00 PM</span>
+          <!-- Live Cyber / Glow HUD Clock Widget with Personalized Greeting -->
+          <div class="header-clock-widget hud-clock-widget" id="header-clock-widget" role="button" tabindex="0" title="Click to cycle clock format (12H / 24H)" aria-label="Live Clock (Click to toggle format)">
+            <div class="hud-clock-top-row">
+              <div class="hud-live-tag">
+                <span class="hud-pulse-ring"></span>
+                <span class="hud-pulse-dot"></span>
+                <span class="hud-live-text">LIVE</span>
+              </div>
               <span id="header-clock-greeting" class="clock-greeting-pill">⚡ Architect</span>
             </div>
-            <span id="header-clock-date" class="clock-date">Saturday, Sep 5</span>
+            
+            <div class="clock-time-row">
+              <div class="clock-digits-group" id="header-clock-time-container">
+                <span id="clock-hours" class="clock-digit clock-digit-main">12</span>
+                <span class="clock-colon" aria-hidden="true">:</span>
+                <span id="clock-minutes" class="clock-digit clock-digit-main">00</span>
+                <span class="clock-colon clock-colon-sec" aria-hidden="true">:</span>
+                <span id="clock-seconds" class="clock-digit clock-digit-sec">00</span>
+              </div>
+              <span id="clock-ampm-badge" class="clock-mode-badge">PM</span>
+              <span id="header-clock-time" class="sr-only" style="position: absolute; opacity: 0; pointer-events: none;">12:00:00 PM</span>
+            </div>
+
+            <div class="hud-clock-bottom-row">
+              <span id="header-clock-date" class="clock-date">Thursday, Oct 1</span>
+              <span id="clock-format-tag" class="clock-format-tag">12H</span>
+            </div>
+
+            <!-- Micro Seconds Progress Line -->
+            <div class="hud-progress-track">
+              <div class="hud-progress-bar" id="hud-seconds-bar"></div>
+            </div>
           </div>
 
           <!-- Universal Search Box with Interactive Suggestions -->
