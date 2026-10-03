@@ -228,9 +228,11 @@ html, body {
   font-size: 14.5px;
   line-height: 1.5;
   overflow-x: hidden;
+  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transition: var(--transition-theme);
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 /* ==========================================================================
@@ -246,13 +248,14 @@ html, body {
   background-position: center center;
   background-repeat: no-repeat;
   opacity: 0;
-  transform: scale(1.04);
+  transform: translate3d(0, 0, 0) scale(1.04);
   filter: blur(var(--wallpaper-blur, 12px)) brightness(var(--wallpaper-brightness, 0.88)) saturate(var(--wallpaper-saturate, 115%));
   transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
               filter 0.3s ease,
               background-image 0.5s ease;
   will-change: transform, filter, opacity;
   pointer-events: none;
+  contain: strict;
 }
 
 .ambient-wallpaper.active {
@@ -268,6 +271,7 @@ html, body {
   opacity: 0;
   transition: opacity 0.5s ease, background 0.3s ease;
   pointer-events: none;
+  contain: strict;
 }
 
 [data-theme="light"] .ambient-wallpaper-overlay {
@@ -286,6 +290,22 @@ html, body {
   opacity: 1;
 }
 
+/* Subpixel font rendering & GPU composite layer isolation */
+.router-hero,
+.tool-card,
+.section-header,
+.settings-card,
+.search-box,
+.localhost-bar,
+.horizontal-nav-bar,
+.chat-bubble,
+.category-pill,
+.quick-access-chip {
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
 /* Glassmorphism Refinements when Wallpaper is Active */
 body.has-wallpaper .router-hero,
 body.has-wallpaper .tool-card,
@@ -294,8 +314,8 @@ body.has-wallpaper .settings-card,
 body.has-wallpaper .search-box,
 body.has-wallpaper .localhost-bar,
 body.has-wallpaper .horizontal-nav-bar {
-  backdrop-filter: blur(24px) saturate(190%);
-  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
 }
 
 .ambient-bg {

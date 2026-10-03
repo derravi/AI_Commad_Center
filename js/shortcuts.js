@@ -8,19 +8,16 @@ const DEFAULT_SHORTCUTS = [
   { id: 'sc-claude', name: 'Launch Claude', type: 'tool', target: 'claude', keyCombo: 'Ctrl+C+D', enabled: true },
   { id: 'sc-gemini', name: 'Launch Google Gemini', type: 'tool', target: 'gemini', keyCombo: 'Alt+G', enabled: true },
   { id: 'sc-perplexity', name: 'Launch Perplexity AI', type: 'tool', target: 'perplexity', keyCombo: 'Alt+P', enabled: true },
-  { id: 'sc-assistant', name: 'Toggle AI Assistant Drawer', type: 'action', target: 'toggle_assistant', keyCombo: 'Alt+A', enabled: true },
   { id: 'sc-wallpaper', name: 'Cycle Natural Wallpaper', type: 'action', target: 'cycle_wallpaper', keyCombo: 'Alt+W', enabled: true },
   { id: 'sc-search', name: 'Focus Universal Search', type: 'action', target: 'focus_search', keyCombo: '/', enabled: true }
 ];
 
 const SYSTEM_ACTIONS = [
-  { id: 'toggle_assistant', name: 'Toggle AI Assistant Drawer', icon: '💬', desc: 'Opens or closes the AI Copilot side drawer' },
   { id: 'cycle_wallpaper', name: 'Cycle Natural Wallpaper', icon: '🌲', desc: 'Cycles through high-definition natural wallpapers' },
   { id: 'focus_search', name: 'Focus Universal Search', icon: '🔍', desc: 'Jumps cursor directly into the search bar' },
   { id: 'open_prompts', name: 'Open Prompt Studio', icon: '✨', desc: 'Switches view to the Prompt Studio' },
   { id: 'open_workflows', name: 'Open Workflow Canvas', icon: '⚡', desc: 'Switches view to Workflow Pipelines' },
   { id: 'open_settings', name: 'Open Settings', icon: '⚙️', desc: 'Switches view to Settings & Preferences' },
-  { id: 'open_add_tool', name: 'Add New Custom Tool', icon: '➕', desc: 'Opens the modal to add a new custom AI tool' },
   { id: 'open_add_stack', name: 'Create New AI Stack', icon: '📦', desc: 'Opens the modal to create a workflow stack' }
 ];
 
@@ -230,17 +227,6 @@ const ShortcutsManager = {
       }
     } else if (shortcut.type === 'action') {
       switch (shortcut.target) {
-        case 'toggle_assistant': {
-          const drawer = document.getElementById('assistant-drawer');
-          if (drawer) {
-            drawer.classList.toggle('open');
-            if (drawer.classList.contains('open')) {
-              const input = document.getElementById('assistant-input');
-              if (input) setTimeout(() => input.focus(), 150);
-            }
-          }
-          break;
-        }
         case 'cycle_wallpaper': {
           if (typeof UI !== 'undefined' && UI.cycleWallpaper) {
             UI.cycleWallpaper();
@@ -265,11 +251,6 @@ const ShortcutsManager = {
         }
         case 'open_settings': {
           if (typeof UI !== 'undefined') UI.switchView('settings');
-          break;
-        }
-        case 'open_add_tool': {
-          const btn = document.getElementById('btn-add-tool');
-          if (btn) btn.click();
           break;
         }
         case 'open_add_stack': {

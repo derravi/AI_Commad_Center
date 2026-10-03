@@ -31,6 +31,7 @@
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/prompt-studio.css">
   <link rel="stylesheet" href="css/modal.css">
+  <link rel="stylesheet" href="css/polish.css">
 </head>
 
 <body class="has-wallpaper">
@@ -54,10 +55,13 @@
          ==================================================================== -->
     <main class="main-wrapper">
 
+      <!-- Sticky app chrome: header + localhost bar behave as one unit -->
+      <div class="app-chrome">
+
       <!-- Top Navigation & Universal Search Header -->
       <header class="top-header">
         <div class="top-header-main-row">
-          <!-- Live Cyber / Glow HUD Clock Widget with Personalized Greeting -->
+          <!-- Live Cyber / Glow HUD Clock Widget with Personalized Greeting (Left) -->
           <div class="header-clock-widget hud-clock-widget" id="header-clock-widget" role="button" tabindex="0" title="Click to cycle clock format (12H / 24H)" aria-label="Live Clock (Click to toggle format)">
             <div class="hud-clock-top-row">
               <div class="hud-live-tag">
@@ -91,148 +95,133 @@
             </div>
           </div>
 
-          <!-- Universal Search Box with Interactive Suggestions -->
-          <div class="search-container">
-            <div class="search-box">
-              <div class="search-engine-wrapper" id="search-engine-wrapper">
-                <button id="search-engine-selector" class="search-engine-selector" title="Select Search Engine"
-                  type="button" aria-haspopup="true" aria-expanded="false">
-                  <span id="search-engine-label">🔍 Google</span>
-                  <svg class="engine-dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="6 9 12 15 18 9"></polyline>
+          <!-- Main Compact Module Navigation Tabs (Center Top) -->
+          <nav class="horizontal-nav-bar compact-header-nav" id="horizontal-nav-bar">
+            <ul class="nav-menu">
+              <li class="nav-item active">
+                <button data-view="dashboard" title="Dashboard & Tools">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
                   </svg>
+                  <span>Dashboard</span>
                 </button>
+              </li>
+              <li class="nav-item">
+                <button data-view="stacks" title="One-Click AI Stacks">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                  </svg>
+                  <span>AI Stacks</span>
+                  <span class="nav-badge">NEW</span>
+                </button>
+              </li>
+              <li class="nav-item">
+                <button data-view="prompts" title="Prompt Studio">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                  </svg>
+                  <span>Prompts</span>
+                </button>
+              </li>
+              <li class="nav-item">
+                <button data-view="apihub" title="AI Engine">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                  </svg>
+                  <span>AI Engine</span>
+                  <span id="gemini-status-nav-badge" class="nav-badge">STATIC</span>
+                </button>
+              </li>
+              <li class="nav-item">
+                <button data-view="settings" title="Settings & Themes">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path
+                      d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                    </path>
+                  </svg>
+                  <span>Settings</span>
+                </button>
+              </li>
+            </ul>
+          </nav>
 
-                <!-- Search Engine Dropdown Menu -->
-                <div id="search-engine-dropdown" class="search-engine-dropdown">
-                  <div class="engine-dropdown-header">
-                    <span>Search Engines</span>
-                    <button id="btn-open-add-engine" class="engine-add-btn" type="button"
-                      data-open-modal="modal-add-engine" title="Add Custom Search Engine">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2.5">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                      </svg>
-                      <span>Add New</span>
-                    </button>
-                  </div>
-                  <div id="search-engine-list" class="engine-list-container">
-                    <!-- Dynamically populated engine items -->
+          <!-- Right Group: Universal Search Bar & Quick Action Toggles -->
+          <div class="header-right-group">
+            <!-- Universal Search Box with Interactive Suggestions (Right Side) -->
+            <div class="search-container">
+              <div class="search-box">
+                <div class="search-engine-wrapper" id="search-engine-wrapper">
+                  <button id="search-engine-selector" class="search-engine-selector" title="Select Search Engine"
+                    type="button" aria-haspopup="true" aria-expanded="false">
+                    <span id="search-engine-label">🔍 Google</span>
+                    <svg class="engine-dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </button>
+
+                  <!-- Search Engine Dropdown Menu -->
+                  <div id="search-engine-dropdown" class="search-engine-dropdown">
+                    <div class="engine-dropdown-header">
+                      <span>Search Engines</span>
+                      <button id="btn-open-add-engine" class="engine-add-btn" type="button"
+                        data-open-modal="modal-add-engine" title="Add Custom Search Engine">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2.5">
+                          <line x1="12" y1="5" x2="12" y2="19"></line>
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        <span>Add New</span>
+                      </button>
+                    </div>
+                    <div id="search-engine-list" class="engine-list-container">
+                      <!-- Dynamically populated engine items -->
+                    </div>
                   </div>
                 </div>
+
+                <input id="main-search-input" class="search-input" type="text"
+                  placeholder="Search AI tools or web... (/)" autocomplete="off" />
+                <button id="search-clear-btn" class="search-clear-btn" type="button" title="Clear Search">✕</button>
+                <span class="search-shortcut-badge">/</span>
+                <button id="search-action-btn" class="search-action-btn" title="Search">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                </button>
               </div>
 
-              <input id="main-search-input" class="search-input" type="text"
-                placeholder="Search AI tools or query web... (Press / to focus)" autocomplete="off" />
-              <button id="search-clear-btn" class="search-clear-btn" type="button" title="Clear Search">✕</button>
-              <span class="search-shortcut-badge">/</span>
-              <button id="search-action-btn" class="search-action-btn" title="Search">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
+              <!-- Dynamic Search Suggestions Dropdown -->
+              <div id="search-suggestions-dropdown" class="search-suggestions-dropdown">
+                <!-- Dynamically populated suggestions -->
+              </div>
+            </div>
+
+            <!-- Header Actions -->
+            <div class="header-actions">
+              <!-- Fast Theme Switcher Toggle -->
+              <button id="btn-header-theme-toggle" class="icon-button" title="Toggle Theme (Alt+T)" type="button">
+                <span id="theme-toggle-icon" style="font-size: 16px;">🌙</span>
+              </button>
+
+              <!-- Fast Nature Wallpaper Cycle Button -->
+              <button id="btn-header-wallpaper-toggle" class="icon-button" title="Cycle Natural Wallpaper (Alt+W)" type="button">
+                <span id="wallpaper-toggle-icon" style="font-size: 16px;">🌲</span>
               </button>
             </div>
-
-            <!-- Dynamic Search Suggestions Dropdown -->
-            <div id="search-suggestions-dropdown" class="search-suggestions-dropdown">
-              <!-- Dynamically populated suggestions -->
-            </div>
-          </div>
-
-          <!-- Header Actions -->
-          <div class="header-actions">
-            <!-- Fast Theme Switcher Toggle -->
-            <button id="btn-header-theme-toggle" class="icon-button" title="Toggle Theme (Alt+T)" type="button">
-              <span id="theme-toggle-icon" style="font-size: 16px;">🌙</span>
-            </button>
-
-            <!-- Fast Nature Wallpaper Cycle Button -->
-            <button id="btn-header-wallpaper-toggle" class="icon-button" title="Cycle Natural Wallpaper (Alt+W)" type="button">
-              <span id="wallpaper-toggle-icon" style="font-size: 16px;">🌲</span>
-            </button>
-
-            <div class="system-status-pill">
-              <span class="status-indicator"></span>
-              <span>All Systems Online</span>
-            </div>
-            <button id="btn-toggle-assistant" class="icon-button" title="Open AI Assistant Drawer (Alt+A)">
-              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-              </svg>
-            </button>
-            <button class="btn-primary" data-open-modal="modal-add-tool">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-              </svg>
-              Add Tool
-            </button>
           </div>
         </div>
-
-
-        <!-- Horizontal Navigation Tabs Bar (Directly below the Search Bar Row) -->
-        <nav class="horizontal-nav-bar" id="horizontal-nav-bar">
-          <ul class="nav-menu">
-            <li class="nav-item active">
-              <button data-view="dashboard">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="3" y="3" width="7" height="7"></rect>
-                  <rect x="14" y="3" width="7" height="7"></rect>
-                  <rect x="14" y="14" width="7" height="7"></rect>
-                  <rect x="3" y="14" width="7" height="7"></rect>
-                </svg>
-                <span>Dashboard & Tools</span>
-              </button>
-            </li>
-            <li class="nav-item">
-              <button data-view="stacks">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                  <polyline points="2 17 12 22 22 17"></polyline>
-                  <polyline points="2 12 12 17 22 12"></polyline>
-                </svg>
-                <span>One-Click Stacks</span>
-                <span class="nav-badge">NEW</span>
-              </button>
-            </li>
-            <li class="nav-item">
-              <button data-view="prompts">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                  <polyline points="14 2 14 8 20 8"></polyline>
-                  <line x1="16" y1="13" x2="8" y2="13"></line>
-                  <line x1="16" y1="17" x2="8" y2="17"></line>
-                  <polyline points="10 9 9 9 8 9"></polyline>
-                </svg>
-                <span>Prompt Studio</span>
-              </button>
-            </li>
-            <li class="nav-item">
-              <button data-view="apihub">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                </svg>
-                <span>AI Engine</span>
-                <span id="gemini-status-nav-badge" class="nav-badge">STATIC</span>
-              </button>
-            </li>
-            <li class="nav-item">
-              <button data-view="settings">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="3"></circle>
-                  <path
-                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
-                  </path>
-                </svg>
-                <span>Settings & Themes</span>
-              </button>
-            </li>
-          </ul>
-        </nav>
       </header>
 
       <!-- ====================================================================
@@ -266,6 +255,8 @@
           </button>
         </div>
       </div>
+
+      </div><!-- /.app-chrome -->
 
       <!-- ====================================================================
            VIEW 1: MAIN DASHBOARD & TOOLS
@@ -802,25 +793,6 @@
             <div class="settings-card">
               <div class="settings-card-header">
                 <div>
-                  <h3 class="settings-card-title">✨ Accent Theme Color</h3>
-                  <p class="settings-card-desc">Choose a primary accent tone tailored across glows, highlights, borders, and interactive elements.</p>
-                </div>
-              </div>
-              <div class="theme-palette-picker">
-                <div class="theme-swatch active" style="background: #6366f1;" data-color="#6366f1" title="Indigo Purple"></div>
-                <div class="theme-swatch" style="background: #0284c7;" data-color="#0284c7" title="Electric Blue"></div>
-                <div class="theme-swatch" style="background: #06b6d4;" data-color="#06b6d4" title="Cyber Cyan"></div>
-                <div class="theme-swatch" style="background: #10b981;" data-color="#10b981" title="Emerald Green"></div>
-                <div class="theme-swatch" style="background: #8b5cf6;" data-color="#8b5cf6" title="Radiant Violet"></div>
-                <div class="theme-swatch" style="background: #ec4899;" data-color="#ec4899" title="Neon Pink"></div>
-                <div class="theme-swatch" style="background: #f43f5e;" data-color="#f43f5e" title="Rose Red"></div>
-                <div class="theme-swatch" style="background: #f59e0b;" data-color="#f59e0b" title="Amber Orange"></div>
-              </div>
-            </div>
-
-            <div class="settings-card">
-              <div class="settings-card-header">
-                <div>
                   <h3 class="settings-card-title">⌨️ Dynamic Hotkeys Integration</h3>
                   <p class="settings-card-desc">Assign fast keyboard triggers to your AI models, assistant side-drawer, and search bar.</p>
                 </div>
@@ -1273,205 +1245,15 @@
 
           </div>
 
-          <!-- Interactive Gemini Test Playground -->
-          <div class="api-playground-box">
-            <div
-              style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-              <div>
-                <h3 style="font-size: 16px; font-weight: 700;">Interactive Gemini Playground</h3>
-                <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">
-                  Test your connected Gemini model with live queries right here.
-                </p>
-              </div>
-              <div style="display: flex; gap: 6px;">
-                <button class="quick-prompt-tag"
-                  data-playground-prompt="Write a modern Python FastAPI boilerplate with async SQLite">FastAPI
-                  Boilerplate</button>
-                <button class="quick-prompt-tag"
-                  data-playground-prompt="Explain Transformers Attention mechanism in 3 sentences">Attention in 3
-                  lines</button>
-                <button class="quick-prompt-tag"
-                  data-playground-prompt="Architect an AI YouTube shorts automation workflow">YouTube AI Stack</button>
-              </div>
-            </div>
-
-            <div style="display: flex; gap: 10px;">
-              <input id="input-playground-query" class="form-input" type="text"
-                placeholder="Type a test prompt for Gemini..." style="flex: 1;" />
-              <button id="btn-run-playground" class="btn-primary" type="button" style="padding: 0 18px;">
-                Run with Gemini ⚡
-              </button>
-            </div>
-
-            <div id="playground-output-container" class="api-test-output"></div>
-          </div>
-
         </div>
       </section>
 
     </main>
-
-    <!-- ====================================================================
-         3. INTERACTIVE AI ASSISTANT SIDE DRAWER
-         ==================================================================== -->
-    <div id="assistant-drawer" class="assistant-drawer">
-      <div class="assistant-header">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <div class="mini-tool-avatar"
-            style="background: var(--accent-gradient); width: 32px; height: 32px; box-shadow: var(--accent-glow);">✨
-          </div>
-          <div>
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <strong>Gemini AI Copilot</strong>
-              <span id="drawer-gemini-status" class="drawer-status-badge offline">Offline</span>
-            </div>
-            <span id="drawer-gemini-model-label" style="font-size: 11px; color: var(--text-dim);">Gemini 2.0
-              Flash</span>
-          </div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 6px;">
-          <button id="btn-drawer-clear-chat" class="icon-button" style="width: 32px; height: 32px;"
-            title="Clear Chat History">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="3 6 5 6 21 6"></polyline>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-            </svg>
-          </button>
-          <button id="btn-close-assistant" class="modal-close-btn" title="Close Drawer (Esc)">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Quick Connect Card (Shown if Gemini is not connected yet) -->
-      <div id="drawer-connect-banner" class="drawer-connect-card">
-        <div class="drawer-connect-header">
-          <span style="font-size: 16px;">⚡</span>
-          <strong>Connect Gemini for Direct Live Chat</strong>
-        </div>
-        <p style="font-size: 12px; color: var(--text-muted); margin: 6px 0 10px; line-height: 1.4;">
-          Paste your free Gemini API key to start real-time, live AI conversations directly inside this copilot drawer.
-        </p>
-        <div style="display: flex; gap: 8px;">
-          <input id="input-drawer-gemini-key" class="form-input" type="password" placeholder="Paste API Key (AIzaSy...)"
-            style="font-size: 12px; flex: 1;" />
-          <button id="btn-drawer-connect-gemini" class="btn-primary" type="button"
-            style="padding: 0 14px; font-size: 12px; white-space: nowrap;">Connect ⚡</button>
-        </div>
-        <a href="https://aistudio.google.com/app/apikey" target="_blank"
-          style="display: inline-block; margin-top: 8px; font-size: 11px; color: var(--accent-primary); text-decoration: underline;">
-          Get free key from Google AI Studio &rarr;
-        </a>
-      </div>
-
-      <div id="assistant-messages-container" class="assistant-messages">
-        <!-- Messages loaded dynamically -->
-      </div>
-
-      <div class="assistant-input-box">
-        <input id="assistant-chat-input" class="form-input" type="text"
-          placeholder="Message Gemini Copilot... (Press Enter)" style="flex: 1;" autocomplete="off">
-        <button id="assistant-chat-send" class="btn-primary" style="padding: 0 16px;" title="Send Message">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <line x1="22" y1="2" x2="11" y2="13"></line>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-          </svg>
-        </button>
-      </div>
-    </div>
-
   </div>
 
   <!-- ====================================================================
        4. MODALS
        ==================================================================== -->
-
-  <!-- Modal: Add Custom Tool -->
-  <div id="modal-add-tool" class="modal-backdrop">
-    <div class="modal-dialog">
-      <div class="modal-header">
-        <h3>Add Custom AI Tool</h3>
-        <button class="modal-close-btn" data-close-modal>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-      <form id="form-add-tool">
-        <div class="modal-body">
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Tool Name *</label>
-              <input id="input-tool-name" class="form-input" type="text" placeholder="e.g., Perplexity AI"
-                maxlength="80" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Category</label>
-              <select id="select-tool-category" class="form-select">
-                <option value="chat">AI Chat & LLMs</option>
-                <option value="coding">Coding & Dev</option>
-                <option value="research">Search & Research</option>
-                <option value="image">Image & Art</option>
-                <option value="video">Video & Animation</option>
-                <option value="audio">Voice & Audio</option>
-                <option value="writing">Writing & Copy</option>
-                <option value="data">Data & Analytics</option>
-                <option value="productivity">Productivity</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <label class="form-label" style="margin-bottom: 0;">Website URL *</label>
-              <button type="button" id="btn-test-tool-url" class="btn-secondary"
-                style="padding: 2px 8px; font-size: 11px; height: auto;">
-                Test URL ↗
-              </button>
-            </div>
-            <input id="input-tool-url" class="form-input" type="url" placeholder="https://..." maxlength="500" required>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Description</label>
-            <textarea id="input-tool-description" class="form-textarea" placeholder="What does this AI tool do?"
-              maxlength="500"></textarea>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Icon Badge Text</label>
-              <input id="input-tool-icon-text" class="form-input" type="text" placeholder="2-3 letters (e.g. PP)"
-                maxlength="3">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Badge Color</label>
-              <input id="input-tool-icon-bg" class="form-input" type="color" value="#6366f1">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Tags (comma separated)</label>
-            <input id="input-tool-tags" class="form-input" type="text" placeholder="search, citations, ai"
-              maxlength="200">
-          </div>
-
-          <label class="switch-label">
-            <span class="form-label">Add to Favorites</span>
-            <input id="checkbox-tool-favorite" type="checkbox">
-          </label>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-secondary" data-close-modal>Cancel</button>
-          <button type="submit" class="btn-primary">Save Tool</button>
-        </div>
-      </form>
-    </div>
-  </div>
 
   <!-- Modal: Add Custom Search Engine -->
   <div id="modal-add-engine" class="modal-backdrop">

@@ -187,7 +187,7 @@ const SearchManager = {
   },
 
   /**
-   * Render Search Suggestions dropdown
+   * Render Search Suggestions dropdown with rich categorized results
    * @param {string} query
    */
   renderSuggestions(query) {
@@ -203,51 +203,139 @@ const SearchManager = {
     const items = [];
     const engineObj = this.getEngineById(this.activeEngine) || this.defaultEngines.google;
 
-    // Web Search Action
-    items.push({
-      type: 'web',
-      icon: engineObj.icon || '🔍',
-      title: `Search ${engineObj.name} for "${UI.escapeHtml(query.trim())}"`,
-      category: 'Web Query',
-      action: () => this.executeWebSearch(query)
-    });
+    // Helper for highlight
+    const highlightMatch = (text, needle) => {
+      if (!text || !needle) return text || '';
+      const safeText = UI.escapeHtml(text);
+      const safeNeedle = UI.escapeHtml(needle);
+      const regex = new RegExp(`(${safeNeedle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      return safeText.replace(regex, '<mark>$1</mark>');
+    };
 
-    // Matched AI Tools
+    // 1. Matched AI Tools (Ranked with fuzzy relevance)
     if (typeof ToolsManager !== 'undefined' && Array.isArray(ToolsManager.toolsList)) {
-      const matchedTools = ToolsManager.toolsList.filter(t => 
-        t.name.toLowerCase().includes(q) || 
-        (t.description && t.description.toLowerCase().includes(q)) ||
-        (t.tags && t.tags.some(tag => tag.toLowerCase().includes(q)))
-      ).slice(0, 5);
+      const scoredTools = ToolsManager.toolsList
+        .map(t => {
+          let score = 0;
+          const name = t.name.toLowerCase();
+          const desc = (t.description || '').toLowerCase();
+          const cat = (t.category || '').toLowerCase();
+          const tags = (t.tags || []).map(tag => tag.toLowerCase());
 
-      matchedTools.forEach(tool => {
+          if (name === q) score += 100;
+          else if (name.startsWith(q)) score += 60;
+          else if (name.includes(q)) score += 40;
+
+          if (tags.some(tag => tag === q)) score += 30;
+          else if (tags.some(tag => tag.includes(q))) score += 20;
+
+          if (cat.includes(q)) score += 15;
+          if (desc.includes(q)) score += 10;
+
+          return { tool: t, score };
+        })
+        .filter(item => item.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5)
+        .map(item => item.tool);
+
+      scoredTools.forEach(tool => {
         items.push({
           type: 'tool',
-          icon: tool.icon || '⚡',
-          title: `Launch ${tool.name}`,
-          category: tool.category || 'AI Tool',
+          group: 'AI Tools',
+          iconHtml: `<div class="suggestion-icon-badge" style="background: ${tool.iconBg || 'var(--accent-primary, #6366f1)'};">${tool.iconText || tool.name.slice(0, 2).toUpperCase()}</div>`,
+          titleHtml: highlightMatch(tool.name, query.trim()),
+          descHtml: highlightMatch(tool.description || ('Launch ' + tool.name), query.trim()),
+          category: tool.category ? tool.category.toUpperCase() : 'AI TOOL',
           action: () => ToolsManager.launchTool(tool.id)
         });
       });
     }
 
+    // 2. Matched AI Stacks & Workflows
+    if (typeof WorkflowManager !== 'undefined' && Array.isArray(WorkflowManager.stacksList)) {
+      const matchedStacks = WorkflowManager.stacksList.filter(s =>
+        s.name.toLowerCase().includes(q) || (s.description && s.description.toLowerCase().includes(q))
+      ).slice(0, 2);
+
+      matchedStacks.forEach(stack => {
+        items.push({
+          type: 'stack',
+          group: 'One-Click Stacks',
+          iconHtml: `<div class="suggestion-icon-badge" style="background: var(--accent-gradient);">📦</div>`,
+          titleHtml: highlightMatch(stack.name, query.trim()),
+          descHtml: highlightMatch(stack.description || 'Open full stack', query.trim()),
+          category: 'STACK',
+          action: () => {
+            if (typeof UI !== 'undefined') UI.switchView('stacks');
+          }
+        });
+      });
+    }
+
+    // 3. Smart AI Router Workflow Synthesis
+    items.push({
+      type: 'router',
+      group: 'Smart Intelligence',
+      iconHtml: `<div class="suggestion-icon-badge" style="background: linear-gradient(135deg, #ec4899, #8b5cf6);">🎯</div>`,
+      titleHtml: `Synthesize AI Architecture for: <strong>"${UI.escapeHtml(query.trim())}"</strong>`,
+      descHtml: 'Generate custom 4-step tool pipeline with Smart Router',
+      category: 'ROUTER',
+      action: () => {
+        if (typeof UI !== 'undefined') {
+          UI.switchView('dashboard');
+          const routerInput = document.getElementById('router-task-input');
+          const routerBtn = document.getElementById('btn-route-task');
+          if (routerInput) routerInput.value = query.trim();
+          if (routerBtn) routerBtn.click();
+          const routerHero = document.querySelector('.router-hero');
+          if (routerHero) routerHero.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+
+    // 4. Web Search Action
+    items.push({
+      type: 'web',
+      group: 'Web Search',
+      iconHtml: `<div class="suggestion-icon-badge" style="background: var(--bg-surface-soft); color: var(--text-main); font-size: 14px;">${engineObj.icon || '🔍'}</div>`,
+      titleHtml: `Search ${engineObj.name} for <strong>"${UI.escapeHtml(query.trim())}"</strong>`,
+      descHtml: `Opens ${engineObj.name} search results in new tab`,
+      category: engineObj.name.toUpperCase(),
+      action: () => this.executeWebSearch(query)
+    });
+
     this.currentSuggestions = items;
-    this.selectedSuggestionIdx = -1;
-
-    container.innerHTML = items.map((item, idx) => `
-      <div class="search-suggestion-item ${idx === 0 ? 'selected' : ''}" data-idx="${idx}">
-        <span class="suggestion-icon">${item.icon}</span>
-        <div class="suggestion-content">
-          <span class="suggestion-title">${item.title}</span>
-        </div>
-        <span class="suggestion-category-tag">${item.category}</span>
-      </div>
-    `).join('');
-
     this.selectedSuggestionIdx = 0;
-    container.classList.add('visible');
 
-    // Click handler on suggestions
+    // Group items by category for clean visual hierarchy
+    let html = '';
+    let currentGroup = '';
+
+    items.forEach((item, idx) => {
+      if (item.group !== currentGroup) {
+        currentGroup = item.group;
+        html += `<div class="suggestion-section-title">${currentGroup}</div>`;
+      }
+
+      html += `
+        <div class="search-suggestion-item ${idx === 0 ? 'selected' : ''}" data-idx="${idx}">
+          <div class="suggestion-item-main">
+            ${item.iconHtml}
+            <div class="suggestion-text-col">
+              <span class="suggestion-primary-title">${item.titleHtml}</span>
+              <span class="suggestion-sub-desc">${item.descHtml}</span>
+            </div>
+          </div>
+          <span class="suggestion-tag-badge">${item.category}</span>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+    container.classList.add('visible', 'open');
+
+    // Click & Hover handlers
     container.querySelectorAll('.search-suggestion-item').forEach(el => {
       el.addEventListener('click', () => {
         const idx = parseInt(el.getAttribute('data-idx'), 10);
@@ -269,15 +357,20 @@ const SearchManager = {
   updateSuggestionHighlight() {
     const container = document.getElementById('search-suggestions-dropdown');
     if (!container) return;
-    container.querySelectorAll('.search-suggestion-item').forEach((el, idx) => {
-      el.classList.toggle('selected', idx === this.selectedSuggestionIdx);
+    const items = container.querySelectorAll('.search-suggestion-item');
+    items.forEach((el, idx) => {
+      const isSelected = idx === this.selectedSuggestionIdx;
+      el.classList.toggle('selected', isSelected);
+      if (isSelected) {
+        el.scrollIntoView({ block: 'nearest' });
+      }
     });
   },
 
   closeSuggestions() {
     const container = document.getElementById('search-suggestions-dropdown');
     if (container) {
-      container.classList.remove('visible');
+      container.classList.remove('visible', 'open');
     }
     this.selectedSuggestionIdx = -1;
     this.currentSuggestions = [];

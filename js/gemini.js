@@ -157,28 +157,6 @@ const GeminiClient = {
       }
     }
 
-    // System Status Pill in Sidebar Footer
-    const footerStatus = document.querySelector('.system-status-pill');
-    if (footerStatus) {
-      if (isConn) {
-        footerStatus.innerHTML = `
-          <div>
-            <span class="status-indicator" style="background: #10b981; box-shadow: 0 0 8px #10b981;"></span>
-            <span>Gemini 2.0 Live</span>
-          </div>
-          <span style="font-family: var(--font-mono); font-size: 10px; color: #10b981;">AI ACTIVE</span>
-        `;
-      } else {
-        footerStatus.innerHTML = `
-          <div>
-            <span class="status-indicator"></span>
-            <span>All AI Systems Online</span>
-          </div>
-          <span style="font-family: var(--font-mono); font-size: 10px;">MV3</span>
-        `;
-      }
-    }
-
     // API Hub View Elements
     const hubStatusIndicator = document.getElementById('hub-connection-indicator');
     const hubStatusText = document.getElementById('hub-connection-status-text');
@@ -498,6 +476,153 @@ const GeminiClient = {
 
     const data = await response.json();
     return data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No response received.';
+  },
+
+  /**
+   * Stream conversational response word-by-word / chunk-by-chunk in real-time
+   * @param {Array<{role: string, content: string}>} history
+   * @param {function(string, string): void} onChunk Callback receiving (accumulatedFullText, deltaChunkText)
+   * @param {object} [options]
+   * @returns {Promise<string>}
+   */
+  async generateChatStream(history = [], onChunk = () => {}, options = {}) {
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      throw new Error('You appear to be offline. Please check your internet connection.');
+    }
+
+    if (!this.isConnected()) {
+      throw new Error('Gemini API is not connected. Please enter your API Key in the Gemini AI Engine tab.');
+    }
+
+    let model = options.model || this.model || 'gemini-2.0-flash';
+    const temperature = options.temperature !== undefined ? options.temperature : (this.temperature !== undefined ? this.temperature : 0.7);
+    const maxTokens = options.maxTokens || this.maxOutputTokens || 2048;
+
+    const contents = history.map(msg => ({
+      role: msg.role === 'user' ? 'user' : 'model',
+      parts: [{ text: msg.content }]
+    }));
+
+    const systemPrompt = this.personas[this.persona] || this.personas.expert_architect;
+
+    const executeStream = async (modelName) => {
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:streamGenerateContent?alt=sse&key=${this.apiKey}`;
+      const requestBody = {
+        contents,
+        systemInstruction: {
+          parts: [{ text: systemPrompt }]
+        },
+        generationConfig: {
+          temperature,
+          maxOutputTokens: maxTokens
+        }
+      };
+
+      return await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      });
+    };
+
+    let response = await executeStream(model);
+
+    // If model not supported, fallback to gemini-2.0-flash
+    if (!response.ok && model !== 'gemini-2.0-flash') {
+      const err = await response.json().catch(() => ({}));
+      const errMsg = err?.error?.message || '';
+      if (errMsg.includes('not found') || errMsg.includes('not supported') || response.status === 404) {
+        model = 'gemini-2.0-flash';
+        this.model = 'gemini-2.0-flash';
+        await this.saveConfig({ apiKey: this.apiKey, model: this.model, persona: this.persona });
+        response = await executeStream(model);
+      }
+    }
+
+    if (!response.ok) {
+      // Gracefully fallback to standard non-stream generateChat if SSE stream failed
+      console.warn('Streaming failed, falling back to generateChat');
+      const fallbackText = await this.generateChat(history, options);
+      if (typeof onChunk === 'function') {
+        onChunk(fallbackText, fallbackText);
+      }
+      return fallbackText;
+    }
+
+    if (!response.body || typeof response.body.getReader !== 'function') {
+      const data = await response.json();
+      let fullText = '';
+      if (Array.isArray(data)) {
+        for (const item of data) {
+          const chunk = item?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          fullText += chunk;
+        }
+      } else {
+        fullText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      }
+      if (typeof onChunk === 'function') {
+        onChunk(fullText, fullText);
+      }
+      return fullText;
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+    let accumulatedText = '';
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || !trimmed.startsWith('data:')) continue;
+        const jsonStr = trimmed.replace(/^data:\s*/, '');
+        if (jsonStr === '[DONE]') continue;
+
+        try {
+          const parsed = JSON.parse(jsonStr);
+          const chunkText = parsed?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          if (chunkText) {
+            accumulatedText += chunkText;
+            if (typeof onChunk === 'function') {
+              onChunk(accumulatedText, chunkText);
+            }
+          }
+        } catch (e) {
+          // ignore partial JSON parse errors
+        }
+      }
+    }
+
+    if (buffer.trim().startsWith('data:')) {
+      try {
+        const parsed = JSON.parse(buffer.trim().replace(/^data:\s*/, ''));
+        const chunkText = parsed?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        if (chunkText) {
+          accumulatedText += chunkText;
+          if (typeof onChunk === 'function') {
+            onChunk(accumulatedText, chunkText);
+          }
+        }
+      } catch (e) {}
+    }
+
+    if (!accumulatedText) {
+      accumulatedText = 'No response received.';
+      if (typeof onChunk === 'function') {
+        onChunk(accumulatedText, accumulatedText);
+      }
+    }
+
+    return accumulatedText;
   },
 
   /**

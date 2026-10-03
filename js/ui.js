@@ -15,7 +15,6 @@ const UI = {
     this.initWallpaper();
     this.initSpotlightTracking();
     this.initModals();
-    this.initAssistantDrawer();
     this.initApiHub();
     this.initGlobalDelegation();
   },
@@ -903,10 +902,7 @@ const UI = {
           const titleEl = modal.querySelector('.modal-header h3');
           const submitBtn = form.querySelector('button[type="submit"]');
 
-          if (targetId === 'modal-add-tool') {
-            if (titleEl) titleEl.textContent = 'Add Custom AI Tool';
-            if (submitBtn) submitBtn.textContent = 'Save Tool';
-          } else if (targetId === 'modal-add-stack') {
+          if (targetId === 'modal-add-stack') {
             if (titleEl) titleEl.textContent = 'Create One-Click AI Stack';
             if (submitBtn) submitBtn.textContent = 'Create Stack';
             // Re-render tool checkboxes
@@ -957,11 +953,10 @@ const UI = {
       });
     });
 
-    // Escape key closes modals and drawers
+    // Escape key closes modals
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         this.closeAllModals();
-        this.closeAssistantDrawer();
       }
     });
 
@@ -973,53 +968,6 @@ const UI = {
    * Bind modal forms
    */
   initFormHandlers() {
-    // Test URL button in Add/Edit Tool modal
-    const testToolUrlBtn = document.getElementById('btn-test-tool-url');
-    if (testToolUrlBtn) {
-      testToolUrlBtn.addEventListener('click', () => {
-        let url = (document.getElementById('input-tool-url')?.value || '').trim();
-        if (!url) {
-          this.showToast('Please enter a URL first to test', 'warning');
-          return;
-        }
-        if (!/^https?:\/\//i.test(url)) {
-          url = 'https://' + url;
-          const urlInput = document.getElementById('input-tool-url');
-          if (urlInput) urlInput.value = url;
-        }
-        window.open(url, '_blank', 'noopener,noreferrer');
-      });
-    }
-
-    // Add / Edit Tool Form
-    const addToolForm = document.getElementById('form-add-tool');
-    if (addToolForm) {
-      addToolForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const toolData = {
-          name: document.getElementById('input-tool-name').value,
-          url: document.getElementById('input-tool-url').value,
-          category: document.getElementById('select-tool-category').value,
-          description: document.getElementById('input-tool-description').value,
-          tags: document.getElementById('input-tool-tags').value,
-          iconBg: document.getElementById('input-tool-icon-bg').value,
-          iconText: document.getElementById('input-tool-icon-text').value,
-          favorite: document.getElementById('checkbox-tool-favorite').checked
-        };
-
-        const editId = addToolForm.dataset.editId;
-        const success = editId
-          ? await ToolsManager.updateCustomTool(editId, toolData)
-          : await ToolsManager.addCustomTool(toolData);
-
-        if (success) {
-          addToolForm.reset();
-          delete addToolForm.dataset.editId;
-          this.closeAllModals();
-        }
-      });
-    }
-
     // Add / Edit Stack Form
     const addStackForm = document.getElementById('form-add-stack');
     if (addStackForm) {
@@ -1165,32 +1113,6 @@ const UI = {
   },
 
   /**
-   * Assistant Side Drawer Toggle
-   */
-  initAssistantDrawer() {
-    const toggleBtn = document.getElementById('btn-toggle-assistant');
-    const closeBtn = document.getElementById('btn-close-assistant');
-    const drawer = document.getElementById('assistant-drawer');
-
-    if (toggleBtn && drawer) {
-      toggleBtn.addEventListener('click', () => {
-        drawer.classList.toggle('open');
-      });
-    }
-
-    if (closeBtn && drawer) {
-      closeBtn.addEventListener('click', () => {
-        this.closeAssistantDrawer();
-      });
-    }
-  },
-
-  closeAssistantDrawer() {
-    const drawer = document.getElementById('assistant-drawer');
-    if (drawer) drawer.classList.remove('open');
-  },
-
-  /**
    * Show Toast Notification
    * @param {string} message
    * @param {string} type ('success'|'info'|'warning'|'error')
@@ -1237,12 +1159,6 @@ const UI = {
     const toggleKeyBtn = document.getElementById('btn-toggle-key-visibility');
     const clearBtn = document.getElementById('btn-clear-gemini');
     const testResultAlert = document.getElementById('hub-test-result-alert');
-
-    // Playground elements
-    const playgroundInput = document.getElementById('input-playground-query');
-    const playgroundBtn = document.getElementById('btn-run-playground');
-    const playgroundOutput = document.getElementById('playground-output-container');
-    const samplePills = document.querySelectorAll('[data-playground-prompt]');
 
     // Toggle API Key visibility
     if (toggleKeyBtn && keyInput) {
@@ -1397,60 +1313,6 @@ const UI = {
           testResultAlert.textContent = 'API Key cleared. Reverted to offline rule-based mode.';
         }
         this.showToast('Gemini API Key removed', 'info');
-      });
-    }
-
-    // Playground quick sample tags
-    samplePills.forEach(pill => {
-      pill.addEventListener('click', () => {
-        const sampleQuery = pill.getAttribute('data-playground-prompt');
-        if (playgroundInput && sampleQuery) {
-          playgroundInput.value = sampleQuery;
-        }
-      });
-    });
-
-    // Run Playground Test Query
-    if (playgroundBtn && playgroundInput && playgroundOutput) {
-      playgroundBtn.addEventListener('click', async () => {
-        const query = playgroundInput.value.trim();
-        if (!query) {
-          this.showToast('Please type a test prompt', 'warning');
-          return;
-        }
-
-        if (!GeminiClient.isConnected()) {
-          this.showToast('Please connect your Gemini API Key first above', 'warning');
-          return;
-        }
-
-        playgroundOutput.classList.add('visible');
-        playgroundOutput.innerHTML = `
-          <div class="thinking-bubble">
-            <span>Gemini is generating response</span>
-            <div class="thinking-dots">
-              <span class="thinking-dot"></span>
-              <span class="thinking-dot"></span>
-              <span class="thinking-dot"></span>
-            </div>
-          </div>
-        `;
-
-        const prevBtnHtml = playgroundBtn.innerHTML;
-        playgroundBtn.innerHTML = 'Running...';
-        playgroundBtn.disabled = true;
-
-        try {
-          const reply = await GeminiClient.generateText(query);
-          playgroundOutput.innerHTML = GeminiClient.formatMarkdown(reply);
-          this.showToast('Gemini response generated!', 'success');
-        } catch (err) {
-          playgroundOutput.innerHTML = `<span style="color: #f43f5e;">⚠️ Error: ${err.message}</span>`;
-          this.showToast(`Generation failed: ${err.message}`, 'error');
-        } finally {
-          playgroundBtn.innerHTML = prevBtnHtml;
-          playgroundBtn.disabled = false;
-        }
       });
     }
   },
