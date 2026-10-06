@@ -9,8 +9,7 @@
    1. TOKENS
    -------------------------------------------------------------------------- */
 :root {
-  --page-max: 1440px;
-  --page-pad: clamp(16px, 2.6vw, 40px);
+  --page-pad: clamp(16px, 1.8vw, 28px);
 
   /* Accent tints derive from --accent-primary, so the accent picker themes everything */
   --accent-soft: color-mix(in srgb, var(--accent-primary) 14%, transparent);
@@ -61,10 +60,17 @@
    3. STICKY APP CHROME (header + localhost bar behave as ONE unit)
    Fixes the hard-coded `top: 104px` that left a seam under the header.
    -------------------------------------------------------------------------- */
+.app-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
 .app-chrome {
   position: sticky;
   top: 0;
   z-index: 50;
+  width: 100%;
   background: var(--bg-glass);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
@@ -82,7 +88,9 @@ html body .app-chrome .localhost-bar {
   -webkit-backdrop-filter: none;
   box-shadow: none;
   border: 0;
-  padding-inline: max(var(--page-pad), calc((100% - var(--page-max)) / 2 + var(--page-pad)));
+  padding-inline: var(--page-pad);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 html body .app-chrome .top-header {
@@ -283,9 +291,10 @@ html body .app-chrome .localhost-bar {
    -------------------------------------------------------------------------- */
 .view-content {
   width: 100%;
-  max-width: var(--page-max);
-  margin-inline: auto;
-  padding: 32px var(--page-pad) 80px;
+  max-width: 100%;
+  margin-inline: 0;
+  padding: 24px var(--page-pad) 80px;
+  box-sizing: border-box;
 }
 
 .view-header {
@@ -445,7 +454,11 @@ html body .app-chrome .localhost-bar {
 }
 .category-pill.active:hover { transform: none; box-shadow: none !important; }
 
-.tools-grid { gap: 18px; }
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)) !important;
+  gap: 18px;
+}
 
 .tool-card {
   padding: 20px;
@@ -502,12 +515,21 @@ html body .app-chrome .localhost-bar {
   transform: none;
 }
 
+.tools-grid.compact-view {
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)) !important;
+  gap: 12px;
+}
 .tools-grid.compact-view .tool-card { padding: 11px 14px; border-radius: 14px; }
 
 /* --------------------------------------------------------------------------
    8. STACKS  (equal-height cards, CTA pinned to the bottom)
    -------------------------------------------------------------------------- */
-.stacks-grid { gap: 20px; align-items: stretch; }
+.stacks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+  gap: 20px;
+  align-items: stretch;
+}
 .stack-card { padding: 22px; border-radius: 20px; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-xs), var(--hairline); }
 .stack-card:hover {
   transform: var(--lift);
@@ -601,7 +623,7 @@ input[type="range"].form-input::-webkit-slider-thumb:hover { transform: scale(1.
 /* --------------------------------------------------------------------------
    11. SETTINGS
    -------------------------------------------------------------------------- */
-.settings-container { max-width: 880px; display: flex; flex-direction: column; gap: 0; }
+.settings-container { max-width: 980px; margin-inline: auto; display: flex; flex-direction: column; gap: 0; }
 .settings-tab-pane.active { display: flex; flex-direction: column; gap: 18px; }
 .settings-card { padding: 24px; margin: 0; }
 .settings-card-header { margin-bottom: 18px; }
