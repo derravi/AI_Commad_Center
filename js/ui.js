@@ -865,23 +865,108 @@ const UI = {
   },
 
   /**
-   * Interactive Spotlight & 3D Tilt Sheen Cursor Tracking
-   * Tracks cursor position on interactive cards and passes --mouse-x / --mouse-y coordinates
+   * Interactive Specular Light & 3D Glass Tilt Engine
+   * Apple / Vercel design system inspired cursor-following radial light & smooth spring physics.
    */
   initSpotlightTracking() {
-    const selector = '.tool-card, .mini-tool-card, .stack-card, .router-hero, .api-config-card, .settings-card, .theme-mode-card, .cache-hero-card';
+    const selector = '.tool-card, .stack-card, .mini-tool-card, .router-hero, .api-config-card, .settings-card, .theme-mode-card, .cache-hero-card';
 
-    document.addEventListener('mousemove', (e) => {
+    let activeCard = null;
+    let pendingEvent = null;
+    let rafId = null;
+
+    const resetCard = (card) => {
+      if (!card) return;
+      card.classList.remove('is-card-hovered');
+      card.style.setProperty('--card-rot-x', '0deg');
+      card.style.setProperty('--card-rot-y', '0deg');
+      card.style.setProperty('--tilt-x', '0');
+      card.style.setProperty('--tilt-y', '0');
+      card.style.setProperty('--specular-opacity', '0');
+    };
+
+    const updateFrame = () => {
+      rafId = null;
+      if (!pendingEvent || !activeCard) return;
+
+      const rect = activeCard.getBoundingClientRect();
+      const x = pendingEvent.clientX - rect.left;
+      const y = pendingEvent.clientY - rect.top;
+      const w = rect.width;
+      const h = rect.height;
+
+      // Card boundary boundary buffer
+      if (x < -15 || x > w + 15 || y < -15 || y > h + 15) {
+        resetCard(activeCard);
+        activeCard = null;
+        return;
+      }
+
+      // Normalized offsets (-1 to 1) from card center
+      const normX = Math.max(-1, Math.min(1, (x - w / 2) / (w / 2)));
+      const normY = Math.max(-1, Math.min(1, (y - h / 2) / (h / 2)));
+
+      // Subtle, tactile 3D tilt angles (Apple / Vercel style)
+      const isMini = activeCard.classList.contains('mini-tool-card');
+      const isHero = activeCard.classList.contains('router-hero') || activeCard.classList.contains('cache-hero-card');
+      const maxTilt = isMini ? 3.5 : isHero ? 2.5 : 6.0;
+
+      const rotX = -normY * maxTilt;
+      const rotY = normX * maxTilt;
+
+      activeCard.classList.add('is-card-hovered');
+      activeCard.style.setProperty('--mouse-x', `${x.toFixed(1)}px`);
+      activeCard.style.setProperty('--mouse-y', `${y.toFixed(1)}px`);
+      activeCard.style.setProperty('--card-rot-x', `${rotX.toFixed(2)}deg`);
+      activeCard.style.setProperty('--card-rot-y', `${rotY.toFixed(2)}deg`);
+      activeCard.style.setProperty('--tilt-x', normX.toFixed(3));
+      activeCard.style.setProperty('--tilt-y', normY.toFixed(3));
+      activeCard.style.setProperty('--specular-opacity', '1');
+    };
+
+    document.addEventListener('pointermove', (e) => {
+      if (e.pointerType === 'touch') return;
+
       const targetCard = e.target.closest(selector);
-      if (!targetCard) return;
 
-      const rect = targetCard.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      if (targetCard !== activeCard) {
+        if (activeCard) {
+          resetCard(activeCard);
+        }
+        activeCard = targetCard;
+      }
 
-      targetCard.style.setProperty('--mouse-x', `${x}px`);
-      targetCard.style.setProperty('--mouse-y', `${y}px`);
+      if (!activeCard) return;
+
+      pendingEvent = e;
+      if (!rafId) {
+        rafId = requestAnimationFrame(updateFrame);
+      }
     }, { passive: true });
+
+    // Spring return upon leaving cards or window
+    document.addEventListener('pointerout', (e) => {
+      if (!activeCard) return;
+      const related = e.relatedTarget ? e.relatedTarget.closest(selector) : null;
+      if (related !== activeCard) {
+        resetCard(activeCard);
+        if (!related) activeCard = null;
+      }
+    }, { passive: true });
+
+    document.addEventListener('dragstart', () => {
+      if (activeCard) {
+        resetCard(activeCard);
+        activeCard = null;
+      }
+    });
+
+    window.addEventListener('blur', () => {
+      if (activeCard) {
+        resetCard(activeCard);
+        activeCard = null;
+      }
+    });
   },
 
   /**
