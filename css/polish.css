@@ -472,24 +472,25 @@ html body .app-chrome .localhost-bar {
 .view-mode-btn.active { background: var(--accent-soft); color: var(--accent-text); box-shadow: none; }
 
 /* --------------------------------------------------------------------------
-   6. SMART ROUTER HERO (ULTRA-GLOSSY CYBER-GLASS STUDIO)
+   6. SMART ROUTER HERO (HARMONIOUS GLOSSY CYBER-STUDIO)
    -------------------------------------------------------------------------- */
 .router-hero {
   position: relative;
   padding: 30px 34px 28px;
   margin-bottom: 36px;
   border-radius: 24px;
-  border: 1px solid color-mix(in srgb, var(--accent-primary) 22%, rgba(255, 255, 255, 0.12));
+  border: 1px solid var(--border-soft);
+  border-top: 1px solid color-mix(in srgb, var(--accent-primary) 35%, rgba(255, 255, 255, 0.18));
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.015) 35%, rgba(255, 255, 255, 0.04) 100%),
-    color-mix(in srgb, var(--bg-surface) 82%, transparent);
-  backdrop-filter: blur(32px) saturate(180%);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
+    radial-gradient(900px 320px at 100% -10%, var(--accent-soft), transparent 75%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0) 100%),
+    var(--bg-surface);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
   box-shadow:
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.24),
-    inset 0 0 36px 0 color-mix(in srgb, var(--accent-primary) 6%, transparent),
-    0 22px 50px -14px rgba(0, 0, 0, 0.45),
-    0 0 45px -12px color-mix(in srgb, var(--accent-primary) 30%, transparent);
+    0 18px 44px -12px rgba(0, 0, 0, 0.45),
+    0 0 35px -12px color-mix(in srgb, var(--accent-primary) 20%, transparent),
+    var(--hairline);
   transform: perspective(1000px)
              rotateX(var(--card-rot-x, 0deg))
              rotateY(var(--card-rot-y, 0deg))
@@ -510,10 +511,10 @@ html body .app-chrome .localhost-bar {
   border-radius: inherit;
   padding: 1.5px;
   background: radial-gradient(
-    480px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-    color-mix(in srgb, var(--accent-primary) 92%, #ffffff) 0%,
-    color-mix(in srgb, var(--accent-primary) 32%, transparent) 35%,
-    transparent 65%
+    420px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    color-mix(in srgb, var(--accent-primary) 70%, #ffffff) 0%,
+    color-mix(in srgb, var(--accent-primary) 20%, transparent) 40%,
+    transparent 70%
   );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -531,10 +532,9 @@ html body .app-chrome .localhost-bar {
   inset: 0;
   border-radius: inherit;
   background: radial-gradient(
-    520px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-    color-mix(in srgb, var(--accent-primary) 12%, rgba(255, 255, 255, 0.16)) 0%,
-    color-mix(in srgb, var(--accent-primary) 4%, transparent) 45%,
-    transparent 70%
+    480px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    color-mix(in srgb, var(--accent-primary) 8%, rgba(255, 255, 255, 0.08)) 0%,
+    transparent 60%
   );
   opacity: var(--specular-opacity, 0);
   pointer-events: none;
@@ -542,45 +542,44 @@ html body .app-chrome .localhost-bar {
   transition: opacity 0.3s ease;
 }
 
-/* Luminous Ambient Glowing Mesh Orb (Top-Right Depth) */
+/* Harmonious Ambient Accent Mesh Orb (Matching active accent tint) */
 .router-glow-mesh {
   position: absolute;
-  top: -80px;
-  right: -50px;
-  width: 360px;
-  height: 360px;
+  top: -70px;
+  right: -40px;
+  width: 340px;
+  height: 340px;
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    color-mix(in srgb, var(--accent-primary) 38%, #8b5cf6) 0%,
-    color-mix(in srgb, var(--accent-primary) 10%, transparent) 45%,
+    color-mix(in srgb, var(--accent-primary) 22%, transparent) 0%,
+    color-mix(in srgb, var(--accent-primary) 6%, transparent) 50%,
     transparent 70%
   );
-  filter: blur(52px);
-  opacity: 0.65;
+  filter: blur(48px);
+  opacity: 0.7;
   pointer-events: none;
   z-index: 0;
-  animation: routerMeshBreath 9s ease-in-out infinite alternate;
+  animation: routerMeshBreath 10s ease-in-out infinite alternate;
 }
 
 @keyframes routerMeshBreath {
-  0% { transform: scale(1) translate(0, 0); opacity: 0.55; }
-  50% { transform: scale(1.16) translate(-28px, 18px); opacity: 0.82; }
-  100% { transform: scale(0.96) translate(18px, -12px); opacity: 0.6; }
+  0% { transform: scale(1) translate(0, 0); opacity: 0.5; }
+  50% { transform: scale(1.15) translate(-22px, 14px); opacity: 0.75; }
+  100% { transform: scale(0.96) translate(14px, -10px); opacity: 0.55; }
 }
 
 .router-hero:hover,
 .router-hero.is-card-hovered {
   border-color: var(--accent-line);
   box-shadow:
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.32),
-    inset 0 0 45px 0 color-mix(in srgb, var(--accent-primary) 10%, transparent),
-    0 26px 60px -16px rgba(0, 0, 0, 0.5),
-    0 0 55px -10px color-mix(in srgb, var(--accent-primary) 38%, transparent);
+    0 22px 52px -14px rgba(0, 0, 0, 0.5),
+    0 0 45px -10px color-mix(in srgb, var(--accent-primary) 28%, transparent),
+    var(--hairline);
 }
 
 .router-hero.is-card-hovered {
-  --card-scale: 1.008;
+  --card-scale: 1.006;
   transition: transform 0.08s ease-out, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
@@ -602,28 +601,26 @@ html body .app-chrome .localhost-bar {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 16px;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--accent-primary) 35%, rgba(255, 255, 255, 0.18)),
-    color-mix(in srgb, var(--accent-primary) 12%, transparent)
-  );
-  border: 1px solid color-mix(in srgb, var(--accent-primary) 50%, rgba(255, 255, 255, 0.25));
-  box-shadow:
-    0 10px 24px -4px color-mix(in srgb, var(--accent-primary) 45%, transparent),
-    inset 0 1px 1px rgba(255, 255, 255, 0.45);
-  color: var(--accent-text);
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--accent-primary) 14%, var(--bg-surface-elevated));
+  border: 1px solid color-mix(in srgb, var(--accent-primary) 35%, var(--border-soft));
+  box-shadow: 0 6px 18px -4px color-mix(in srgb, var(--accent-primary) 35%, transparent), var(--hairline);
+  color: var(--accent-primary);
   transform: translateZ(16px);
-  transition: transform var(--motion-120-card), box-shadow var(--motion-120-card);
+  transition: transform var(--motion-120-card), box-shadow var(--motion-120-card), border-color var(--motion-120-snappy);
+}
+
+.router-title-icon-wrap svg polygon {
+  fill: var(--accent-primary);
+  fill-opacity: 0.2;
 }
 
 .router-hero:hover .router-title-icon-wrap {
   transform: translateZ(24px) scale(1.06);
-  box-shadow:
-    0 14px 30px -4px color-mix(in srgb, var(--accent-primary) 65%, transparent),
-    inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  border-color: var(--accent-line);
+  box-shadow: 0 10px 24px -4px color-mix(in srgb, var(--accent-primary) 50%, transparent);
 }
 
 .router-title-text-group {
@@ -648,23 +645,21 @@ html body .app-chrome .localhost-bar {
   margin: 0;
 }
 
-/* High-tech pulsing status pill badge */
+/* Refined status pill badge */
 .router-badge-pill {
   position: relative;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 4px 12px 4px 10px;
+  padding: 3.5px 11px 3.5px 9px;
   border-radius: 999px;
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.025em;
-  background: color-mix(in srgb, var(--accent-primary) 15%, rgba(255, 255, 255, 0.05));
-  border: 1px solid color-mix(in srgb, var(--accent-primary) 35%, rgba(255, 255, 255, 0.16));
-  color: var(--accent-text);
-  box-shadow:
-    0 2px 10px -2px color-mix(in srgb, var(--accent-primary) 35%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  letter-spacing: 0.02em;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-soft);
+  color: var(--text-muted);
+  box-shadow: var(--shadow-xs);
 }
 
 .router-live-pulse-ring {
@@ -683,13 +678,13 @@ html body .app-chrome .localhost-bar {
   height: 7px;
   border-radius: 50%;
   background: var(--accent-primary);
-  box-shadow: 0 0 10px var(--accent-primary);
+  box-shadow: 0 0 8px var(--accent-primary);
 }
 
 @keyframes routerLivePulse {
   0% { transform: scale(0.9); opacity: 0.9; }
-  70% { transform: scale(2.8); opacity: 0; }
-  100% { transform: scale(2.8); opacity: 0; }
+  70% { transform: scale(2.6); opacity: 0; }
+  100% { transform: scale(2.6); opacity: 0; }
 }
 
 .router-desc {
@@ -700,25 +695,19 @@ html body .app-chrome .localhost-bar {
   max-width: 84ch;
 }
 
-/* Floating Glossy Capsule Input Bar */
+/* Deep Inset Glossy Input Bar */
 .router-input-wrapper {
   position: relative;
   z-index: 3;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 6px 8px 6px 16px;
-  margin-top: 20px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.015) 100%),
-    color-mix(in srgb, var(--bg-surface-elevated) 88%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent-primary) 24%, rgba(255, 255, 255, 0.14));
-  border-radius: 18px;
-  box-shadow:
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.18),
-    0 8px 26px -6px rgba(0, 0, 0, 0.38);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  gap: 10px;
+  padding: 6px 7px 6px 14px;
+  margin-top: 18px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.22), var(--hairline);
   transform: translateZ(14px);
   transition: border-color var(--motion-120-snappy),
               box-shadow var(--motion-120-snappy),
@@ -728,9 +717,9 @@ html body .app-chrome .localhost-bar {
 .router-input-wrapper:focus-within {
   border-color: var(--accent-primary);
   box-shadow:
-    0 0 0 4px var(--accent-ring),
-    0 14px 38px -8px color-mix(in srgb, var(--accent-primary) 45%, transparent),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.32);
+    0 0 0 3.5px var(--accent-ring),
+    0 8px 24px -6px color-mix(in srgb, var(--accent-primary) 35%, transparent),
+    inset 0 1px 2px rgba(0, 0, 0, 0.2);
   transform: translateZ(18px) translateY(-1px);
 }
 
@@ -738,9 +727,13 @@ html body .app-chrome .localhost-bar {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent-primary);
-  opacity: 0.85;
+  color: var(--text-dim);
   flex-shrink: 0;
+  transition: color var(--motion-120-snappy);
+}
+
+.router-input-wrapper:focus-within .router-input-leading-icon {
+  color: var(--accent-primary);
 }
 
 .router-input-wrapper .router-input,
@@ -751,7 +744,7 @@ html body .app-chrome .localhost-bar {
   outline: 0;
   background: transparent;
   color: var(--text-main);
-  font-size: 14.5px;
+  font-size: 14px;
   padding: 10px 4px;
   box-shadow: none;
 }
@@ -763,33 +756,34 @@ html body .app-chrome .localhost-bar {
 .router-kbd-hint {
   display: inline-flex;
   align-items: center;
-  padding: 4px 8px;
-  border-radius: 7px;
+  padding: 3.5px 7px;
+  border-radius: 6px;
   font-size: 11px;
   font-weight: 600;
   color: var(--text-dim);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
   pointer-events: none;
   user-select: none;
   flex-shrink: 0;
 }
 
+/* Harmonious Primary Action Button (Pure Accent Tone) */
 .router-submit-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 0 22px;
-  min-height: 44px;
-  border-radius: 12px;
+  padding: 0 20px;
+  min-height: 42px;
+  border-radius: 11px;
   font-weight: 600;
   font-size: 13.5px;
   letter-spacing: -0.01em;
-  background: linear-gradient(135deg, var(--accent-primary) 0%, color-mix(in srgb, var(--accent-primary) 75%, #a855f7) 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  background: var(--accent-primary) !important;
+  border: 1px solid transparent !important;
   box-shadow:
-    0 8px 22px -4px color-mix(in srgb, var(--accent-primary) 65%, transparent),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.45) !important;
+    0 6px 18px -3px color-mix(in srgb, var(--accent-primary) 55%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
   color: #fff !important;
   cursor: pointer;
   flex-shrink: 0;
@@ -802,16 +796,16 @@ html body .app-chrome .localhost-bar {
 .router-submit-btn:hover {
   transform: translateZ(22px) translateY(-1px) scale(1.02);
   box-shadow:
-    0 12px 28px -4px color-mix(in srgb, var(--accent-primary) 75%, transparent),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.6) !important;
-  filter: brightness(1.06);
+    0 10px 24px -4px color-mix(in srgb, var(--accent-primary) 70%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  filter: brightness(1.08);
 }
 
 .router-submit-btn:active {
   transform: translateZ(12px) translateY(0) scale(0.97);
 }
 
-/* Quick Suggestion Pills Bar */
+/* Quick Suggestion Chips Bar */
 .quick-prompts-bar {
   position: relative;
   z-index: 3;
@@ -830,9 +824,8 @@ html body .app-chrome .localhost-bar {
   font-size: 11.5px;
   font-weight: 600;
   color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-right: 4px;
+  letter-spacing: 0.02em;
+  margin-right: 2px;
 }
 
 .quick-prompts-label svg {
@@ -843,17 +836,13 @@ html body .app-chrome .localhost-bar {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 14px;
+  padding: 6px 13px;
   font-size: 12px;
   font-weight: 500;
   border-radius: 999px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.015) 100%),
-    color-mix(in srgb, var(--bg-surface-elevated) 72%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent-primary) 15%, rgba(255, 255, 255, 0.1));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 6px rgba(0, 0, 0, 0.18);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--hairline);
   color: var(--text-muted);
   cursor: pointer;
   user-select: none;
@@ -865,56 +854,65 @@ html body .app-chrome .localhost-bar {
 }
 
 .quick-prompt-tag:hover {
-  transform: translateY(-2px) scale(1.035);
-  background: color-mix(in srgb, var(--accent-primary) 22%, rgba(255, 255, 255, 0.1));
+  transform: translateY(-1.5px) scale(1.03);
+  background: var(--accent-soft);
   border-color: var(--accent-line);
   color: var(--text-main);
-  box-shadow:
-    0 8px 20px -4px color-mix(in srgb, var(--accent-primary) 40%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  box-shadow: 0 6px 16px -4px color-mix(in srgb, var(--accent-primary) 35%, transparent);
 }
 
 .quick-prompt-tag:active {
   transform: translateY(0) scale(0.96);
 }
 
-/* Light Mode Polish */
+/* Light Mode Harmonious Colors */
 [data-theme="light"] .router-hero {
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.5) 100%),
-    color-mix(in srgb, var(--bg-surface) 86%, transparent);
-  border-color: color-mix(in srgb, var(--accent-primary) 25%, rgba(0, 0, 0, 0.08));
+    radial-gradient(900px 320px at 100% -10%, var(--accent-soft), transparent 75%),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid var(--border-soft);
   box-shadow:
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.95),
-    0 18px 44px -12px rgba(0, 0, 0, 0.08),
-    0 0 40px -15px color-mix(in srgb, var(--accent-primary) 25%, transparent);
+    0 12px 32px -8px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 #ffffff;
 }
 
-[data-theme="light"] .router-hero::after {
-  background: radial-gradient(
-    520px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-    rgba(255, 255, 255, 0.75) 0%,
-    color-mix(in srgb, var(--accent-primary) 10%, transparent) 40%,
-    transparent 70%
-  );
+[data-theme="light"] .router-glow-mesh {
+  opacity: 0.35;
+}
+
+[data-theme="light"] .router-title-icon-wrap {
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+  box-shadow: 0 4px 14px -3px color-mix(in srgb, var(--accent-primary) 25%, transparent);
+}
+
+[data-theme="light"] .router-badge-pill {
+  background: #ffffff;
+  border-color: var(--border-subtle);
+  color: var(--text-muted);
 }
 
 [data-theme="light"] .router-input-wrapper {
-  background: rgba(255, 255, 255, 0.85);
-  border-color: rgba(0, 0, 0, 0.1);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 1), 0 4px 18px rgba(0, 0, 0, 0.06);
+  background: #ffffff;
+  border: 1.5px solid var(--border-soft);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 [data-theme="light"] .router-kbd-hint {
-  background: rgba(0, 0, 0, 0.05);
-  border-color: rgba(0, 0, 0, 0.08);
+  background: var(--bg-surface-elevated);
+  border-color: var(--border-subtle);
 }
 
 [data-theme="light"] .quick-prompt-tag {
-  background: rgba(255, 255, 255, 0.75);
-  border-color: rgba(0, 0, 0, 0.08);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 1), 0 2px 6px rgba(0, 0, 0, 0.04);
-  color: var(--text-main);
+  background: #ffffff;
+  border-color: var(--border-subtle);
+  color: var(--text-muted);
+}
+
+[data-theme="light"] .quick-prompt-tag:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-primary);
+  color: var(--accent-text);
 }
 
 /* --------------------------------------------------------------------------
